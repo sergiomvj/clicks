@@ -1,0 +1,32 @@
+# dependencies
+node_modules
+.pnpm-debug.log*
+
+# next.js
+.next/
+out/
+
+# turbo
+.turbo
+
+# build
+dist
+build
+
+# env
+.env
+.env.local
+.env.production
+.env*.local
+
+# test
+coverage
+
+# ide
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+
+# prisma
+/packages/database/generated
