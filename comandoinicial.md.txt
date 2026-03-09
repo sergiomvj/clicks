@@ -1,1 +1,0 @@
-crie a estrutura do projeto seguindo os documentos da pasta   e examine quais skills da pasta     voce usará para executar cada etapa do     para criar um completa task list para execução do projeto e salvando na pasta    como tasklist.md 
