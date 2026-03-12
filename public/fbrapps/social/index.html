@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FBR-Social — Social Media Visual Agent — Conceito MVP v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0f1e;
+    --paper: #f0f4ff;
+    --accent: #2b5fd9;
+    --accent2: #d92b8a;
+    --accent3: #2bd9a0;
+    --muted: #6070a0;
+    --rule: #c8d0e8;
+    --code-bg: #111827;
+    --code-text: #b8d4e8;
+    --surface: #e8eeff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    padding: 80px 60px 60px;
+    border-bottom: 2px solid var(--ink);
+    overflow: hidden;
+    background: linear-gradient(135deg, #0a0f1e 0%, #0d1a3a 60%, #0a2040 100%);
+    color: var(--paper);
+  }
+
+  .header-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(43,95,217,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(43,95,217,0.08) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .header-orbs {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.18;
+  }
+
+  .orb-1 { width: 500px; height: 500px; background: #2b5fd9; top: -200px; right: -100px; }
+  .orb-2 { width: 300px; height: 300px; background: #d92b8a; bottom: -100px; left: 200px; }
+  .orb-3 { width: 200px; height: 200px; background: #2bd9a0; top: 50px; left: 40%; }
+
+  .header-bg-text {
+    position: absolute;
+    top: -30px;
+    right: -20px;
+    font-family: 'Syne', sans-serif;
+    font-size: 200px;
+    font-weight: 800;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(43,95,217,0.25);
+    line-height: 1;
+    user-select: none;
+    z-index: 0;
+    letter-spacing: -8px;
+  }
+
+  .header-content { position: relative; z-index: 1; max-width: 820px; }
+
+  .tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+    padding: 3px 10px;
+    margin-bottom: 24px;
+  }
+
+  header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -2px;
+    color: #f0f4ff;
+    margin-bottom: 8px;
+  }
+
+  header h1 span.highlight {
+    color: var(--accent3);
+  }
+
+  .subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: rgba(176,196,255,0.7);
+    letter-spacing: 0.05em;
+    margin-top: 6px;
+    margin-bottom: 28px;
+  }
+
+  .header-lead {
+    font-size: 18px;
+    line-height: 1.65;
+    color: rgba(220,230,255,0.9);
+    max-width: 640px;
+    font-style: italic;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 32px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(176,196,255,0.5);
+  }
+
+  .meta-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #f0f4ff;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,15,30,0.97);
+    border-bottom: 1px solid rgba(43,95,217,0.3);
+    backdrop-filter: blur(8px);
+    padding: 0 60px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  nav a {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(176,196,255,0.6);
+    text-decoration: none;
+    padding: 16px 20px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  nav a:hover { color: var(--accent3); border-color: var(--accent3); }
+
+  /* MAIN */
+  main { max-width: 1100px; margin: 0 auto; padding: 0 60px 120px; }
+
+  /* SECTIONS */
+  section { padding: 72px 0 0; }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .section-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 2px 8px;
+  }
+
+  .section-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(26px, 3.5vw, 38px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    color: var(--ink);
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 36px 0 14px;
+    color: var(--ink);
+  }
+
+  h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 28px 0 10px;
+  }
+
+  p { margin-bottom: 18px; color: #1a2240; }
+  p:last-child { margin-bottom: 0; }
+
+  strong { font-weight: 600; color: var(--ink); }
+
+  /* CODE BLOCKS */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    padding: 28px 32px;
+    overflow-x: auto;
+    margin: 24px 0;
+    border-left: 3px solid var(--accent);
+  }
+
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    background: var(--surface);
+    padding: 2px 6px;
+    color: var(--accent);
+  }
+
+  pre code { background: none; padding: 0; color: inherit; }
+
+  /* CALLOUT */
+  .callout {
+    border-left: 3px solid var(--accent2);
+    padding: 20px 24px;
+    background: #fff0f7;
+    margin: 28px 0;
+    font-style: italic;
+    color: #4a1030;
+  }
+
+  .callout-blue {
+    border-left-color: var(--accent);
+    background: #f0f4ff;
+    color: #0a1a40;
+  }
+
+  .callout-green {
+    border-left-color: var(--accent3);
+    background: #f0fff8;
+    color: #0a2a1a;
+  }
+
+  /* GRID CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin: 32px 0;
+  }
+
+  .card {
+    background: white;
+    border: 1px solid var(--rule);
+    padding: 28px;
+    position: relative;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+  }
+
+  .card.pink::before { background: var(--accent2); }
+  .card.green::before { background: var(--accent3); }
+  .card.multi::before { background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3)); }
+
+  .card-icon {
+    font-size: 28px;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .card h3 { margin: 0 0 10px; font-size: 17px; }
+  .card p { font-size: 14px; line-height: 1.6; color: #3a4460; margin: 0; }
+
+  /* NETWORKS GRID */
+  .networks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 28px 0;
+  }
+
+  .network-card {
+    background: white;
+    border: 1px solid var(--rule);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .network-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  .network-formats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .format-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 3px 8px;
+    background: var(--surface);
+    color: var(--accent);
+    border: 1px solid var(--rule);
+  }
+
+  .network-dims {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* PIPELINE */
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 32px 0;
+  }
+
+  .pipeline-step {
+    display: flex;
+    gap: 24px;
+    position: relative;
+  }
+
+  .pipeline-step::before {
+    content: '';
+    position: absolute;
+    left: 19px;
+    top: 42px;
+    bottom: -10px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+
+  .pipeline-step:last-child::before { display: none; }
+
+  .step-number {
+    width: 40px;
+    height: 40px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .step-content {
+    flex: 1;
+    padding-bottom: 28px;
+  }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .step-desc {
+    font-size: 14px;
+    color: #3a4460;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* COMPARISON TABLE */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 28px 0;
+    font-size: 14px;
+  }
+
+  .compare-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 400;
+  }
+
+  .compare-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+    color: #1a2240;
+    vertical-align: top;
+  }
+
+  .compare-table tr:hover td { background: var(--surface); }
+
+  .compare-table td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* AGENT BOX */
+  .agent-box {
+    background: var(--code-bg);
+    color: #c8d8f8;
+    padding: 32px;
+    margin: 28px 0;
+    border-left: 4px solid var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .agent-box.pink { border-left-color: var(--accent2); }
+  .agent-box.green { border-left-color: var(--accent3); }
+
+  .agent-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #f0f4ff;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+  }
+
+  .agent-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .agent-key { color: var(--accent3); min-width: 120px; }
+  .agent-val { color: #c8d8f8; }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 48px 0 0;
+  }
+
+  /* ARCHITECTURE DIAGRAM */
+  .arch-diagram {
+    background: var(--code-bg);
+    padding: 32px;
+    margin: 28px 0;
+    overflow-x: auto;
+  }
+
+  .arch-diagram pre {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: #c8d8f8;
+    font-size: 13px;
+  }
+
+  /* HIGHLIGHT BOXES */
+  .highlight-box {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 32px 36px;
+    margin: 32px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .highlight-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(43,95,217,0.15), rgba(217,43,138,0.1));
+  }
+
+  .highlight-box * { position: relative; z-index: 1; }
+  .highlight-box h3 { color: var(--accent3); margin-top: 0; font-size: 22px; }
+  .highlight-box p { color: rgba(220,230,255,0.9); margin-bottom: 0; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    header, nav, main { padding-left: 24px; padding-right: 24px; }
+    .header-meta { gap: 20px; }
+    .compare-table { font-size: 13px; }
+    .compare-table td, .compare-table th { padding: 10px 12px; }
+  }
+
+  /* PRINT */
+  @media print {
+    nav, body::before { display: none; }
+    header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    pre, .arch-diagram, .agent-box, .highlight-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-grid"></div>
+  <div class="header-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="header-bg-text">SOCIAL</div>
+  <div class="header-content">
+    <div class="tag">Facebrasil Group · Conceito MVP v1.0</div>
+    <h1>FBR-<span class="highlight">Social</span></h1>
+    <div class="subtitle">Social Media Visual Agent · Automação de Artes para Redes Sociais · Todos os Produtos FBR</div>
+    <p class="header-lead">
+      Um sistema inteligente que transforma briefings em artes prontas para todas as redes sociais 
+      de todos os produtos do Facebrasil Group — consumindo assets base do FBR-Design e entregando 
+      materiais formatados com precisão para cada plataforma.
+    </p>
+    <div class="header-meta">
+      <div class="meta-item">
+        <span class="meta-label">Versão</span>
+        <span class="meta-value">MVP v1.0</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Tipo</span>
+        <span class="meta-value">Sistema Interno FBR</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Filosofia</span>
+        <span class="meta-value">OpenClaw · 7 Markdowns</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Hub Humano</span>
+        <span class="meta-value">FBR-Click #fbr-social</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Integração</span>
+        <span class="meta-value">FBR-Design (assets base)</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <a href="#conceito">Conceito</a>
+  <a href="#diferenca">FBR-Design vs FBR-Social</a>
+  <a href="#redes">Redes & Formatos</a>
+  <a href="#pipeline">Pipeline</a>
+  <a href="#agentes">Agentes</a>
+  <a href="#arquitetura">Arquitetura</a>
+  <a href="#produtos">Produtos FBR</a>
+  <a href="#principios">Princípios</a>
+</nav>
+
+<main>
+
+  <!-- CONCEITO -->
+  <section id="conceito">
+    <div class="section-label">
+      <span class="section-number">01</span>
+      <span class="section-rule"></span>
+    </div>
+    <h2>O que é o FBR-Social</h2>
+
+    <p>
+      O FBR-Social é o sistema de automação de artes visuais para redes sociais do Facebrasil Group. 
+      Enquanto o FBR-Design cobre a produção gráfica geral — cartões, banners, flyers, apresentações — 
+      o FBR-Social é especializado exclusivamente em <strong>formatos de redes sociais</strong>: 
+      Feed, Stories, Reels, Covers, Thumbnails, Carrosséis e demais formatos de cada plataforma.
+    </p>
+
+    <p>
+      Cada produto do Facebrasil Group possui identidade visual própria e presença em múltiplas 
+      redes sociais. O FBR-Social centraliza a produção desses materiais, garantindo consistência 
+      de marca, velocidade de entrega e qualidade profissional — sem depender de ferramentas 
+      externas de design ou de designers manuais para cada peça.
+    </p>
+
+    <div class="callout callout-blue">
+      <strong>Princípio fundamental:</strong> O FBR-Social não inventa — ele executa. Os assets base 
+      (logos, fontes, paletas de cores) vêm do FBR-Design via brand kit. O FBR-Social aplica esses 
+      assets com maestria nos formatos e dimensões corretos de cada rede social.
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <span class="card-icon">🎯</span>
+        <h3>Foco Total em Social</h3>
+        <p>Especializado em formatos de redes sociais. Conhece as especificações exatas de cada plataforma e formato — dimensões, safe zones, limites de texto, aspect ratios.</p>
+      </div>
+      <div class="card pink">
+        <span class="card-icon">🔗</span>
+        <h3>Integrado ao FBR-Design</h3>
+        <p>Consome brand kits do FBR-Design via API. Logos, fontes e paletas são fornecidos pelo sistema irmão — sem duplicação de dados, sem inconsistências de marca.</p>
+      </div>
+      <div class="card green">
+        <span class="card-icon">🏢</span>
+        <h3>Multi-Produto FBR</h3>
+        <p>Atende todos os produtos do Facebrasil Group. Cada produto tem seu perfil de brand kit, redes ativas e templates específicos. Um sistema, múltiplas marcas.</p>
+      </div>
+      <div class="card multi">
+        <span class="card-icon">⚡</span>
+        <h3>Variantes Automáticas</h3>
+        <p>A partir de um único briefing, gera automaticamente todas as variantes de formato para todas as redes ativas do produto — Feed, Stories, LinkedIn, TikTok e mais.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIFERENÇA -->
+  <section id="diferenca">
+    <div class="section-label">
+      <span class="section-number">02</span>
+      <span class="section-rule"></span>
+    </div>
+    <h2>FBR-Design vs FBR-Social</h2>
+
+    <p>
+      Os dois sistemas são complementares, não concorrentes. Compartilham a mesma filosofia 
+      técnica e arquitetural, mas servem propósitos distintos.
+    </p>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Dimensão</th>
+          <th>FBR-Design</th>
+          <th>FBR-Social</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Propósito</td>
+          <td>Materiais gráficos gerais — cartões, banners, flyers, apresentações, panfletos</td>
+          <td>Artes para redes sociais — Feed, Stories, Reels, Covers, Carrosséis, Thumbs</td>
+        </tr>
+        <tr>
+          <td>Destinatário</td>
+          <td>Clientes externos da FBR (empresas, marcas)</td>
+          <td>Produtos internos do Facebrasil Group</td>
+        </tr>
+        <tr>
+          <td>Brand Kits</td>
+          <td>Cria e gerencia brand kits dos clientes</td>
+          <td>Consome brand kits do FBR-Design via API</td>
+        </tr>
+        <tr>
+          <td>Templates</td>
+          <td>Cartão de visitas, flyer, banner, apresentação, letterhead…</td>
+          <td>Feed quadrado, Stories vertical, LinkedIn horizontal, TikTok, YouTube Thumb…</td>
+        </tr>
+        <tr>
+          <td>Formatos de saída</td>
+          <td>PNG, JPG, PDF — tamanhos customizados por categoria</td>
+          <td>PNG, JPG — dimensões fixas por rede social e formato</td>
+        </tr>
+        <tr>
+          <td>Canal FBR-Click</td>
+          <td>#fbr-design</td>
+          <td>#fbr-social</td>
+        </tr>
+        <tr>
+          <td>Aprovação</td>
+          <td>Supervisor do cliente</td>
+          <td>Responsável do produto FBR</td>
+        </tr>
+        <tr>
+          <td>Relação</td>
+          <td>Sistema irmão — fornece assets base</td>
+          <td>Sistema irmão — consome assets base</td>
+        </tr>
+        <tr>
+          <td>VPS</td>
+          <td>VPS dedicada FBR-Design</td>
+          <td>VPS dedicada FBR-Social (isolamento total)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="highlight-box">
+      <h3>A relação entre os sistemas</h3>
+      <p>
+        FBR-Design é a fonte de verdade das identidades visuais. FBR-Social é o executor especializado 
+        em social media. Quando um brand kit é atualizado no FBR-Design, o FBR-Social reflete 
+        automaticamente essa atualização em todos os jobs subsequentes. Os sistemas se comunicam via 
+        REST API autenticada — nunca compartilham banco de dados.
+      </p>
+    </div>
+  </section>
+
+  <!-- REDES & FORMATOS -->
+  <section id="redes">
+    <div class="section-label">
+      <span class="section-number">03</span>
+      <span class="section-rule"></span>
+    </div>
+    <h2>Redes Sociais & Formatos</h2>
+
+    <p>
+      O FBR-Social conhece as especificações exatas de cada rede social e formato. 
+      A partir de um único briefing, o sistema determina quais variantes gerar 
+      com base nas redes ativas do produto FBR solicitado.
+    </p>
+
+    <div class="networks-grid">
+      <div class="network-card">
+        <div class="network-name">📸 Instagram</div>
+        <div class="network-formats">
+          <span class="format-badge">Feed 1:1</span>
+          <span class="format-badge">Feed 4:5</span>
+          <span class="format-badge">Stories</span>
+          <span class="format-badge">Reels Cover</span>
+          <span class="format-badge">Carrossel</span>
+        </div>
+        <div class="network-dims">1080×1080 · 1080×1350 · 1080×1920</div>
+      </div>
+      <div class="network-card">
+        <div class="network-name">📘 Facebook</div>
+        <div class="network-formats">
+          <span class="format-badge">Feed</span>
+          <span class="format-badge">Stories</span>
+          <span class="format-badge">Cover</span>
+          <span class="format-badge">Event Cover</span>
+          <span class="format-badge">Ad</span>
+        </div>
+        <div class="network-dims">1200×630 · 820×312 · 1080×1920</div>
+      </div>
+      <div class="network-card">
+        <div class="network-name">💼 LinkedIn</div>
+        <div class="network-formats">
+          <span class="format-badge">Post</span>
+          <span class="format-badge">Cover</span>
+          <span class="format-badge">Company Banner</span>
+          <span class="format-badge">Documento</span>
+        </div>
+        <div class="network-dims">1200×627 · 1584×396 · 1080×1350</div>
+      </div>
+      <div class="network-card">
+        <div class="network-name">🎵 TikTok</div>
+        <div class="network-formats">
+          <span class="format-badge">Thumb</span>
+          <span class="format-badge">In-Feed</span>
+          <span class="format-badge">TopView</span>
+        </div>
+        <div class="network-dims">1080×1920 · 9:16 vertical</div>
+      </div>
+      <div class="network-card">
+        <div class="network-name">🐦 Twitter / X</div>
+        <div class="network-formats">
+          <span class="format-badge">Post</span>
+          <span class="format-badge">Header</span>
+          <span class="format-badge">Card</span>
+        </div>
+        <div class="network-dims">1600×900 · 1500×500 · 800×418</div>
+      </div>
+      <div class="network-card">
+        <div class="network-name">▶️ YouTube</div>
+        <div class="network-formats">
+          <span class="format-badge">Thumbnail</span>
+          <span class="format-badge">Banner</span>
+          <span class="format-badge">Shorts Thumb</span>
+          <span class="format-badge">End Screen</span>
+        </div>
+        <div class="network-dims">1280×720 · 2560×1440 · 1080×1920</div>
+      </div>
+      <div class="network-card">
+        <div class="network-name">📌 Pinterest</div>
+        <div class="network-formats">
+          <span class="format-badge">Pin 2:3</span>
+          <span class="format-badge">Pin Quadrado</span>
+          <span class="format-badge">Story Pin</span>
+          <span class="format-badge">Infográfico</span>
+        </div>
+        <div class="network-dims">1000×1500 · 1000×1000 · 1080×1920</div>
+      </div>
+      <div class="network-card">
+        <div class="network-name">💬 WhatsApp</div>
+        <div class="network-formats">
+          <span class="format-badge">Status</span>
+          <span class="format-badge">Thumb Link</span>
+          <span class="format-badge">Sticker</span>
+        </div>
+        <div class="network-dims">1080×1920 · 800×418 · 512×512</div>
+      </div>
+    </div>
+
+    <div class="callout callout-green">
+      <strong>Variantes automáticas:</strong> Cada job pode gerar múltiplas variantes de uma vez. 
+      O agente determina automaticamente quais formatos gerar com base nas redes ativas do produto FBR 
+      e nas dimensões configuradas no template. Um briefing → N artes prontas.
+    </div>
+  </section>
+
+  <!-- PIPELINE -->
+  <section id="pipeline">
+    <div class="section-label">
+      <span class="section-number">04</span>
+      <span class="section-rule"></span>
+    </div>
+    <h2>Pipeline de Produção</h2>
+
+    <p>
+      O pipeline do FBR-Social segue a mesma lógica robusta do FBR-Design, com adaptações 
+      específicas para redes sociais: busca de brand kit no sistema irmão, seleção de template 
+      por rede/formato e geração automática de variantes.
+    </p>
+
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="step-number">01</div>
+        <div class="step-content">
+          <div class="step-title">Recebimento do Briefing</div>
+          <p class="step-desc">
+            Operador submete briefing via frontend: produto FBR, redes alvo, tipo de conteúdo 
+            (lançamento, promoção, informativo, institucional…), textos, referências visuais e 
+            tom desejado. n8n aciona o agente via webhook.
+          </p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-number">02</div>
+        <div class="step-content">
+          <div class="step-title">Busca de Brand Kit no FBR-Design</div>
+          <p class="step-desc">
+            Agente consulta FBR-Design API para recuperar o brand kit do produto FBR solicitado: 
+            logos (claro/escuro), paleta de cores, fontes, guidelines de uso. Se brand kit local 
+            estiver em cache e atualizado, usa cache. Sincronização automática a cada 24h.
+          </p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-number">03</div>
+        <div class="step-content">
+          <div class="step-title">Seleção de Templates por Rede</div>
+          <p class="step-desc">
+            Para cada rede social ativa do produto, o agente seleciona o template mais adequado 
+            via busca semântica: tipo de conteúdo, tom, estilo visual, setor. Retorna top 3 
+            candidatos por rede com score de compatibilidade.
+          </p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-number">04</div>
+        <div class="step-content">
+          <div class="step-title">Busca de Assets Visuais</div>
+          <p class="step-desc">
+            FBR-Social-AssetFinder (agente dedicado) busca imagens complementares em Unsplash, 
+            Pexels e Pixabay com base na descrição semântica do briefing. Para imagens premium, 
+            aciona MidJourney com aprovação humana obrigatória.
+          </p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-number">05</div>
+        <div class="step-content">
+          <div class="step-title">Composição HTML por Variante</div>
+          <p class="step-desc">
+            Para cada rede/formato ativo, o agente injeta variáveis no template HTML: textos, 
+            logo do produto, cores da paleta, imagens dos assets. Dimensões fixas por formato 
+            garantem corte correto nas plataformas.
+          </p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-number">06</div>
+        <div class="step-content">
+          <div class="step-title">Renderização das Variantes</div>
+          <p class="step-desc">
+            HTMLCSStoImage API renderiza cada variante nas dimensões corretas. Fallback automático 
+            para Bannerbear API. Outputs salvos no MinIO com nomenclatura padronizada por produto, 
+            rede e formato.
+          </p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-number">07</div>
+        <div class="step-content">
+          <div class="step-title">Aprovação no FBR-Click</div>
+          <p class="step-desc">
+            Agente posta no canal #fbr-social como membro ativo. Preview de todas as variantes 
+            geradas, organizadas por rede social. Tag @responsavel-produto para aprovação. 
+            Supervisor pode aprovar individualmente por variante ou aprovar tudo de uma vez.
+          </p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-number">08</div>
+        <div class="step-content">
+          <div class="step-title">Entrega do Pacote</div>
+          <p class="step-desc">
+            Após aprovação, pacote ZIP disponível para download com todas as variantes aprovadas, 
+            organizadas em pastas por rede social. Nomenclatura clara: produto_rede_formato_data.png
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AGENTES -->
+  <section id="agentes">
+    <div class="section-label">
+      <span class="section-number">05</span>
+      <span class="section-rule"></span>
+    </div>
+    <h2>Agentes OpenClaw</h2>
+
+    <p>
+      O FBR-Social segue a filosofia OpenClaw obrigatória: cada agente é definido por exatamente 
+      <strong>7 arquivos Markdown</strong> versionados em Git. Proibido usar CrewAI, AutoGen, 
+      LangGraph ou qualquer framework de agentes externo.
+    </p>
+
+    <div class="agent-box">
+      <div class="agent-title">Agente 1 — FBR-Social-Compositor</div>
+      <div class="agent-row"><span class="agent-key">Repositório</span><span class="agent-val">agents/fbr-social-compositor/</span></div>
+      <div class="agent-row"><span class="agent-key">Responsável</span><span class="agent-val">Pipeline completo — do briefing ao output renderizado</span></div>
+      <div class="agent-row"><span class="agent-key">Canal</span><span class="agent-val">FBR-Click #fbr-social</span></div>
+      <div class="agent-row"><span class="agent-key">LLM primário</span><span class="agent-val">Ollama (Mac Mini M4 via Tailscale)</span></div>
+      <div class="agent-row"><span class="agent-key">LLM fallback 1</span><span class="agent-val">Claude API (claude-sonnet-4-6)</span></div>
+      <div class="agent-row"><span class="agent-key">LLM fallback 2</span><span class="agent-val">GPT-4o (contingência — nunca primário)</span></div>
+      <div class="agent-row"><span class="agent-key">Tarefa única</span><span class="agent-val">processar_briefing — do recebimento à aprovação</span></div>
+    </div>
+
+    <div class="agent-box pink">
+      <div class="agent-title">Agente 2 — FBR-Social-AssetFinder</div>
+      <div class="agent-row"><span class="agent-key">Repositório</span><span class="agent-val">agents/fbr-social-assetfinder/</span></div>
+      <div class="agent-row"><span class="agent-key">Responsável</span><span class="agent-val">Busca e curadoria de assets visuais para social media</span></div>
+      <div class="agent-row"><span class="agent-key">Canal</span><span class="agent-val">FBR-Click #fbr-social (notificações de aprovação MidJourney)</span></div>
+      <div class="agent-row"><span class="agent-key">Fontes</span><span class="agent-val">Unsplash · Pexels · Pixabay (gratuitos) · MidJourney (aprovação obrigatória)</span></div>
+      <div class="agent-row"><span class="agent-key">Tarefa única</span><span class="agent-val">buscar_assets — recebe descrição semântica, retorna URLs + metadados</span></div>
+      <div class="agent-row"><span class="agent-key">Restrição crítica</span><span class="agent-val">NUNCA usar imagens sem licença adequada para uso comercial digital</span></div>
+    </div>
+
+    <div class="agent-box green">
+      <div class="agent-title">Agente 3 — FBR-Social-BrandSync</div>
+      <div class="agent-row"><span class="agent-key">Repositório</span><span class="agent-val">agents/fbr-social-brandsync/</span></div>
+      <div class="agent-row"><span class="agent-key">Responsável</span><span class="agent-val">Sincronização de brand kits com o FBR-Design</span></div>
+      <div class="agent-row"><span class="agent-key">Trigger</span><span class="agent-val">Cron a cada 24h · Webhook quando FBR-Design notifica atualização de brand kit</span></div>
+      <div class="agent-row"><span class="agent-key">Tarefa única</span><span class="agent-val">sincronizar_brand_kits — pull via REST API FBR-Design → cache local PostgreSQL</span></div>
+      <div class="agent-row"><span class="agent-key">Aprovação obrigatória</span><span class="agent-val">Qualquer alteração de brand kit que impacte jobs em andamento</span></div>
+    </div>
+
+    <h3>7 Markdowns por Agente (obrigatório)</h3>
+    <pre>agents/fbr-social-compositor/
+├── SOUL.md        # Valores, restrições éticas e ações que sempre requerem aprovação humana
+├── IDENTITY.md    # Nome, role, canal, LLM, owner, kill switch
+├── TASKS.md       # Tarefas e passos — uma tarefa por vez, sem paralelismo
+├── AGENTS.md      # Canais de atuação, limites de autonomia, aprovações obrigatórias
+├── TOOLS.md       # APIs externas, credenciais, rate limits, fallbacks
+├── MEMORY.md      # Padrões aprendidos, histórico de decisões, preferências por produto
+└── ERRORS.md      # Tratamento de erros, escalação, mensagens para FBR-Click</pre>
+  </section>
+
+  <!-- ARQUITETURA -->
+  <section id="arquitetura">
+    <div class="section-label">
+      <span class="section-number">06</span>
+      <span class="section-rule"></span>
+    </div>
+    <h2>Arquitetura do Sistema</h2>
+
+    <div class="arch-diagram">
+      <pre>
+┌─────────────────────────────────────────────────────────────────┐
+│  FBR-Click · canal #fbr-social                                  │  ← Interface humana única
+├─────────────────────────────────────────────────────────────────┤
+│  n8n · instância dedicada FBR-Social                            │  ← Orquestração de fluxos
+├─────────────────────────────────────────────────────────────────┤
+│  OpenClaw Gateway                                               │
+│  FBR-Social-Compositor · AssetFinder · BrandSync               │  ← Execução autônoma
+├─────────────────────────────────────────────────────────────────┤
+│  Git · 3 agentes · 7 Markdowns cada                             │  ← Configuração versionada
+├─────────────────────────────────────────────────────────────────┤
+│  FastAPI · PostgreSQL 16 · Redis 7                              │  ← API, persistência, filas
+├─────────────────────────────────────────────────────────────────┤
+│  FBR-Design API ←→ BrandSync (REST autenticada)                 │  ← Integração irmã
+├─────────────────────────────────────────────────────────────────┤
+│  Ollama → Claude API → GPT-4o                                   │  ← LLM em cascata
+├─────────────────────────────────────────────────────────────────┤
+│  VPS Hostinger · Docker Compose · Tailscale                     │  ← Infraestrutura
+├─────────────────────────────────────────────────────────────────┤
+│  Grafana + Prometheus + Audit Log                               │  ← Monitoramento
+└─────────────────────────────────────────────────────────────────┘</pre>
+    </div>
+
+    <h3>Princípios de isolamento</h3>
+    <p>
+      FBR-Social roda em VPS Hostinger <strong>isolada</strong> — falha não cascadeia para FBR-Design 
+      ou outros sistemas FBR. A comunicação com o FBR-Design ocorre exclusivamente via REST API 
+      autenticada. <strong>Proibido</strong> acesso direto a banco de dados cruzado. Frontend nunca 
+      acessa o backend diretamente — todo request passa pelo proxy Next.js.
+    </p>
+
+    <h3>Cascata de LLM (idêntica ao FBR-Design)</h3>
+    <pre>
+Camada 1 — Ollama (Mac Mini M4 32GB via Tailscale)
+  → Uso: classificação de briefing, scoring de templates, seleção por rede social
+  → Timeout: 15s · Fallback: se offline > 30s → Camada 2
+
+Camada 2 — Claude API (claude-sonnet-4-6)
+  → Uso: raciocínio complexo, composição de variáveis, adaptação por plataforma
+  → Timeout: 30s · Fallback: se rate limit ou erro → Camada 3
+
+Camada 3 — GPT-4o API (contingência)
+  → Uso: reserva total · NUNCA primário
+  → Fallback: alerta crítico no FBR-Click · owner notificado</pre>
+
+    <h3>Stack Tecnológica</h3>
+    <table class="compare-table">
+      <thead>
+        <tr><th>Componente</th><th>Tecnologia</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Backend</td><td>FastAPI + Python 3.11+</td></tr>
+        <tr><td>Frontend</td><td>Next.js 15 App Router + TypeScript strict</td></tr>
+        <tr><td>Banco de Dados</td><td>PostgreSQL 16</td></tr>
+        <tr><td>Cache e Filas</td><td>Redis 7</td></tr>
+        <tr><td>Orquestração</td><td>n8n (instância dedicada)</td></tr>
+        <tr><td>Agentes</td><td>OpenClaw Gateway · Node.js · MIT</td></tr>
+        <tr><td>Containerização</td><td>Docker + Docker Compose</td></tr>
+        <tr><td>Storage</td><td>MinIO (S3-compatible)</td></tr>
+        <tr><td>Renderização</td><td>HTMLCSStoImage API + Bannerbear (fallback)</td></tr>
+        <tr><td>Assets free</td><td>Unsplash + Pexels + Pixabay APIs</td></tr>
+        <tr><td>Geração IA premium</td><td>MidJourney API (aprovação obrigatória)</td></tr>
+        <tr><td>Monitoramento</td><td>Grafana + Prometheus</td></tr>
+        <tr><td>Rede privada</td><td>Tailscale</td></tr>
+        <tr><td>Hub humano</td><td>FBR-Click — canal #fbr-social</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- PRODUTOS FBR -->
+  <section id="produtos">
+    <div class="section-label">
+      <span class="section-number">07</span>
+      <span class="section-rule"></span>
+    </div>
+    <h2>Estrutura Multi-Produto</h2>
+
+    <p>
+      Cada produto do Facebrasil Group é cadastrado no FBR-Social com seu perfil completo: 
+      redes sociais ativas, brand kit vinculado ao FBR-Design, responsável de aprovação 
+      e configurações específicas de estilo por plataforma.
+    </p>
+
+    <pre>
+Tabela: fbr_products
+  id              UUID
+  nome            string          -- ex: "FBR-Design", "FBR-Click", "FBR-Social"
+  slug            string          -- ex: "fbr-design"
+  brand_kit_id    UUID            -- ID no FBR-Design (sync via BrandSync)
+  redes_ativas    string[]        -- ["instagram", "facebook", "linkedin", ...]
+  responsavel_id  UUID → users    -- Owner para aprovação no FBR-Click
+  ativo           boolean
+  criado_em       timestamp</pre>
+
+    <div class="callout callout-blue">
+      <strong>Extensibilidade:</strong> Quando um novo produto FBR for lançado, basta cadastrá-lo 
+      na tabela <code>fbr_products</code>, vinculá-lo a um brand kit no FBR-Design, e configurar 
+      as redes ativas. O sistema já está pronto para atendê-lo.
+    </div>
+  </section>
+
+  <!-- PRINCÍPIOS -->
+  <section id="principios">
+    <div class="section-label">
+      <span class="section-number">08</span>
+      <span class="section-rule"></span>
+    </div>
+    <h2>Princípios Absolutos</h2>
+
+    <p>
+      O FBR-Social herda todos os princípios da Bíblia FBR e adiciona os específicos 
+      para produção de social media.
+    </p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>🔒 Isolamento Total</h3>
+        <p>VPS dedicada. Falha no FBR-Social não afeta FBR-Design nem qualquer outro sistema FBR. Comunicação apenas via REST API autenticada.</p>
+      </div>
+      <div class="card pink">
+        <h3>✋ Aprovação Humana</h3>
+        <p>Todo material para uso externo passa por aprovação humana no FBR-Click. Agentes nunca entregam diretamente para as redes sociais. Publicação é responsabilidade humana.</p>
+      </div>
+      <div class="card green">
+        <h3>📐 Dimensões Corretas</h3>
+        <p>Zero tolerância para artes com dimensões erradas. Cada formato tem especificação rígida. Sistema recusa renderização fora das especificações de cada rede.</p>
+      </div>
+      <div class="card">
+        <h3>🎨 Brand Kit Inviolável</h3>
+        <p>Logos, cores e fontes do brand kit não são modificados sem aprovação explícita do responsável pelo produto. Consistência de marca é inegociável.</p>
+      </div>
+      <div class="card pink">
+        <h3>📜 Licenças de Imagem</h3>
+        <p>NUNCA usar imagens sem licença para uso comercial digital. Assets free de Unsplash/Pexels/Pixabay são verificados. MidJourney sempre requer aprovação humana.</p>
+      </div>
+      <div class="card green">
+        <h3>🔄 Sincronização Confiável</h3>
+        <p>Brand kits sincronizados do FBR-Design a cada 24h e via webhook em atualizações. Cache local com versionamento. Nunca usar brand kit desatualizado silenciosamente.</p>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <h3>Filosofia OpenClaw — nunca negociável</h3>
+      <p>
+        Todo agente do FBR-Social é definido por exatamente 7 arquivos Markdown versionados em Git. 
+        Proibido CrewAI, AutoGen, LangGraph ou qualquer framework externo de agentes. 
+        n8n decide quando e por que um agente é chamado. OpenClaw decide o que o agente faz. 
+        Cada agente trabalha em uma única tarefa por vez — sem paralelismo interno. 
+        Todo agente tem owner humano designado e kill switch funcional.
+      </p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section style="padding: 48px 0;">
+    <p style="font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); letter-spacing: 0.05em;">
+      FBR-Social · Conceito MVP v1.0 · Facebrasil Group · Alinhado à Bíblia FBR v1.0 · securitycoderules.md<br>
+      Documento vivo — atualizar conforme evolução do sistema.
+    </p>
+  </section>
+
+</main>
+
+</body>
+</html>

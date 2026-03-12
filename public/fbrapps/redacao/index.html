@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FBR-Redacao — Newsroom Virtual — Conceito MVP v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0e0c;
+    --paper: #f5f0e8;
+    --accent: #d94f2b;
+    --accent2: #2b6fd9;
+    --muted: #8a8070;
+    --rule: #d4cdc0;
+    --code-bg: #1a1814;
+    --code-text: #e8d9b8;
+    --orange: #F97316;
+    --green: #22C55E;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    padding: 80px 60px 60px;
+    border-bottom: 2px solid var(--ink);
+    overflow: hidden;
+  }
+
+  .header-bg-text {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    font-family: 'Syne', sans-serif;
+    font-size: 220px;
+    font-weight: 800;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--rule);
+    line-height: 1;
+    user-select: none;
+    z-index: 0;
+    letter-spacing: -8px;
+  }
+
+  .header-content { position: relative; z-index: 1; max-width: 780px; }
+
+  .tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 3px 10px;
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+  }
+
+  h1 em { font-style: normal; color: var(--accent); }
+
+  .subtitle {
+    font-size: 20px;
+    color: var(--muted);
+    max-width: 560px;
+    font-style: italic;
+  }
+
+  .header-meta {
+    margin-top: 40px;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .meta-item strong {
+    display: block;
+    color: var(--ink);
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  /* LAYOUT */
+  section {
+    padding: 72px 60px;
+    border-bottom: 1px solid var(--rule);
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 32px;
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 32px;
+  }
+
+  p { margin-bottom: 18px; color: #2a2520; }
+
+  /* VISION BLOCK */
+  .vision-block {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 60px;
+    margin: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .vision-block .section-number { color: var(--accent); }
+  .vision-block h2 { color: var(--paper); }
+
+  .vision-quote {
+    font-family: 'Lora', serif;
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--paper);
+    border-left: 3px solid var(--accent);
+    padding-left: 28px;
+    margin: 32px 0;
+  }
+
+  .vision-block p { color: #c8bfb0; }
+
+  /* GRID */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2px;
+    margin-top: 40px;
+    border: 1px solid var(--rule);
+  }
+
+  .grid-card {
+    padding: 32px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    transition: background 0.2s;
+  }
+
+  .grid-card:hover { background: #ede8de; }
+
+  .grid-card .icon {
+    font-size: 28px;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .grid-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+
+  .grid-card p {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* PIPELINE FLOW */
+  .pipeline {
+    margin-top: 40px;
+    display: grid;
+    gap: 2px;
+  }
+
+  .pipeline-step {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 2px;
+    min-height: 80px;
+  }
+
+  .pipeline-agent {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pipeline-agent::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--accent);
+  }
+
+  .pipeline-agent.blue::before  { background: var(--accent2); }
+  .pipeline-agent.green::before { background: var(--green); }
+  .pipeline-agent.orange::before { background: var(--orange); }
+
+  .pipeline-agent .agent-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #8a8070;
+    margin-bottom: 4px;
+    letter-spacing: 0.1em;
+  }
+
+  .pipeline-agent .agent-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .pipeline-body {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .pipeline-body .task-line {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    padding: 3px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .task-line::before { content: '→'; color: var(--accent); flex-shrink: 0; }
+
+  .pipeline-arrow {
+    text-align: left;
+    padding: 4px 0 4px 110px;
+    color: var(--accent);
+    font-size: 16px;
+    opacity: 0.4;
+  }
+
+  /* SCOPE GRID */
+  .scope-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-top: 36px;
+  }
+
+  .scope-cell {
+    background: var(--paper);
+    padding: 24px;
+  }
+
+  .scope-cell h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .scope-cell ul { list-style: none; padding: 0; }
+
+  .scope-cell ul li {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .scope-cell ul li::before { content: '— '; color: var(--accent2); }
+
+  /* STACK TABLE */
+  .stack-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 36px;
+    font-size: 14px;
+  }
+
+  .stack-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .stack-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+
+  .stack-table tr:hover td { background: #ede8de; }
+
+  .stack-table td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .stack-table td:nth-child(2) {
+    font-weight: 500;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+  }
+
+  .stack-table td:nth-child(3) { color: var(--muted); font-size: 13px; }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--code-bg);
+    color: var(--code-text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.8;
+    padding: 32px 36px;
+    margin: 32px 0;
+    overflow-x: auto;
+    border-left: 3px solid var(--accent);
+  }
+
+  .code-comment { color: #7a6f58; }
+  .code-key { color: #d94f2b; }
+  .code-val { color: #6db36d; }
+  .code-str { color: #d9b42b; }
+
+  /* PHASES */
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    margin-top: 40px;
+  }
+
+  .phase {
+    border: 1px solid var(--rule);
+    padding: 28px;
+    position: relative;
+  }
+
+  .phase-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .phase h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0 0 16px;
+  }
+
+  .phase ul { list-style: none; padding: 0; }
+
+  .phase ul li {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--rule);
+    line-height: 1.5;
+  }
+
+  .phase ul li:last-child { border-bottom: none; }
+
+  .phase-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--accent);
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    text-transform: uppercase;
+  }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    border-left: 4px solid var(--accent2);
+    padding: 20px 24px;
+    background: #f0f4fc;
+    margin: 28px 0;
+    font-size: 14px;
+    color: #1a2a50;
+  }
+
+  .highlight-box strong {
+    font-family: 'Syne', sans-serif;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .highlight-box.orange {
+    border-left-color: var(--orange);
+    background: #fff7f0;
+    color: #5a2800;
+  }
+
+  /* DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 40px 0 32px;
+  }
+
+  .divider-line { flex: 1; height: 1px; background: var(--rule); }
+
+  .divider-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* METRICS GRID */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-top: 36px;
+  }
+
+  .metric-cell {
+    background: var(--paper);
+    padding: 28px 24px;
+  }
+
+  .metric-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .metric-label {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+  }
+
+  /* FLOW STEP */
+  .flow { display: flex; flex-direction: column; gap: 0; margin-top: 40px; }
+
+  .flow-step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .flow-step:last-child { border-bottom: none; }
+
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    background: #f5ede8;
+    border: 1px solid var(--accent);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .step-content h3 {
+    margin-top: 0;
+    font-size: 16px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+  }
+
+  .step-content p { font-size: 14px; color: var(--muted); margin: 0; }
+
+  /* FOOTER */
+  footer {
+    padding: 48px 60px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 24px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .footer-brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+
+  .footer-brand span { color: var(--accent); }
+
+  .footer-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #8a8070;
+    text-align: right;
+  }
+
+  /* SECURITY CHECKLIST */
+  .check-list { list-style: none; padding: 0; margin-top: 24px; }
+
+  .check-list li {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.5;
+  }
+
+  .check-list li::before {
+    content: '✓';
+    color: var(--green);
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .check-list li:last-child { border-bottom: none; }
+
+  /* PRINT & RESPONSIVE */
+  @media print {
+    body { background: white; }
+    body::before { display: none; }
+    section, .vision-block { page-break-inside: avoid; }
+  }
+
+  @media (max-width: 640px) {
+    header, section, .vision-block, footer { padding-left: 24px; padding-right: 24px; }
+    .header-bg-text { font-size: 100px; }
+    .pipeline-step { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-bg-text">FBR</div>
+  <div class="header-content">
+    <div class="tag">FBR-Redacao · Documento de Conceito — MVP v1.0</div>
+    <h1>Newsroom<br><em>Virtual</em></h1>
+    <p class="subtitle">Sistema FBR de jornalismo automatizado para a diáspora brasileira — seis agentes OpenClaw, orquestração n8n, pipeline editorial completo e distribuição multicanal 24/7.</p>
+    <div class="header-meta">
+      <div class="meta-item"><strong>Sistema</strong>FBR-Redacao</div>
+      <div class="meta-item"><strong>Versão</strong>1.0 — MVP</div>
+      <div class="meta-item"><strong>Agentes</strong>OpenClaw Gateway</div>
+      <div class="meta-item"><strong>Orquestração</strong>n8n dedicado</div>
+      <div class="meta-item"><strong>Infraestrutura</strong>VPS Hetzner</div>
+      <div class="meta-item"><strong>Hub</strong>FBR-Click</div>
+    </div>
+  </div>
+</header>
+
+<!-- VISÃO -->
+<div class="vision-block">
+  <div class="section-number">00 — Visão do Projeto</div>
+  <h2>Por que este projeto existe</h2>
+  <blockquote class="vision-quote">
+    "Um imigrante brasileiro em Orlando não pode esperar que um repórter humano cubra a câmara municipal local, o acidente na I-4 ou a mudança no salário mínimo de Florida. Agentes virtuais assumem esse papel — 24 horas por dia, 50 cidades, zero jornalistas contratados."
+  </blockquote>
+  <p>O FBR-Redacao é a redação virtual do Facebrasil. Monitora fontes locais em dezenas de cidades americanas, produz artigos contextualmente relevantes para a comunidade brasileira, adiciona mídia, revisa editorialmente, publica e distribui — tudo de forma autônoma, com dois operadores humanos supervisionando via painel interno.</p>
+  <p>O sistema segue integralmente a Bíblia FBR v1.0: seis agentes OpenClaw com papéis editoriais distintos, orquestração via n8n dedicado, cascata de LLMs com Ollama → Claude → GPT-4o, e toda interação humana centralizada no FBR-Click. Cada agente opera em <strong style="color:var(--paper)">uma única tarefa editorial por vez</strong> — foco total, cadeia de responsabilidade clara.</p>
+</div>
+
+<!-- ESCOPO DO MVP -->
+<section>
+  <div class="section-number">01 — Escopo do MVP</div>
+  <h2>O que o sistema cobre</h2>
+  <p>O MVP foca na cadeia editorial completa — da coleta de headlines à publicação multicanal — para as regiões com maior concentração da diáspora brasileira nos EUA, com arquitetura preparada para expansão global.</p>
+
+  <div class="scope-grid">
+    <div class="scope-cell">
+      <h4>Cobertura Geográfica</h4>
+      <ul>
+        <li>Orlando · Miami</li>
+        <li>Boston · Newark</li>
+        <li>Atlanta · Tampa</li>
+        <li>Fort Lauderdale · NYC</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Fontes de Coleta</h4>
+      <ul>
+        <li>RSS feeds locais por cidade</li>
+        <li>NewsAPI / GNews</li>
+        <li>AP Wire</li>
+        <li>Redes sociais</li>
+        <li>Eu Repórter (UGC)</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Tipos de Conteúdo</h4>
+      <ul>
+        <li>Notícia local contextualizada</li>
+        <li>Impacto prático ao imigrante</li>
+        <li>Tradução cultural EN → PT</li>
+        <li>Análise de leis e políticas</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Canais de Distribuição</h4>
+      <ul>
+        <li>Portal web (WordPress)</li>
+        <li>YouTube (vídeo por cidade)</li>
+        <li>WhatsApp Business</li>
+        <li>Instagram Reels</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Painel Interno</h4>
+      <ul>
+        <li>Mural Em Produção</li>
+        <li>Mural Publicados</li>
+        <li>Dashboard de Agentes</li>
+        <li>Fila Eu Repórter</li>
+        <li>Central de Alertas</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Fora do MVP</h4>
+      <ul>
+        <li>App mobile nativo</li>
+        <li>Cobrança Pro ativa</li>
+        <li>Expansão internacional</li>
+        <li>Avatares de vídeo</li>
+        <li>Facebrasil Shop</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metrics-grid" style="margin-top: 48px;">
+    <div class="metric-cell">
+      <div class="metric-val">6</div>
+      <div class="metric-label">AGENTES EDITORIAIS<br>NO PIPELINE</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-val">8+</div>
+      <div class="metric-label">CIDADES COBERTAS<br>NO MVP</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-val">24/7</div>
+      <div class="metric-label">OPERAÇÃO CONTÍNUA<br>SEM PAUSA</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-val">2</div>
+      <div class="metric-label">OPERADORES HUMANOS<br>SUPERVISIONANDO</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-val">4</div>
+      <div class="metric-label">CANAIS DE<br>DISTRIBUIÇÃO</div>
+    </div>
+  </div>
+</section>
+
+<!-- O PROBLEMA QUE RESOLVE -->
+<section>
+  <div class="section-number">02 — O Problema</div>
+  <h2>Por que correspondentes humanos não funcionam nessa escala</h2>
+  <p>A diáspora brasileira nos EUA se distribui por mais de 50 áreas metropolitanas diferentes. Cada comunidade tem suas particularidades — o imigrante em Orlando é diferente do de Boston, e as notícias relevantes para cada grupo são igualmente distintas.</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <h3>Custo inviável de correspondentes humanos</h3>
+        <p>Cobrir 50 cidades com repórteres humanos custaria dezenas de milhares de dólares por mês — inviável para qualquer publicação focada em nicho imigrante. O Facebrasil tem 16 anos e cobre poucas cidades com qualidade, sem escala.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <h3>Notícias genéricas não servem ao imigrante</h3>
+        <p>Traduzir notícias americanas para o português não é suficiente. O imigrante precisa entender o impacto prático no seu dia a dia: "o que isso muda pra mim, que moro aqui com visto de trabalho e mando dinheiro pro Brasil todo mês?"</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <h3>Velocidade: notícias locais exigem resposta em horas</h3>
+        <p>Uma mudança na lei de aluguel de Florida, uma operação da ICE em Newark, uma greve no metrô de Boston — cada uma dessas notícias precisa de cobertura em horas, não em dias. Sem automação, isso é impossível com equipe pequena.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <h3>Consistência editorial em múltiplos canais</h3>
+        <p>O mesmo artigo precisa virar post web, vídeo para YouTube, resumo para WhatsApp e Reel para Instagram — com formatos, comprimentos e tons diferentes. Fazer isso manualmente para 50 cidades é humanamente impossível.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PIPELINE EDITORIAL -->
+<section>
+  <div class="section-number">03 — Pipeline Editorial</div>
+  <h2>A cadeia de seis agentes</h2>
+  <p>O FBR-Redacao é construído em torno de uma cadeia editorial linear com revisão automática. Cada agente tem um papel único e entrega para o próximo — exatamente como uma redação humana, mas executada a 100x a velocidade e a 1/100 do custo.</p>
+
+  <div class="highlight-box">
+    <strong>Princípio: n8n orquestra, OpenClaw executa</strong>
+    O n8n (instância dedicada FBR-Redacao) decide quando e por que cada agente é chamado — ciclos de coleta, timeouts, retry de falhas. O OpenClaw Gateway executa o que o agente faz quando chamado. Os dois não se substituem — são camadas obrigatórias e complementares.
+  </div>
+
+  <div class="pipeline">
+
+    <div class="pipeline-step">
+      <div class="pipeline-agent">
+        <div class="agent-num">AGENTE 01</div>
+        <div class="agent-name">Coletor</div>
+      </div>
+      <div class="pipeline-body">
+        <div class="task-line">Varre RSS feeds, NewsAPI, GNews e redes sociais por ciclo configurado</div>
+        <div class="task-line">Desduplicação por hash de similaridade via Redis</div>
+        <div class="task-line">Pontuação de relevância por região e impacto no imigrante</div>
+        <div class="task-line">Enfileira apenas conteúdo novo para o Agente Jornalista</div>
+      </div>
+    </div>
+
+    <div class="pipeline-arrow">↓</div>
+
+    <div class="pipeline-step">
+      <div class="pipeline-agent blue">
+        <div class="agent-num">AGENTE 02</div>
+        <div class="agent-name">Jornalista</div>
+      </div>
+      <div class="pipeline-body">
+        <div class="task-line">Pesquisa contexto e background da headline</div>
+        <div class="task-line">Traduz e contextualiza culturalmente para o imigrante brasileiro</div>
+        <div class="task-line">Escreve artigo em Markdown: título, subtítulo, corpo, fontes</div>
+        <div class="task-line">Seção obrigatória: "O que isso muda pra você"</div>
+        <div class="task-line">Valida estrutura via Pydantic — nunca texto livre como dado estruturado</div>
+      </div>
+    </div>
+
+    <div class="pipeline-arrow">↓</div>
+
+    <div class="pipeline-step">
+      <div class="pipeline-agent orange">
+        <div class="agent-num">AGENTE 03</div>
+        <div class="agent-name">Arte</div>
+      </div>
+      <div class="pipeline-body">
+        <div class="task-line">Busca imagens licenciadas: Unsplash → Pexels (cascata)</div>
+        <div class="task-line">Gera imagem via Stable Diffusion local se nenhuma encontrada</div>
+        <div class="task-line">Cria thumbnail com template visual da cidade/região</div>
+        <div class="task-line">Armazena no Supabase Storage e vincula ao artigo</div>
+      </div>
+    </div>
+
+    <div class="pipeline-arrow">↓</div>
+
+    <div class="pipeline-step">
+      <div class="pipeline-agent blue">
+        <div class="agent-num">AGENTE 04</div>
+        <div class="agent-name">Editor Regional</div>
+      </div>
+      <div class="pipeline-body">
+        <div class="task-line">Analisa qualidade editorial: tom, precisão, clareza, adequação cultural</div>
+        <div class="task-line">Corrige automaticamente problemas identificados</div>
+        <div class="task-line">Registra versão anterior e log de todas as alterações</div>
+        <div class="task-line">Publica e sinaliza para revisão humana quando necessário</div>
+      </div>
+    </div>
+
+    <div class="pipeline-arrow">↓</div>
+
+    <div class="pipeline-step">
+      <div class="pipeline-agent green">
+        <div class="agent-num">AGENTE 05</div>
+        <div class="agent-name">Chefe de Redação</div>
+      </div>
+      <div class="pipeline-body">
+        <div class="task-line">Monitora artigos publicados em busca de problemas pós-publicação</div>
+        <div class="task-line">Classifica problemas: factual, cultural, legal, qualidade, imagem</div>
+        <div class="task-line">Problemas graves → age automaticamente (retira do ar)</div>
+        <div class="task-line">Problemas leves → gera alerta para o operador humano</div>
+      </div>
+    </div>
+
+    <div class="pipeline-arrow">↓</div>
+
+    <div class="pipeline-step">
+      <div class="pipeline-agent">
+        <div class="agent-num">AGENTE 06</div>
+        <div class="agent-name">Moderador</div>
+      </div>
+      <div class="pipeline-body">
+        <div class="task-line">Recebe contribuições do Eu Repórter: vídeo, áudio, texto, imagem</div>
+        <div class="task-line">Analisa conteúdo, avalia relevância e classifica por região</div>
+        <div class="task-line">Score ≥ 0.8 → aprovação automática com crédito $0,50–$2,00</div>
+        <div class="task-line">Score &lt; 0.8 → rejeição com motivo claro e específico</div>
+        <div class="task-line">Contribuições aprovadas entram na fila do Coletor como pauta prioritária</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- AGENTES OPENCLAW -->
+<section>
+  <div class="section-number">04 — Agentes OpenClaw</div>
+  <h2>Como os agentes do FBR-Redacao funcionam</h2>
+  <p>Todo agente do FBR-Redacao segue o padrão OpenClaw obrigatório da Bíblia FBR: definido por exatamente 7 arquivos Markdown versionados em Git, sem exceção. Cada agente trabalha em <strong>uma única tarefa editorial por vez</strong> — foco total, sem paralelismo interno.</p>
+
+  <div class="highlight-box orange">
+    <strong>Regra absoluta: agentes vivem no OpenClaw Gateway</strong>
+    Nenhum agente pode ser implementado internamente na aplicação (sem LangGraph no backend, sem lógica de agente no n8n). Todos os seis agentes editoriais residem exclusivamente no OpenClaw Gateway e são consumidos via API. Violações desta regra são tratadas como erros arquiteturais que exigem refatoração imediata.
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Os 7 Markdowns obrigatórios — exemplo: Agente Jornalista</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="code-block">
+<span class="code-comment"># agents/journalist/ — 7 arquivos obrigatórios</span>
+
+<span class="code-key">SOUL.md</span>       <span class="code-comment"># Carregado PRIMEIRO. Nada sobrescreve.</span>
+  → Identidade: "Sou o agente jornalista da Redação Facebrasil."
+  → Restrições: nunca inventar fatos, nunca publicar sem seção de impacto,
+    nunca usar linguagem tendenciosa ou sensacionalista.
+  → Ética: artigos com implicações legais requerem sinalização obrigatória.
+
+<span class="code-key">IDENTITY.md</span>   <span class="code-comment"># Perfil visível no FBR-Click</span>
+  → Nome: FBR-Redacao-Jornalista
+  → Role: Editorial Journalist Agent
+  → LLM primário: Ollama (local, via Tailscale)
+  → LLM fallback 1: Claude API (claude-sonnet-4-6)
+  → LLM fallback 2: GPT-4o (contingência)
+
+<span class="code-key">TASKS.md</span>      <span class="code-comment"># Uma tarefa por vez</span>
+  → receber_headline
+  → pesquisar_contexto
+  → traduzir_e_culturalizar (EN→PT + contexto imigrante)
+  → escrever_artigo (Markdown limpo, sem asteriscos desnecessários)
+  → escrever_secao_impacto ("O que isso muda pra você")
+  → validar_estrutura (Pydantic — nunca texto livre)
+  → entregar_para_agente_arte
+
+<span class="code-key">AGENTS.md</span>     <span class="code-comment"># Limites de autonomia</span>
+  → Aprovação humana OBRIGATÓRIA para:
+    - Artigos sobre operações da ICE / deportações
+    - Artigos com implicações legais diretas
+    - Artigos que contrariem posição editorial anterior
+  → Canal: #redacao-operacoes no FBR-Click
+
+<span class="code-key">MEMORY.md</span>     <span class="code-comment"># Atualizado ao final de sessões relevantes</span>
+  → Coberturas anteriores por cidade
+  → Tom editorial por categoria (imigração, saúde, trabalho)
+  → Padrões de impacto mais engajantes por região
+
+<span class="code-key">TOOLS.md</span>      <span class="code-comment"># APIs e ferramentas disponíveis</span>
+  → NewsAPI (contexto e background)
+  → Wikipedia API (definições e histórico)
+  → FBR-Redacao API (criar artigo no banco)
+  → n8n webhook (sinalizar conclusão de tarefa)
+
+<span class="code-key">USER.md</span>       <span class="code-comment"># Contexto da empresa</span>
+  → Facebrasil: 16 anos, diáspora brasileira nos EUA
+  → Leitor típico: imigrante 25–45 anos, reside há 3–10 anos
+  → Tom: informativo, acessível, culturalmente próximo
+  → Prioridade: impacto prático no cotidiano do imigrante
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Cascata de LLM — padrão FBR</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="code-block">
+<span class="code-key">Camada 1</span> — Ollama (Mac Mini M4 32GB via Tailscale)
+  → Uso: todos os agentes em operação normal
+  → Timeout: 15s · Fallback automático se offline > 30s
+  → Health check: n8n verifica a cada 60s → publica no Redis
+
+<span class="code-key">Camada 2</span> — Claude API (claude-sonnet-4-6)         <span class="code-comment"># fallback</span>
+  → Uso: ativado automaticamente quando Ollama indisponível
+  → Timeout: 30s · Log de fallback em agent_logs
+  → Notificação: alerta no #redacao-operacoes via FBR-Click
+
+<span class="code-key">Camada 3</span> — GPT-4o API                              <span class="code-comment"># contingência</span>
+  → Uso: reserva total · nunca usado como primário
+  → Timeout: 30s · Fallback: alerta crítico no FBR-Click
+  → Loga como alert_type = 'llm_fallback' no banco
+
+<span class="code-comment"># llm.py lê status do Redis antes de cada chamada — sem latência de health check</span>
+<span class="code-comment"># Decisão de fallback é feita em &lt;5ms localmente</span>
+  </div>
+</section>
+
+<!-- EU REPÓRTER -->
+<section>
+  <div class="section-number">05 — Eu Repórter</div>
+  <h2>A comunidade como fonte jornalística</h2>
+  <p>O Eu Repórter transforma o próprio imigrante brasileiro em correspondente. Um acidente de trânsito visto por um morador local, uma nova lei estadual que afeta trabalhadores, uma promoção relâmpago em restaurante brasileiro — o leitor envia, o agente processa, o jornalista publica.</p>
+
+  <div class="grid-2">
+    <div class="grid-card">
+      <span class="icon">📹</span>
+      <h3>Formatos aceitos</h3>
+      <p>Vídeo MP4/MOV até 500MB, áudio MP3/WAV até 50MB, texto até 5.000 caracteres e imagem JPG/PNG/WEBP até 10MB. Validação de magic bytes para segurança.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🤖</span>
+      <h3>Moderação automática</h3>
+      <p>O Agente Moderador analisa relevância, verifica adequação editorial e classifica por região. Score ≥ 0.8 aprova automaticamente; abaixo disso, rejeita com motivo específico e não genérico.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">💵</span>
+      <h3>Créditos por contribuição</h3>
+      <p>Contribuições aprovadas rendem $0,50 a $2,00 em crédito para desconto na assinatura Pro. O operador humano define o valor no painel interno via slider.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🔄</span>
+      <h3>Pauta prioritária</h3>
+      <p>UGC aprovado entra na fila do Agente Coletor com prioridade máxima, com crédito ao contribuidor no artigo publicado. Fecha o ciclo: comunidade → redação → comunidade.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PAINEL INTERNO -->
+<section>
+  <div class="section-number">06 — Painel Interno</div>
+  <h2>O que os 2 operadores enxergam</h2>
+  <p>Dois operadores humanos supervisionam toda a operação via painel interno Next.js. Eles não produzem conteúdo — supervisionam, corrigem exceções e tomam decisões que os agentes não têm autonomia para tomar.</p>
+
+  <div class="grid-2">
+    <div class="grid-card">
+      <span class="icon">🎬</span>
+      <h3>Mural Em Produção</h3>
+      <p>Cards de artigos em pipeline atualizados via WebSocket em tempo real. Indicador de presença: "João está revisando este artigo." Filtros por região, status e agente.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">✅</span>
+      <h3>Mural Publicados</h3>
+      <p>Artigos recém-publicados com ações diretas: manter, corrigir inline (editor Markdown), retornar à redação, retirar do ar ou excluir. Histórico de versões acessível.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🤖</span>
+      <h3>Dashboard de Agentes</h3>
+      <p>Status em tempo real de todos os seis agentes: online/offline/erro/pausado. Métricas de 24h, último heartbeat, botões de start/stop e configuração JSONB editável.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">📹</span>
+      <h3>Fila Eu Repórter</h3>
+      <p>Player inline de vídeo e áudio, score do Agente Moderador visível, slider para definir crédito e campo de motivo de rejeição. Tudo sem sair da tela.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">📊</span>
+      <h3>Analytics</h3>
+      <p>KPIs em tempo real: artigos produzidos hoje, agentes online, taxa de correção, UGC aprovado. Gráficos por região e por agente. Funil do Eu Repórter.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🔔</span>
+      <h3>Central de Alertas</h3>
+      <p>Feed em tempo real de alertas: agente offline, alta taxa de rejeição, fila UGC cheia, fallback de LLM ativado. Badge na sidebar incrementa automaticamente via WebSocket.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STACK TECNOLÓGICA -->
+<section>
+  <div class="section-number">07 — Stack Tecnológica</div>
+  <h2>Tecnologias do MVP</h2>
+  <p>Stack escolhida para equilibrar autonomia arquitetural (sem depender de serviços proprietários caros), velocidade de desenvolvimento e capacidade de escalar de 8 para 50+ cidades sem reescrever o core.</p>
+
+  <table class="stack-table">
+    <thead>
+      <tr>
+        <th>Camada</th>
+        <th>Tecnologia</th>
+        <th>Papel no Sistema</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Orquestração</td>
+        <td>n8n (instância dedicada)</td>
+        <td>Único orquestrador de workflows — ciclos de coleta, triggers, retry, health check de LLMs</td>
+      </tr>
+      <tr>
+        <td>Agentes</td>
+        <td>OpenClaw Gateway</td>
+        <td>Plataforma de execução de todos os 6 agentes editoriais — consumidos via API</td>
+      </tr>
+      <tr>
+        <td>Backend</td>
+        <td>FastAPI + Python 3.12</td>
+        <td>API REST + WebSockets, domínios, workers assíncronos via Celery</td>
+      </tr>
+      <tr>
+        <td>Frontend</td>
+        <td>Next.js 15 + React 19</td>
+        <td>Painel interno dos operadores — dark mode fixo, mobile first</td>
+      </tr>
+      <tr>
+        <td>Banco de dados</td>
+        <td>Supabase (PostgreSQL 16)</td>
+        <td>Dados estruturados, full-text search em português, RLS em 14 tabelas</td>
+      </tr>
+      <tr>
+        <td>Cache / Queue</td>
+        <td>Redis 7</td>
+        <td>Cache de status LLM, deduplicação de headlines, filas de workers</td>
+      </tr>
+      <tr>
+        <td>Task Queue</td>
+        <td>Celery 5.4</td>
+        <td>Workers assíncronos por tipo de agente: coletor, jornalista, arte, editor, distribuição, moderação</td>
+      </tr>
+      <tr>
+        <td>LLM primário</td>
+        <td>Ollama (Mac Mini M4)</td>
+        <td>Execução local via Tailscale — zero custo por token em operação normal</td>
+      </tr>
+      <tr>
+        <td>LLM fallback 1</td>
+        <td>Claude API (Anthropic)</td>
+        <td>claude-sonnet-4-6 — ativado automaticamente quando Ollama indisponível</td>
+      </tr>
+      <tr>
+        <td>LLM fallback 2</td>
+        <td>GPT-4o (OpenAI)</td>
+        <td>Contingência total — nunca usado como primário</td>
+      </tr>
+      <tr>
+        <td>Auth</td>
+        <td>iron-session + Supabase Auth</td>
+        <td>httpOnly cookies — user_id nunca exposto no cliente</td>
+      </tr>
+      <tr>
+        <td>Storage</td>
+        <td>Supabase Storage</td>
+        <td>Mídia de artigos, thumbnails e UGC (vídeos, áudios)</td>
+      </tr>
+      <tr>
+        <td>Comunicação interna</td>
+        <td>FBR-Click (#redacao-operacoes)</td>
+        <td>Todo evento relevante para humanos passa por este canal — alertas, aprovações, logs críticos</td>
+      </tr>
+      <tr>
+        <td>Infra</td>
+        <td>Hetzner VPS + Docker Compose + Tailscale</td>
+        <td>Containers isolados por serviço, rede privada entre VPS e Mac Mini</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SEGURANÇA -->
+<section>
+  <div class="section-number">08 — Segurança</div>
+  <h2>Checklist de segurança do MVP</h2>
+  <p>O painel da Redação tem acesso total aos 6 agentes, ao banco de dados editorial e ao conteúdo UGC da comunidade. A superfície de ataque é pequena mas crítica — qualquer vazamento afeta a operação jornalística e a confiança dos leitores.</p>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Backend</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <ul class="check-list">
+    <li>iron-session com httpOnly + secure + sameSite=lax — cookie nunca acessível por JavaScript</li>
+    <li>SESSION_SECRET mínimo 32 caracteres — exclusivamente em variável de ambiente</li>
+    <li>Frontend nunca fala diretamente com o backend — proxy Next.js obrigatório</li>
+    <li>X-Internal-Key valida origem de todos os requests entre camadas</li>
+    <li>X-User-Id validado via dependency injection em todas as rotas protegidas</li>
+    <li>RLS habilitado em 14 de 14 tabelas do Supabase</li>
+    <li>Pydantic validation em todos os endpoints — structured output obrigatório</li>
+    <li>Rate limiting: auth 5/min · upload 10/h · agente 100/h · geral 300/min</li>
+    <li>Upload com validação de magic bytes — extensão não é critério de segurança</li>
+    <li>Logs estruturados em JSON — nunca dados sensíveis, nunca stack trace ao cliente</li>
+    <li>Soft delete em todas as tabelas — nada é excluído permanentemente sem auditoria</li>
+    <li>Timeouts em todas as chamadas externas (10s APIs, 30s LLMs)</li>
+  </ul>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Frontend</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <ul class="check-list">
+    <li>user_id nunca exposto no cliente — nem em URL, nem em localStorage, nem em response body</li>
+    <li>Variáveis sensíveis sem prefixo NEXT_PUBLIC_ — nunca no bundle do cliente</li>
+    <li>Todas as chamadas via /api/proxy — o backend é inacessível diretamente do browser</li>
+    <li>middleware.ts protege todas as rotas /(redacao)/* com verificação de sessão</li>
+    <li>Ações destrutivas sempre com confirm-dialog antes de executar</li>
+    <li>Inputs validados com Zod antes de enviar ao proxy</li>
+    <li>CORS restritivo — apenas domínios do painel interno</li>
+  </ul>
+</section>
+
+<!-- ROADMAP -->
+<section>
+  <div class="section-number">09 — Roadmap</div>
+  <h2>Fases de desenvolvimento</h2>
+  <p>O MVP é dividido em três frentes paralelas mas sequencialmente dependentes: infraestrutura base, configuração dos agentes OpenClaw com seus 7 Markdowns, e o painel de operações — tudo entregue antes da fase de testes de integração.</p>
+
+  <div class="phases">
+    <div class="phase" style="border-top: 3px solid var(--accent);">
+      <div class="phase-badge">Fase 1</div>
+      <div class="phase-label">Fundação</div>
+      <h3>Infra & Database</h3>
+      <ul>
+        <li>VPS Hetzner + Docker Compose</li>
+        <li>FastAPI + Supabase + Redis</li>
+        <li>n8n instância dedicada FBR-Redacao</li>
+        <li>14 tabelas + triggers + RLS</li>
+        <li>Tailscale para Ollama</li>
+        <li>Nginx + Certbot + SSL</li>
+        <li>Celery workers por tipo de agente</li>
+        <li>WebSocket endpoints /ws/pipeline e /ws/alerts</li>
+        <li>Integração Supabase Storage (3 buckets)</li>
+      </ul>
+    </div>
+    <div class="phase" style="border-top: 3px solid var(--accent2);">
+      <div class="phase-badge">Fase 2</div>
+      <div class="phase-label">Agentes</div>
+      <h3>OpenClaw & Pipeline</h3>
+      <ul>
+        <li>7 Markdowns × 6 agentes (42 arquivos)</li>
+        <li>Registro de todos os agentes no FBR-Click</li>
+        <li>Período de observação de 7 dias por agente</li>
+        <li>Cascata LLM: Ollama → Claude → GPT-4o</li>
+        <li>Agente Coletor (RSS + NewsAPI + social)</li>
+        <li>Agente Jornalista (artigo + seção impacto)</li>
+        <li>Agente Arte (imagens + thumbnails)</li>
+        <li>Editor Regional + Chefe de Redação</li>
+        <li>Agente Moderador (Eu Repórter + créditos)</li>
+        <li>Pipeline de distribuição multicanal</li>
+      </ul>
+    </div>
+    <div class="phase" style="border-top: 3px solid var(--green);">
+      <div class="phase-badge">Fase 3</div>
+      <div class="phase-label">Interface</div>
+      <h3>Painel & Integração</h3>
+      <ul>
+        <li>Login + iron-session + middleware.ts</li>
+        <li>Sidebar + layout + WebSocket hooks</li>
+        <li>Mural Em Produção (tempo real)</li>
+        <li>Mural Publicados + ações + presença</li>
+        <li>Dashboard de Agentes + logs</li>
+        <li>Fila Eu Repórter + player inline</li>
+        <li>Analytics com gráficos Recharts</li>
+        <li>Central de Alertas em tempo real</li>
+        <li>Testes de integração + hardening</li>
+        <li>Deploy em produção + smoke test</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- DIFERENCIAIS -->
+<section>
+  <div class="section-number">10 — Por Que Isso Funciona</div>
+  <h2>O que faz o FBR-Redacao ser defensável</h2>
+
+  <div class="grid-2">
+    <div class="grid-card">
+      <span class="icon">🗺️</span>
+      <h3>Dado local irreproduzível</h3>
+      <p>A cada mês operando, o FBR-Redacao acumula o maior banco de dados de comportamento e preferência da diáspora brasileira por cidade do mundo. Esse ativo não tem preço e leva anos para replicar.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🌐</span>
+      <h3>Contexto cultural como serviço</h3>
+      <p>Qualquer modelo de linguagem consegue traduzir inglês para português. Nenhum consegue explicar o impacto de uma lei estadual de Florida para um imigrante com visto H-2B sem contexto editorial especializado. Este é o diferencial.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🔄</span>
+      <h3>Ciclo virtuoso com UGC</h3>
+      <p>O Eu Repórter cria um flywheel: mais leitores → mais contribuições → conteúdo mais rico e hiperlocal → mais leitores. Concorrentes que tentarem replicar depois encontrarão uma comunidade já engajada e co-criadora.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">⚡</span>
+      <h3>Escala impossível para humanos</h3>
+      <p>Cobrir 50 cidades 24/7 com profundidade local é matematicamente impossível com jornalistas humanos a qualquer custo que um concorrente possa pagar. A barreira não é capital — é a integração entre IA, dados locais e contexto cultural.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">FBR<span>-</span>Redacao</div>
+    <div style="font-family:'DM Mono',monospace;font-size:12px;color:#8a8070;margin-top:8px;">Documento de Conceito — MVP v1.0 · Alinhado à Bíblia FBR v1.0</div>
+  </div>
+  <div class="footer-note">
+    Gerado em fevereiro de 2026<br>
+    Confidencial — uso interno Facebrasil
+  </div>
+</footer>
+
+</body>
+</html>

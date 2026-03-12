@@ -21,7 +21,7 @@ Estes pressupostos não são preferências — são restrições absolutas. O ag
 | Arquivo | Conteúdo | Regra crítica |
 |---------|----------|---------------|
 | SOUL.md | Identidade, valores, restrições éticas absolutas | Carregado PRIMEIRO. Nada sobrescreve. |
-| IDENTITY.md | Nome, role, objetivos, LLM primário e fallback | Usado pelo FBR-Click para o card de perfil |
+| IDENTITY.md | Nome, role, objetivos, LLM primário e fallback | Usado pelo FBR-CLICK para o card de perfil |
 | TASKS.md | Tarefas recorrentes e triggers de evento | Arquivo mais editado na evolução do agente |
 | AGENTS.md | Scope de canais, limites de autonomia, prioridades | Define onde e como o agente pode agir |
 | MEMORY.md | Fatos duráveis sobre o contexto operacional | Atualizado pelo agente ao final de sessões relevantes |
@@ -66,14 +66,14 @@ Camada 3 — GPT-4o API (reserva)
 - O módulo llm.py lê o status do Redis antes de cada chamada (sem latência de health check no caminho crítico)
 - Indisponibilidade de qualquer camada não interrompe a operação — degrada de forma controlada
 
-### Pressuposto 5 — FBR-Click é o hub central de todos os sistemas
+### Pressuposto 5 — FBR-CLICK é o hub central de todos os sistemas
 
-- Todo evento relevante para um humano se manifesta no FBR-Click
-- Cada sistema tem um canal dedicado no FBR-Click
-- Agentes dos sistemas aparecem como membros do FBR-Click (não como webhooks anônimos)
-- Humanos interagem com todos os sistemas pela mesma superfície: o FBR-Click
+- Todo evento relevante para um humano se manifesta no FBR-CLICK
+- Cada sistema tem um canal dedicado no FBR-CLICK
+- Agentes dos sistemas aparecem como membros do FBR-CLICK (não como webhooks anônimos)
+- Humanos interagem com todos os sistemas pela mesma superfície: o FBR-CLICK
 - Se um evento só precisa ser logado → fica nos logs do sistema de origem
-- Se um evento é relevante para um humano → obrigatoriamente aparece no FBR-Click
+- Se um evento é relevante para um humano → obrigatoriamente aparece no FBR-CLICK
 
 ---
 
@@ -83,7 +83,7 @@ Todo sistema FBR implementa estas camadas na mesma ordem:
 
 ```
 ┌─────────────────────────────────────────────┐
-│  FBR-Click (canal dedicado por sistema)     │  ← Interface humana única
+│  FBR-CLICK (canal dedicado por sistema)     │  ← Interface humana única
 ├─────────────────────────────────────────────┤
 │  n8n (instância dedicada por sistema)       │  ← Orquestração de fluxos
 ├─────────────────────────────────────────────┤
@@ -104,7 +104,7 @@ Todo sistema FBR implementa estas camadas na mesma ordem:
 ### Princípios de isolamento
 
 - Cada sistema roda em sua própria VPS isolada
-- Comunicação entre sistemas: REST API autenticada com JWT ou via FBR-Click
+- Comunicação entre sistemas: REST API autenticada com JWT ou via FBR-CLICK
 - PROIBIDO: acesso direto a banco de dados cruzado entre sistemas
 - Uma falha em um sistema não deve cascadear para outros
 
@@ -112,10 +112,10 @@ Todo sistema FBR implementa estas camadas na mesma ordem:
 
 | Tipo | Mecanismo |
 |------|-----------|
-| Sistema → Humano | FBR-Click (agente posta no canal) |
+| Sistema → Humano | FBR-CLICK (agente posta no canal) |
 | Sistema → Sistema | REST API com JWT |
 | Sistema → LLM | OpenClaw Gateway (camada de abstração obrigatória) |
-| Humano → Sistema | FBR-Click (mensagem ou tarefa para agente) |
+| Humano → Sistema | FBR-CLICK (mensagem ou tarefa para agente) |
 | Agente → Agente | Via n8n (message broker interno) |
 
 ---
@@ -142,9 +142,9 @@ Todo sistema FBR usa esta stack. Desvios requerem justificativa explícita:
 
 ## SISTEMAS FBR EXISTENTES
 
-| Sistema | Propósito | Canal FBR-Click | Agente de handoff |
+| Sistema | Propósito | Canal FBR-CLICK | Agente de handoff |
 |---------|-----------|-----------------|-------------------|
-| FBR-Click | Hub central de colaboração humanos + agentes | — (é o hub) | — |
+| FBR-CLICK | Hub central de colaboração humanos + agentes | — (é o hub) | — |
 | FBR-Leads | Captação, enriquecimento e aquecimento de leads | #leads-qualificados | Cadenciador Bot |
 | FBR-Dev | Gestão de projetos de desenvolvimento com agentes | #dev-sprints | Sprint Bot |
 | FBR-Suporte | Suporte comercial pré e pós-venda multicanal | #suporte-comercial | Suporte Bot |
@@ -158,7 +158,7 @@ Todo sistema FBR usa esta stack. Desvios requerem justificativa explícita:
 1. Owner define propósito e limites de autonomia
 2. Owner cria repositório Git e preenche os 7 Markdowns — SOUL.md primeiro
 3. Pull Request obrigatório: outro owner ou Arquiteto revisa antes de ativar
-4. Registro no FBR-Click: admin informa URL do repositório — plataforma valida o schema
+4. Registro no FBR-CLICK: admin informa URL do repositório — plataforma valida o schema
 5. Período de observação: primeiros 7 dias com monitoramento ativo e kill switch pronto
 6. Aprovação formal de operação plena pelo Owner do sistema
 
@@ -171,7 +171,7 @@ Todo sistema FBR usa esta stack. Desvios requerem justificativa explícita:
 | Arquiteto FBR | Guardião deste documento. Aprova mudanças nos pressupostos. |
 | Owner de Sistema | Responsável por um sistema. Define e mantém os agentes. |
 | Owner de Agente | Configura os 7 Markdowns. Tem o kill switch. |
-| Operador | Usa o FBR-Click para dar instruções e aprovar ações. |
+| Operador | Usa o FBR-CLICK para dar instruções e aprovar ações. |
 | Auditor | Revisão mensal dos audit logs. Reporta anomalias. |
 
 ---

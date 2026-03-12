@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FBR-Video — Video Production Virtual Agent — Conceito MVP v1.1</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0f1a;
+    --paper: #f0f2f8;
+    --accent: #8B5CF6;
+    --accent2: #6D28D9;
+    --accent3: #C4B5FD;
+    --muted: #6b7280;
+    --rule: #d1d5e8;
+    --code-bg: #0d0f1a;
+    --code-text: #c4b5fd;
+    --youtube: #FF0000;
+    --instagram: #E1306C;
+    --tiktok-accent: #69C9D0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    padding: 80px 60px 60px;
+    border-bottom: 2px solid var(--ink);
+    overflow: hidden;
+  }
+
+  .header-bg-text {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    font-family: 'Syne', sans-serif;
+    font-size: 220px;
+    font-weight: 800;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--rule);
+    line-height: 1;
+    user-select: none;
+    z-index: 0;
+    letter-spacing: -8px;
+  }
+
+  .header-content { position: relative; z-index: 1; max-width: 780px; }
+
+  .tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 3px 10px;
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 20px;
+    color: var(--muted);
+    max-width: 560px;
+    font-style: italic;
+  }
+
+  .header-meta {
+    margin-top: 40px;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .meta-item strong {
+    display: block;
+    color: var(--ink);
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  /* LAYOUT */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+
+  /* SECTION */
+  section {
+    padding: 72px 60px;
+    border-bottom: 1px solid var(--rule);
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 32px;
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 32px;
+  }
+
+  p { margin-bottom: 18px; color: #1e2030; }
+
+  /* VISION BLOCK */
+  .vision-block {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 60px;
+    margin: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .vision-block .section-number { color: var(--accent3); }
+
+  .vision-block h2 { color: var(--paper); }
+
+  .vision-quote {
+    font-family: 'Lora', serif;
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--paper);
+    border-left: 3px solid var(--accent);
+    padding-left: 28px;
+    margin: 32px 0;
+  }
+
+  .vision-block p { color: #9ca3af; }
+
+  /* GRID */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2px;
+    margin-top: 40px;
+    border: 1px solid var(--rule);
+  }
+
+  .grid-card {
+    padding: 32px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    transition: background 0.2s;
+  }
+
+  .grid-card:hover { background: #e5e7f5; }
+
+  .grid-card .icon {
+    font-size: 28px;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .grid-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+
+  .grid-card p {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* PLATFORMS GRID */
+  .platforms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2px;
+    margin-top: 40px;
+    border: 1px solid var(--rule);
+  }
+
+  .platform-card {
+    padding: 28px 24px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .platform-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+
+  .platform-card.youtube-short::before { background: var(--youtube); }
+  .platform-card.youtube-video::before { background: #CC0000; }
+  .platform-card.instagram::before { background: var(--instagram); }
+  .platform-card.tiktok::before { background: var(--tiktok-accent); }
+
+  .platform-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .platform-card.youtube-short .platform-label { color: var(--youtube); }
+  .platform-card.youtube-video .platform-label { color: #CC0000; }
+  .platform-card.instagram .platform-label { color: var(--instagram); }
+  .platform-card.tiktok .platform-label { color: var(--tiktok-accent); }
+
+  .platform-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .platform-specs {
+    list-style: none;
+    padding: 0;
+  }
+
+  .platform-specs li {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .platform-specs li:last-child { border-bottom: none; }
+
+  .platform-specs li span { color: var(--ink); font-weight: 500; }
+
+  /* FLOW */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 40px;
+    position: relative;
+  }
+
+  .flow-step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+
+  .flow-step:last-child { border-bottom: none; }
+
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    background: #ede9fe;
+    border: 1px solid var(--accent);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .step-content h3 {
+    margin-top: 0;
+    font-size: 16px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+  }
+
+  .step-content p {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  /* STACK TABLE */
+  .stack-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 36px;
+    font-size: 14px;
+  }
+
+  .stack-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--ink);
+    background: transparent;
+  }
+
+  .stack-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .stack-table td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .stack-table td:nth-child(2) { font-weight: 500; color: var(--ink); }
+  .stack-table td:nth-child(3) { color: var(--muted); font-size: 13px; }
+  .stack-table tr:hover td { background: #ebedf5; }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--code-bg);
+    color: var(--code-text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.8;
+    padding: 32px 36px;
+    margin: 28px 0;
+    overflow-x: auto;
+    border: 1px solid #1e2240;
+    white-space: pre;
+  }
+
+  .code-comment { color: #4b5563; }
+  .code-key { color: #c4b5fd; }
+  .code-val { color: #86efac; }
+  .code-str { color: #fde68a; }
+
+  /* PHASES */
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+    margin-top: 40px;
+    border: 1px solid var(--rule);
+  }
+
+  .phase {
+    padding: 32px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    position: relative;
+  }
+
+  .phase-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .phase h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0 0 16px;
+  }
+
+  .phase ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .phase ul li {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--rule);
+    line-height: 1.5;
+  }
+
+  .phase ul li:last-child { border-bottom: none; }
+
+  .phase-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--accent);
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    text-transform: uppercase;
+  }
+
+  /* SCOPE GRID */
+  .scope-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2px;
+    margin-top: 40px;
+    border: 1px solid var(--rule);
+  }
+
+  .scope-cell {
+    padding: 24px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+  }
+
+  .scope-cell h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--accent);
+  }
+
+  .scope-cell ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .scope-cell ul li {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .scope-cell ul li:last-child { border-bottom: none; }
+
+  /* FOOTER */
+  footer {
+    padding: 48px 60px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 24px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .footer-brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+
+  .footer-brand span { color: var(--accent); }
+
+  .footer-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #6b7280;
+    text-align: right;
+  }
+
+  /* DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 40px 0 32px;
+  }
+
+  .divider-line { flex: 1; height: 1px; background: var(--rule); }
+
+  .divider-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    border-left: 4px solid var(--accent);
+    padding: 20px 24px;
+    background: #ede9fe;
+    margin: 28px 0;
+    font-size: 14px;
+    color: #2e1065;
+  }
+
+  .highlight-box strong {
+    font-family: 'Syne', sans-serif;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* PRINT */
+  @media print {
+    body { background: white; }
+    body::before { display: none; }
+    section, .vision-block { page-break-inside: avoid; }
+  }
+
+  @media (max-width: 640px) {
+    header, section, .vision-block, footer { padding-left: 24px; padding-right: 24px; }
+    .header-bg-text { font-size: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-bg-text">FBR</div>
+  <div class="header-content">
+    <div class="tag">FBR-Video · Documento de Conceito — MVP v1.1</div>
+    <h1>Video Production<br><em>Virtual Agent</em></h1>
+    <p class="subtitle">Sistema FBR de automação inteligente para produção de vídeos para YouTube, Instagram e TikTok — agentes OpenClaw, orquestração n8n, roteirização e edição por IA com LLM em cascata.</p>
+    <div class="header-meta">
+      <div class="meta-item"><strong>Sistema</strong>FBR-Video</div>
+      <div class="meta-item"><strong>Versão</strong>1.1 — MVP</div>
+      <div class="meta-item"><strong>Agentes</strong>OpenClaw Gateway</div>
+      <div class="meta-item"><strong>Orquestração</strong>n8n dedicado</div>
+      <div class="meta-item"><strong>Infraestrutura</strong>VPS Hostinger</div>
+      <div class="meta-item"><strong>Hub</strong>FBR-Click</div>
+    </div>
+  </div>
+</header>
+
+<!-- VISÃO -->
+<div class="vision-block">
+  <div class="section-number">00 — Visão do Projeto</div>
+  <h2>Por que este projeto existe</h2>
+  <blockquote class="vision-quote">
+    "Uma empresa com presença em múltiplas redes sociais não pode depender de um editor de vídeo humano para cada Short, Reels ou TikTok. O conteúdo de vídeo padronizado deve ser automatizado — com narrativa, identidade de marca e qualidade técnica consistentes."
+  </blockquote>
+  <p>O FBR-Video é o sistema de automação de produção de vídeo da FBR. Recebe um briefing estruturado, aciona dois agentes OpenClaw especializados que trabalham em sequência — o Roteirista transforma o briefing em um roteiro aprovado pelo Supervisor; o Editor monta e renderiza o vídeo final. O output são arquivos MP4 prontos para publicação nas plataformas de destino.</p>
+  <p>O sistema segue integralmente a Bíblia FBR v1.0: agentes OpenClaw com 7 Markdowns versionados em Git, orquestração via n8n dedicado, cascata de LLMs com Ollama → Claude → GPT-4o, e toda interação humana centralizada no FBR-Click. Cada agente opera em <strong style="color:#c4b5fd">uma única tarefa por vez</strong> — foco total, sem paralelismo dentro do mesmo agente.</p>
+</div>
+
+<!-- ESCOPO DE PLATAFORMAS -->
+<section>
+  <div class="section-number">01 — Plataformas e Formatos</div>
+  <h2>Formatos suportados no MVP</h2>
+  <p>O sistema produz vídeos adaptados às especificações técnicas de cada plataforma. Um único briefing pode gerar variantes simultâneas para múltiplos destinos.</p>
+
+  <div class="platforms-grid">
+    <div class="platform-card youtube-short">
+      <div class="platform-label">YouTube</div>
+      <h4>YouTube Short</h4>
+      <ul class="platform-specs">
+        <li>Resolução <span>1080 × 1920</span></li>
+        <li>Proporção <span>9:16</span></li>
+        <li>Duração <span>até 60s</span></li>
+        <li>Codec <span>H.264 MP4</span></li>
+        <li>FPS <span>30 ou 60</span></li>
+        <li>Bitrate <span>8 Mbps</span></li>
+      </ul>
+    </div>
+    <div class="platform-card youtube-video">
+      <div class="platform-label">YouTube</div>
+      <h4>YouTube Video</h4>
+      <ul class="platform-specs">
+        <li>Resolução <span>1920 × 1080</span></li>
+        <li>Proporção <span>16:9</span></li>
+        <li>Duração <span>ilimitada</span></li>
+        <li>Codec <span>H.264 MP4</span></li>
+        <li>FPS <span>24 / 30 / 60</span></li>
+        <li>Bitrate <span>12 Mbps</span></li>
+      </ul>
+    </div>
+    <div class="platform-card instagram">
+      <div class="platform-label">Instagram</div>
+      <h4>Reels & Stories</h4>
+      <ul class="platform-specs">
+        <li>Resolução <span>1080 × 1920</span></li>
+        <li>Proporção <span>9:16</span></li>
+        <li>Duração <span>até 90s</span></li>
+        <li>Codec <span>H.264 MP4</span></li>
+        <li>FPS <span>30</span></li>
+        <li>Bitrate <span>8 Mbps</span></li>
+      </ul>
+    </div>
+    <div class="platform-card tiktok">
+      <div class="platform-label">TikTok</div>
+      <h4>TikTok Video</h4>
+      <ul class="platform-specs">
+        <li>Resolução <span>1080 × 1920</span></li>
+        <li>Proporção <span>9:16</span></li>
+        <li>Duração <span>até 3 min</span></li>
+        <li>Codec <span>H.264 MP4</span></li>
+        <li>FPS <span>30 ou 60</span></li>
+        <li>Bitrate <span>8 Mbps</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Tipos de vídeo produzidos</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="scope-grid">
+    <div class="scope-cell">
+      <h4>Promocional</h4>
+      <ul>
+        <li>Lançamento de produto</li>
+        <li>Oferta / promoção</li>
+        <li>Anúncio de serviço</li>
+        <li>Black Friday / sazonal</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Educativo</h4>
+      <ul>
+        <li>Tutorial passo a passo</li>
+        <li>Explicação de conceito</li>
+        <li>FAQ em vídeo</li>
+        <li>Dica rápida</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Depoimento</h4>
+      <ul>
+        <li>Testemunho de cliente</li>
+        <li>Case de sucesso</li>
+        <li>Prova social</li>
+        <li>Review de produto</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Institucional</h4>
+      <ul>
+        <li>Apresentação de empresa</li>
+        <li>Cultura e valores</li>
+        <li>Bastidores</li>
+        <li>Recrutamento</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Conteúdo</h4>
+      <ul>
+        <li>Listagem (Top 5, Top 10)</li>
+        <li>Comparativo</li>
+        <li>Notícia do setor</li>
+        <li>Trend / viral</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Produto</h4>
+      <ul>
+        <li>Demonstração</li>
+        <li>Unboxing</li>
+        <li>Antes e depois</li>
+        <li>Mockup animado</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FLUXO DE PRODUÇÃO -->
+<section>
+  <div class="section-number">02 — Fluxo de Produção</div>
+  <h2>Como um vídeo é processado</h2>
+  <p>Todo trabalho segue um pipeline determinístico em dois estágios com aprovação humana entre eles. O Roteirista cria o roteiro; o Editor transforma em vídeo. O Supervisor aprova cada etapa antes de avançar.</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <h3>Recepção do Briefing</h3>
+        <p>O operador preenche o formulário: plataformas alvo, tipo de vídeo, objetivo, público-alvo, mensagem principal, CTA, tom desejado, narração e trilha preferidas, e faz upload de assets do cliente (vídeos, imagens, áudio).</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <h3>Agente Roteirista — Geração de Roteiro</h3>
+        <p>O agente FBR-Video-Roteirista é acionado pelo n8n. Ele lê o briefing, define a estrutura narrativa adequada à plataforma (Hook → Desenvolvimento → CTA), gera as cenas com narração, direção visual, legendas e lista os assets necessários. LLM primário: Ollama local. Fallback: Claude API → GPT-4o.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <h3>Aprovação do Roteiro — Supervisor</h3>
+        <p>O roteiro gerado é publicado no canal <strong>#fbr-video</strong> do FBR-Click. O Supervisor revisa, pode editar cenas individualmente, e aprova ou rejeita com nota. Nenhuma produção começa sem o roteiro aprovado.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <h3>Agente Editor — Coleta de Assets</h3>
+        <p>O agente FBR-Video-Editor é acionado pelo n8n após aprovação. Ele coleta assets por cena: 1º busca em Pexels Videos, Unsplash, Freesound e Pixabay (gratuitos). Se qualidade insuficiente, gera via RunwayML (b-roll IA) ou ElevenLabs (narração) ou Suno (trilha).</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">05</div>
+      <div class="step-content">
+        <h3>Geração de Narração e Trilha (IA)</h3>
+        <p>Se o roteiro requer narração: ElevenLabs gera o áudio usando a voz configurada no brand kit do cliente. Se requer trilha original: Suno API gera música instrumental com o gênero e mood do brand kit. Assets fornecidos pelo cliente têm prioridade.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">06</div>
+      <div class="step-content">
+        <h3>Montagem e Renderização — FFmpeg + Remotion</h3>
+        <p>O Editor monta a timeline: encadeia clipes por cena, sincroniza narração, adiciona trilha em volume reduzido, gera legendas animadas via Remotion e finaliza com marca d'água e identidade visual do brand kit. FFmpeg renderiza o vídeo final. Creatomate atua como fallback de renderização.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">07</div>
+      <div class="step-content">
+        <h3>Variantes por Plataforma</h3>
+        <p>A partir da mesma composição aprovada, o sistema gera automaticamente as variantes nas especificações corretas de cada plataforma selecionada: YouTube Short (9:16), YouTube Video (16:9), Instagram Reels (9:16), TikTok (9:16). Thumbnails gerados para cada formato.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">08</div>
+      <div class="step-content">
+        <h3>Aprovação & Entrega via FBR-Click</h3>
+        <p>O agente posta os vídeos finalizados no canal <strong>#fbr-video</strong> do FBR-Click como membro ativo — não como webhook anônimo. O Supervisor visualiza, aprova, solicita ajuste ou rejeita. Após aprovação, o operador faz o download ou entrega direta ao cliente.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK TÉCNICA -->
+<section>
+  <div class="section-number">03 — Stack Técnica</div>
+  <h2>Tecnologias do MVP</h2>
+  <p>Stack orientada à produção de vídeo, mantendo o padrão FBR de infraestrutura containerizada e agentes OpenClaw com 7 Markdowns. Cada serviço de produção tem fallback definido.</p>
+
+  <table class="stack-table">
+    <thead>
+      <tr>
+        <th>Camada</th>
+        <th>Tecnologia</th>
+        <th>Papel no Sistema</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Agentes</td><td>OpenClaw Gateway (Node.js)</td><td>Execução dos agentes autônomos — padrão FBR obrigatório</td></tr>
+      <tr><td>Orquestração</td><td>n8n (instância dedicada)</td><td>Decide quando e por que cada agente é acionado</td></tr>
+      <tr><td>Hub humano</td><td>FBR-Click — canal #fbr-video</td><td>Interface única para interação humana com o sistema</td></tr>
+      <tr><td>LLM — Camada 1</td><td>Ollama (Mac Mini M4 via Tailscale)</td><td>Primário: roteirização, classificação, seleção semântica</td></tr>
+      <tr><td>LLM — Camada 2</td><td>Claude API (claude-sonnet-4-6)</td><td>Fallback automático: raciocínio criativo, personalização</td></tr>
+      <tr><td>LLM — Camada 3</td><td>GPT-4o API</td><td>Contingência total — nunca primário</td></tr>
+      <tr><td>Backend</td><td>Python + FastAPI</td><td>API REST principal, orquestração de serviços de vídeo</td></tr>
+      <tr><td>Frontend</td><td>Next.js + TypeScript + Tailwind + shadcn/ui</td><td>Interface de briefing, revisor de roteiro e dashboard</td></tr>
+      <tr><td>Banco de Dados</td><td>PostgreSQL 16</td><td>Roteiros, clientes, jobs, brand kits, assets, histórico</td></tr>
+      <tr><td>Cache e filas</td><td>Redis 7</td><td>Status de LLMs, filas de jobs, health check</td></tr>
+      <tr><td>Renderização vídeo</td><td>FFmpeg 6.x (container dedicado)</td><td>Montagem e renderização do vídeo final</td></tr>
+      <tr><td>Motion graphics</td><td>Remotion (Node.js)</td><td>Legendas animadas, intros/outros, textos em tela</td></tr>
+      <tr><td>Renderização (fallback)</td><td>Creatomate API</td><td>Fallback de renderização quando FFmpeg falha</td></tr>
+      <tr><td>Voz / Narração</td><td>ElevenLabs API</td><td>Geração de narração com voz configurada no brand kit</td></tr>
+      <tr><td>Música / Trilha</td><td>Suno API</td><td>Geração de trilha sonora original por gênero e mood</td></tr>
+      <tr><td>B-roll IA</td><td>RunwayML API</td><td>Geração de b-roll quando banco free não atende</td></tr>
+      <tr><td>Assets — Free (vídeo)</td><td>Pexels Videos</td><td>Busca de b-roll gratuito antes de gerar com IA</td></tr>
+      <tr><td>Assets — Free (imagem)</td><td>Unsplash + Pexels + Pixabay</td><td>Imagens estáticas gratuitas</td></tr>
+      <tr><td>Assets — Free (áudio)</td><td>Freesound + Pixabay Audio</td><td>Efeitos sonoros e músicas gratuitas</td></tr>
+      <tr><td>Storage</td><td>MinIO (S3-compatible)</td><td>Vídeos renderizados, uploads de clientes, assets</td></tr>
+      <tr><td>Containerização</td><td>Docker + Docker Compose</td><td>Padrão FBR para todos os serviços</td></tr>
+      <tr><td>Proxy / SSL</td><td>Nginx + Certbot</td><td>Padrão FBR</td></tr>
+      <tr><td>Rede privada</td><td>Tailscale</td><td>Comunicação segura com Ollama e outros sistemas FBR</td></tr>
+      <tr><td>Monitoramento</td><td>Grafana + Prometheus</td><td>Padrão FBR — métricas, fila de renderização, audit log</td></tr>
+      <tr><td>Infraestrutura</td><td>VPS Hostinger</td><td>Instância isolada — uma falha não cascadeia</td></tr>
+    </tbody>
+  </table>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Estrutura de pastas</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="code-block">
+<span class="code-comment"># Estrutura do repositório FBR-Video</span>
+/fbr-video/
+├── <span class="code-key">agents/</span>                  <span class="code-comment"># Agentes OpenClaw — um repositório por agente</span>
+│   ├── roteirista/          <span class="code-comment"># Agente de roteirização</span>
+│   │   ├── <span class="code-val">SOUL.md</span>          <span class="code-comment"># Identidade e restrições éticas — carregado PRIMEIRO</span>
+│   │   ├── <span class="code-val">IDENTITY.md</span>      <span class="code-comment"># Nome, role, LLM primário e fallback</span>
+│   │   ├── <span class="code-val">TASKS.md</span>         <span class="code-comment"># Tarefas: interpretar briefing, gerar roteiro por plataforma</span>
+│   │   ├── <span class="code-val">AGENTS.md</span>        <span class="code-comment"># Limites de autonomia, ações que precisam de aprovação</span>
+│   │   ├── <span class="code-val">MEMORY.md</span>        <span class="code-comment"># Padrões de roteiro, histórico de clientes</span>
+│   │   ├── <span class="code-val">TOOLS.md</span>         <span class="code-comment"># LLM em cascata, PostgreSQL</span>
+│   │   └── <span class="code-val">CHANGELOG.md</span>     <span class="code-comment"># Versões e mudanças</span>
+│   └── editor/              <span class="code-comment"># Agente de edição e renderização</span>
+│       ├── <span class="code-val">SOUL.md</span>
+│       ├── <span class="code-val">IDENTITY.md</span>
+│       ├── <span class="code-val">TASKS.md</span>         <span class="code-comment"># Coleta de assets, narração, trilha, FFmpeg, variantes</span>
+│       ├── <span class="code-val">AGENTS.md</span>
+│       ├── <span class="code-val">MEMORY.md</span>
+│       ├── <span class="code-val">TOOLS.md</span>         <span class="code-comment"># FFmpeg, ElevenLabs, Suno, RunwayML, Pexels...</span>
+│       └── <span class="code-val">CHANGELOG.md</span>
+├── <span class="code-key">api/</span>                     <span class="code-comment"># FastAPI — endpoints REST</span>
+├── <span class="code-key">db/</span>                      <span class="code-comment"># Migrations PostgreSQL</span>
+└── <span class="code-key">docker-compose.yml</span>       <span class="code-comment"># Todos os serviços containerizados</span>
+  </div>
+</section>
+
+<!-- ROTEIRO ESTRUTURADO -->
+<section>
+  <div class="section-number">04 — Roteiro Estruturado</div>
+  <h2>Como os roteiros são organizados</h2>
+  <p>Cada roteiro é um documento JSON estruturado com cenas, narração, direção visual, legendas e lista de assets necessários. O Supervisor revisa e aprova o roteiro antes da produção iniciar.</p>
+
+  <div class="highlight-box">
+    <strong>Princípio central</strong>
+    O roteiro é o artefato que separa a fase de intenção da fase de produção. Ele serve de contrato entre o operador (que descreve o que quer) e o editor (que executa). Toda divergência criativa é resolvida no roteiro — antes de gastar tempo e crédito de API na produção.
+  </div>
+
+  <div class="code-block">
+<span class="code-comment"># Estrutura de um roteiro — plataforma: youtube_short</span>
+{
+  <span class="code-key">platform</span>:                <span class="code-str">"youtube_short"</span>,
+  <span class="code-key">total_duration_seconds</span>: <span class="code-val">55</span>,
+  <span class="code-key">hook_duration_seconds</span>:  <span class="code-val">3</span>,
+  <span class="code-key">scenes</span>: [
+    {
+      <span class="code-key">number</span>:            <span class="code-val">1</span>,
+      <span class="code-key">label</span>:             <span class="code-str">"hook"</span>,
+      <span class="code-key">duration_seconds</span>:  <span class="code-val">3</span>,
+      <span class="code-key">narration</span>:         <span class="code-str">"Você sabia que 90% dos empreendedores cometem esse erro?"</span>,
+      <span class="code-key">visual_direction</span>:  <span class="code-str">"Texto animado em tela cheia, fundo cor primária do brand kit"</span>,
+      <span class="code-key">caption_text</span>:      <span class="code-str">"90% cometem ESSE erro"</span>,
+      <span class="code-key">transition_out</span>:    <span class="code-str">"corte_seco"</span>,
+      <span class="code-key">assets_needed</span>: [
+        { <span class="code-val">type</span>: <span class="code-str">"audio_narration"</span>, <span class="code-val">text</span>: <span class="code-str">"Você sabia que..."</span> }
+      ]
+    },
+    {
+      <span class="code-key">number</span>:            <span class="code-val">2</span>,
+      <span class="code-key">label</span>:             <span class="code-str">"desenvolvimento"</span>,
+      <span class="code-key">duration_seconds</span>:  <span class="code-val">42</span>,
+      <span class="code-key">narration</span>:         <span class="code-str">"O erro mais comum é não ter processo de vendas..."</span>,
+      <span class="code-key">visual_direction</span>:  <span class="code-str">"B-roll: pessoa no computador, cortes a cada 5s"</span>,
+      <span class="code-key">caption_text</span>:      <span class="code-str">"Sem processo = sem previsibilidade"</span>,
+      <span class="code-key">assets_needed</span>: [
+        { <span class="code-val">type</span>: <span class="code-str">"footage"</span>, <span class="code-val">description</span>: <span class="code-str">"person working laptop office"</span>, <span class="code-val">source</span>: <span class="code-str">"pexels"</span> }
+      ]
+    },
+    {
+      <span class="code-key">number</span>:            <span class="code-val">3</span>,
+      <span class="code-key">label</span>:             <span class="code-str">"cta"</span>,
+      <span class="code-key">duration_seconds</span>:  <span class="code-val">10</span>,
+      <span class="code-key">narration</span>:         <span class="code-str">"Acesse o link na bio e baixe o checklist gratuito."</span>,
+      <span class="code-key">visual_direction</span>:  <span class="code-str">"Logo centralizado, fundo cor primária, texto CTA animado"</span>,
+      <span class="code-key">caption_text</span>:      <span class="code-str">"👇 Link na bio — Checklist GRÁTIS"</span>,
+      <span class="code-key">assets_needed</span>: [
+        { <span class="code-val">type</span>: <span class="code-str">"audio_music"</span>, <span class="code-val">mood</span>: <span class="code-str">"motivacional"</span>, <span class="code-val">volume</span>: <span class="code-val">0.3</span> }
+      ]
+    }
+  ],
+  <span class="code-key">cta</span>:                 <span class="code-str">"Acesse o link na bio e baixe o checklist gratuito"</span>,
+  <span class="code-key">hashtags_suggested</span>: [<span class="code-str">"#empreendedorismo"</span>, <span class="code-str">"#vendas"</span>, <span class="code-str">"#negócios"</span>],
+  <span class="code-key">title_suggested</span>:   <span class="code-str">"O erro que impede suas vendas de escalar"</span>
+}
+  </div>
+</section>
+
+<!-- AGENTES OPENCLAW -->
+<section>
+  <div class="section-number">05 — Agentes OpenClaw FBR</div>
+  <h2>Como os agentes do FBR-Video funcionam</h2>
+  <p>Todo agente do FBR-Video segue o padrão OpenClaw obrigatório da Bíblia FBR: definido por exatamente 7 arquivos Markdown versionados em Git, sem exceção. Cada agente trabalha em <strong>uma única tarefa por vez</strong> — foco total, sem paralelismo interno.</p>
+
+  <div class="highlight-box">
+    <strong>Princípio: n8n orquestra, OpenClaw executa</strong>
+    O n8n (instância dedicada FBR-Video) decide quando e por que um agente é chamado. O OpenClaw Gateway decide o que o agente faz quando chamado. Os dois não se substituem — são camadas complementares e obrigatórias.
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Agentes do MVP</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="grid-card">
+      <span class="icon">📝</span>
+      <h3>FBR-Video-Roteirista</h3>
+      <p>Agente de roteirização. Recebe o briefing, define a estrutura narrativa por plataforma, gera as cenas com narração e direção visual, e lista os assets necessários. Roteiro publicado no FBR-Click para aprovação obrigatória antes da produção.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🎬</span>
+      <h3>FBR-Video-Editor</h3>
+      <p>Agente de produção. Coleta assets (b-roll, imagens, áudio), gera narração via ElevenLabs, trilha via Suno, monta a timeline e renderiza via FFmpeg + Remotion. Entrega as variantes para cada plataforma, com thumbnails inclusos.</p>
+    </div>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Cascata de LLM — padrão FBR</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="code-block">
+<span class="code-comment"># Cascata LLM — FBR-Video (idêntica ao padrão FBR)</span>
+
+<span class="code-key">Camada 1</span> — Ollama (Mac Mini M4 32GB via Tailscale)   <span class="code-comment"># primário</span>
+  → Uso: roteirização de alto volume, classificação de briefing, seleção semântica
+  → Timeout: 15s · Fallback automático se offline > 30s
+
+<span class="code-key">Camada 2</span> — Claude API (claude-sonnet-4-6)              <span class="code-comment"># fallback 1</span>
+  → Uso: raciocínio criativo complexo, personalização de narrativa por marca
+  → Timeout: 30s · Fallback se rate limit ou erro
+
+<span class="code-key">Camada 3</span> — GPT-4o API                              <span class="code-comment"># contingência</span>
+  → Uso: reserva total · nunca usado como primário
+  → Timeout: 30s · Fallback: alerta crítico no FBR-Click
+
+<span class="code-comment"># n8n faz health check nas 3 camadas a cada 60s → publica no Redis</span>
+<span class="code-comment"># llm.py lê Redis antes de cada chamada — sem latência de health check</span>
+  </div>
+</section>
+
+<!-- RECURSOS DO SISTEMA -->
+<section>
+  <div class="section-number">06 — Recursos do Sistema</div>
+  <h2>Funcionalidades do MVP</h2>
+
+  <div class="grid-2">
+    <div class="grid-card">
+      <span class="icon">📋</span>
+      <h3>Briefing Multi-Plataforma</h3>
+      <p>Wizard de 4 steps que permite selecionar múltiplas plataformas simultaneamente. Um briefing gera automaticamente variantes para YouTube, Instagram e TikTok.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">📝</span>
+      <h3>Roteirização por IA</h3>
+      <p>Agente Roteirista adapta a estrutura narrativa para cada plataforma: Hook 3s → Desenvolvimento → CTA para Shorts; estrutura expandida para vídeos longos. Roteiro revisável cena a cena antes da produção.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🎤</span>
+      <h3>Narração com ElevenLabs</h3>
+      <p>Voz personalizada por cliente no brand kit. Narração gerada automaticamente a partir do texto do roteiro. Múltiplas vozes disponíveis com preview antes de selecionar.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🎵</span>
+      <h3>Trilha Sonora com Suno</h3>
+      <p>Música instrumental original gerada por IA no gênero e mood do brand kit. Sem problemas de direitos autorais. Loops de 30-60s ajustados automaticamente à duração do vídeo.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🎥</span>
+      <h3>B-roll em Cascata</h3>
+      <p>1º busca em Pexels Videos (gratuito e sem copyright). Se não atender, gera footage original via RunwayML. Assets fornecidos pelo cliente têm prioridade absoluta.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">⚡</span>
+      <h3>Renderização FFmpeg</h3>
+      <p>Motor de renderização nativo, sem custos de API por vídeo. Creatomate como fallback de alta confiabilidade. Specs corretas para cada plataforma geradas automaticamente.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">💬</span>
+      <h3>Legendas Automáticas</h3>
+      <p>Remotion gera legendas animadas sincronizadas com a narração. Estilo configurável no brand kit: posição, fonte, cor de fundo, animação de entrada.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">✅</span>
+      <h3>Aprovação Dupla via FBR-Click</h3>
+      <p>O Supervisor aprova primeiro o roteiro e depois o vídeo final. Dois checkpoints humanos obrigatórios. O agente posta no canal #fbr-video como membro ativo — nunca como webhook anônimo.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🏢</span>
+      <h3>Brand Kit de Vídeo</h3>
+      <p>Cada cliente tem voz ElevenLabs, gênero musical, estilo de transição, posição e estilo de legenda, e marca d'água configurados. Tudo aplicado automaticamente em cada produção.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">📊</span>
+      <h3>Dashboard & Analytics</h3>
+      <p>Métricas de produção: vídeos por plataforma, tempo médio de produção, taxa de aprovação de roteiros, distribuição de uso por serviço de IA.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section>
+  <div class="section-number">07 — Roadmap</div>
+  <h2>Fases de desenvolvimento</h2>
+  <p>O MVP é dividido em três frentes alinhadas ao processo obrigatório de criação de agentes FBR: fundação de infraestrutura, configuração dos agentes OpenClaw com seus 7 Markdowns, e interface + entrega via FBR-Click.</p>
+
+  <div class="phases">
+    <div class="phase">
+      <div class="phase-badge">Fase 1</div>
+      <div class="phase-label">Fundação</div>
+      <h3>Infraestrutura & Backend</h3>
+      <ul>
+        <li>VPS Hostinger + Docker Compose (8 vCPU / 16GB)</li>
+        <li>FastAPI + PostgreSQL 16 + Redis 7</li>
+        <li>n8n instância dedicada FBR-Video</li>
+        <li>MinIO storage configurado (3 buckets)</li>
+        <li>Tailscale para acesso ao Ollama</li>
+        <li>Nginx + Certbot + Grafana</li>
+        <li>Modelo de dados criado (jobs, roteiros, assets)</li>
+        <li>Container FFmpeg worker configurado</li>
+        <li>Integrações de API: ElevenLabs, Suno, Pexels</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-badge">Fase 2</div>
+      <div class="phase-label">Agentes</div>
+      <h3>OpenClaw & Pipeline</h3>
+      <ul>
+        <li>7 Markdowns do Roteirista (PR obrigatório)</li>
+        <li>7 Markdowns do Editor (PR obrigatório)</li>
+        <li>Registro dos agentes no FBR-Click</li>
+        <li>Período de observação (7 dias)</li>
+        <li>Cascata LLM: Ollama → Claude → GPT-4o</li>
+        <li>Pipeline de roteirização por plataforma</li>
+        <li>Coleta de assets (Pexels → RunwayML)</li>
+        <li>Geração de narração (ElevenLabs)</li>
+        <li>Geração de trilha (Suno)</li>
+        <li>Renderização FFmpeg + Remotion</li>
+        <li>Geração de variantes por plataforma</li>
+        <li>Brand kit de vídeo engine</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-badge">Fase 3</div>
+      <div class="phase-label">Interface</div>
+      <h3>UI & FBR-Click</h3>
+      <ul>
+        <li>Wizard de briefing multi-plataforma (Next.js)</li>
+        <li>Revisor de roteiro cena a cena</li>
+        <li>Player de vídeo com tabs por plataforma</li>
+        <li>Canal #fbr-video no FBR-Click</li>
+        <li>Agentes como membros ativos</li>
+        <li>Dashboard de métricas e analytics</li>
+        <li>Banco de referências de estilo</li>
+        <li>Brand kits com configuração de vídeo</li>
+        <li>Aprovação formal de operação plena</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">FBR<span>-</span>Video</div>
+    <div style="font-family:'DM Mono',monospace;font-size:12px;color:#6b7280;margin-top:8px;">Documento de Conceito — MVP v1.1 · Alinhado à Bíblia FBR v1.0</div>
+  </div>
+  <div class="footer-note">
+    Gerado em março de 2026<br>
+    Confidencial — uso interno
+  </div>
+</footer>
+
+</body>
+</html>

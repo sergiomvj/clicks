@@ -1,0 +1,13 @@
+﻿.env
+.next/
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.sqlite3
+frontend/.next/
+frontend/node_modules/
+docker/certs/
+backups/

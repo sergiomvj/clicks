@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FBR-Design — Graphic Design Virtual Agent — Conceito MVP v1.1</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0f1a;
+    --paper: #f0f2f8;
+    --accent: #F97316;
+    --accent2: #EA580C;
+    --accent3: #FED7AA;
+    --muted: #6b7280;
+    --rule: #d1d5e8;
+    --code-bg: #0d0f1a;
+    --code-text: #fed7aa;
+    --card-bg: #101622;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    padding: 80px 60px 60px;
+    border-bottom: 2px solid var(--ink);
+    overflow: hidden;
+  }
+
+  .header-bg-text {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    font-family: 'Syne', sans-serif;
+    font-size: 220px;
+    font-weight: 800;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--rule);
+    line-height: 1;
+    user-select: none;
+    z-index: 0;
+    letter-spacing: -8px;
+  }
+
+  .header-content { position: relative; z-index: 1; max-width: 780px; }
+
+  .tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 3px 10px;
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 20px;
+    color: var(--muted);
+    max-width: 560px;
+    font-style: italic;
+  }
+
+  .header-meta {
+    margin-top: 40px;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .meta-item strong {
+    display: block;
+    color: var(--ink);
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  /* SECTION */
+  section {
+    padding: 72px 60px;
+    border-bottom: 1px solid var(--rule);
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 32px;
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 32px;
+  }
+
+  p { margin-bottom: 18px; color: #1e2030; }
+
+  /* VISION BLOCK */
+  .vision-block {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 72px 60px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .vision-block .section-number { color: var(--accent3); }
+  .vision-block h2 { color: var(--paper); }
+
+  .vision-quote {
+    font-family: 'Lora', serif;
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--paper);
+    border-left: 3px solid var(--accent);
+    padding-left: 28px;
+    margin: 32px 0;
+  }
+
+  .vision-block p { color: #9ca3af; }
+
+  /* GRID */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2px;
+    margin-top: 40px;
+    border: 1px solid var(--rule);
+  }
+
+  .grid-card {
+    padding: 32px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    transition: background 0.2s;
+  }
+
+  .grid-card:hover { background: #e5e7f5; }
+
+  .grid-card .icon {
+    font-size: 28px;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .grid-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+
+  .grid-card p {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* FORMATS GRID */
+  .formats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2px;
+    margin-top: 40px;
+    border: 1px solid var(--rule);
+  }
+
+  .format-card {
+    padding: 28px 24px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+  }
+
+  .format-card:hover { background: #e5e7f5; }
+
+  .format-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .format-card.card::before        { background: #F97316; }
+  .format-card.social::before      { background: #E1306C; }
+  .format-card.banner::before      { background: #3B82F6; }
+  .format-card.print::before       { background: #22C55E; }
+  .format-card.digital::before     { background: #A855F7; }
+
+  .format-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .format-card.card .format-label    { color: #F97316; }
+  .format-card.social .format-label  { color: #E1306C; }
+  .format-card.banner .format-label  { color: #3B82F6; }
+  .format-card.print .format-label   { color: #22C55E; }
+  .format-card.digital .format-label { color: #A855F7; }
+
+  .format-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .format-specs {
+    list-style: none;
+    padding: 0;
+  }
+
+  .format-specs li {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .format-specs li:last-child { border-bottom: none; }
+  .format-specs li span { color: var(--ink); font-weight: 500; }
+
+  /* FLOW */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 40px;
+  }
+
+  .flow-step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .flow-step:last-child { border-bottom: none; }
+
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    background: #fff3e8;
+    border: 1px solid var(--accent);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .step-content h3 {
+    margin-top: 0;
+    font-size: 16px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+  }
+
+  .step-content p {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  /* STACK TABLE */
+  .stack-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 36px;
+    font-size: 14px;
+  }
+
+  .stack-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .stack-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .stack-table td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .stack-table td:nth-child(2) { font-weight: 500; color: var(--ink); }
+  .stack-table td:nth-child(3) { color: var(--muted); font-size: 13px; }
+  .stack-table tr:hover td { background: #ebedf5; }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--code-bg);
+    color: var(--code-text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.8;
+    padding: 32px 36px;
+    margin: 28px 0;
+    overflow-x: auto;
+    border: 1px solid #1e2240;
+    white-space: pre;
+  }
+
+  .code-comment { color: #4b5563; }
+  .code-key { color: #fed7aa; }
+  .code-val { color: #86efac; }
+  .code-str { color: #fde68a; }
+
+  /* PHASES */
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+    margin-top: 40px;
+    border: 1px solid var(--rule);
+  }
+
+  .phase {
+    padding: 32px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    position: relative;
+  }
+
+  .phase-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .phase h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0 0 16px;
+  }
+
+  .phase ul { list-style: none; padding: 0; }
+
+  .phase ul li {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--rule);
+    line-height: 1.5;
+  }
+
+  .phase ul li:last-child { border-bottom: none; }
+
+  .phase-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--accent);
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    text-transform: uppercase;
+  }
+
+  /* SCOPE GRID */
+  .scope-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2px;
+    margin-top: 40px;
+    border: 1px solid var(--rule);
+  }
+
+  .scope-cell {
+    padding: 24px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+  }
+
+  .scope-cell h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--accent);
+  }
+
+  .scope-cell ul { list-style: none; padding: 0; }
+
+  .scope-cell ul li {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .scope-cell ul li:last-child { border-bottom: none; }
+
+  /* DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 40px 0 32px;
+  }
+
+  .divider-line { flex: 1; height: 1px; background: var(--rule); }
+
+  .divider-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    border-left: 4px solid var(--accent);
+    padding: 20px 24px;
+    background: #fff3e8;
+    margin: 28px 0;
+    font-size: 14px;
+    color: #431407;
+  }
+
+  .highlight-box strong {
+    font-family: 'Syne', sans-serif;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* DESIGN SHOWCASE — preview simulado de outputs */
+  .output-showcase {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 36px;
+  }
+
+  .output-mock {
+    border: 1px solid var(--rule);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .output-mock-inner {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .output-mock-inner.story { aspect-ratio: 9 / 16; }
+  .output-mock-inner.landscape { aspect-ratio: 16 / 9; }
+  .output-mock-inner.card { aspect-ratio: 1.75 / 1; }
+
+  .output-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-top: 1px solid var(--rule);
+    background: var(--paper);
+    text-align: center;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 48px 60px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 24px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .footer-brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+
+  .footer-brand span { color: var(--accent); }
+
+  .footer-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #6b7280;
+    text-align: right;
+  }
+
+  @media print {
+    body { background: white; }
+    body::before { display: none; }
+    section, .vision-block { page-break-inside: avoid; }
+  }
+
+  @media (max-width: 640px) {
+    header, section, .vision-block, footer { padding-left: 24px; padding-right: 24px; }
+    .header-bg-text { font-size: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-bg-text">FBR</div>
+  <div class="header-content">
+    <div class="tag">FBR-Design · Documento de Conceito — MVP v1.1</div>
+    <h1>Graphic Design<br><em>Virtual Agent</em></h1>
+    <p class="subtitle">Sistema FBR de automação inteligente para criação de materiais gráficos — cartões, posts, banners, thumbnails e peças institucionais — com agentes OpenClaw, orquestração n8n e LLM em cascata.</p>
+    <div class="header-meta">
+      <div class="meta-item"><strong>Sistema</strong>FBR-Design</div>
+      <div class="meta-item"><strong>Versão</strong>1.1 — MVP</div>
+      <div class="meta-item"><strong>Agentes</strong>OpenClaw Gateway</div>
+      <div class="meta-item"><strong>Orquestração</strong>n8n dedicado</div>
+      <div class="meta-item"><strong>Infraestrutura</strong>VPS Hetzner</div>
+      <div class="meta-item"><strong>Hub</strong>FBR-Click</div>
+    </div>
+  </div>
+</header>
+
+<!-- VISÃO -->
+<div class="vision-block">
+  <div class="section-number">00 — Visão do Projeto</div>
+  <h2>Por que este projeto existe</h2>
+  <blockquote class="vision-quote">
+    "Uma empresa com dezenas de sites, blogs e clientes ativos não pode depender de um designer humano para cada cartão de visita, post de Instagram ou banner de campanha. O design gráfico padronizado deve ser automatizado — com consistência de marca, qualidade visual e velocidade de entrega."
+  </blockquote>
+  <p>O FBR-Design é o sistema de automação gráfica da FBR. Recebe um briefing estruturado, aciona dois agentes OpenClaw especializados em sequência — o Compositor transforma o briefing em um material gráfico renderizado; o AssetFinder garante que cada peça tenha imagens de qualidade e licença adequada. O output são arquivos PNG, JPG e PDF prontos para uso.</p>
+  <p>O sistema segue integralmente a Bíblia FBR v1.0: agentes OpenClaw com 7 Markdowns versionados em Git, orquestração via n8n dedicado, cascata de LLMs com Ollama → Claude → GPT-4o, e toda interação humana centralizada no FBR-Click. Cada agente opera em <strong style="color:#fed7aa">uma única tarefa por vez</strong> — foco total, sem paralelismo dentro do mesmo agente.</p>
+</div>
+
+<!-- ESCOPO DE MATERIAIS -->
+<section>
+  <div class="section-number">01 — Categorias e Formatos</div>
+  <h2>Materiais suportados no MVP</h2>
+  <p>O sistema produz 27 tipos de materiais gráficos organizados em 5 categorias. Um único briefing pode gerar variantes simultâneas para múltiplos formatos — Feed 1:1, Stories 9:16, LinkedIn, Banner e Thumbnail gerados em paralelo a partir da mesma composição.</p>
+
+  <div class="formats-grid">
+    <div class="format-card card">
+      <div class="format-label">Identidade</div>
+      <h4>Cartão & Assinatura</h4>
+      <ul class="format-specs">
+        <li>Cartão de Visita <span>85 × 55mm</span></li>
+        <li>Assinatura de Email <span>600 × 200px</span></li>
+        <li>Crachá / Badge <span>85 × 55mm</span></li>
+        <li>Avatar Profissional <span>400 × 400px</span></li>
+        <li>Papel Timbrado <span>A4</span></li>
+      </ul>
+    </div>
+    <div class="format-card social">
+      <div class="format-label">Social Media</div>
+      <h4>Feed & Stories</h4>
+      <ul class="format-specs">
+        <li>Instagram Feed <span>1080 × 1080px</span></li>
+        <li>Instagram Story <span>1080 × 1920px</span></li>
+        <li>LinkedIn Post <span>1200 × 627px</span></li>
+        <li>Facebook Post <span>1200 × 630px</span></li>
+        <li>Twitter/X Card <span>1600 × 900px</span></li>
+      </ul>
+    </div>
+    <div class="format-card banner">
+      <div class="format-label">Digital</div>
+      <h4>Banners & Web</h4>
+      <ul class="format-specs">
+        <li>Site Banner <span>1920 × 600px</span></li>
+        <li>Blog Cover <span>1200 × 628px</span></li>
+        <li>YouTube Thumbnail <span>1280 × 720px</span></li>
+        <li>Promo Banner <span>728 × 90px</span></li>
+        <li>Pop-up <span>600 × 400px</span></li>
+      </ul>
+    </div>
+    <div class="format-card print">
+      <div class="format-label">Impresso</div>
+      <h4>Documentos & Peças</h4>
+      <ul class="format-specs">
+        <li>Flyer <span>A5 / A6</span></li>
+        <li>Folder <span>A4 dobrado</span></li>
+        <li>Cartaz / Poster <span>A3 / A2</span></li>
+        <li>Certificado <span>A4 landscape</span></li>
+        <li>Proposta Comercial <span>A4</span></li>
+      </ul>
+    </div>
+    <div class="format-card digital">
+      <div class="format-label">Conteúdo</div>
+      <h4>Apresentações & Info</h4>
+      <ul class="format-specs">
+        <li>Infográfico <span>1080 × 1920px</span></li>
+        <li>Ebook Cover <span>1600 × 2400px</span></li>
+        <li>Checklist Visual <span>A4</span></li>
+        <li>Org Chart <span>A3</span></li>
+        <li>Apresentação <span>16:9</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Variantes automáticas por job</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="scope-grid">
+    <div class="scope-cell">
+      <h4>Feed 1:1</h4>
+      <ul>
+        <li>Instagram Feed</li>
+        <li>Facebook Post</li>
+        <li>1080 × 1080px</li>
+        <li>PNG / JPG</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Story 9:16</h4>
+      <ul>
+        <li>Instagram Stories</li>
+        <li>WhatsApp Status</li>
+        <li>1080 × 1920px</li>
+        <li>PNG / JPG</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>LinkedIn</h4>
+      <ul>
+        <li>LinkedIn Post</li>
+        <li>LinkedIn Banner</li>
+        <li>1200 × 627px</li>
+        <li>PNG / JPG</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Banner Web</h4>
+      <ul>
+        <li>Site Hero</li>
+        <li>Blog Cover</li>
+        <li>1920 × 600px</li>
+        <li>PNG / JPG</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Thumbnail</h4>
+      <ul>
+        <li>YouTube</li>
+        <li>Blog Post</li>
+        <li>1280 × 720px</li>
+        <li>PNG / JPG</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Documento</h4>
+      <ul>
+        <li>Proposta PDF</li>
+        <li>Relatório PDF</li>
+        <li>A4 portrait</li>
+        <li>PDF</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FLUXO DE PRODUÇÃO -->
+<section>
+  <div class="section-number">02 — Fluxo de Produção</div>
+  <h2>Como uma peça gráfica é processada</h2>
+  <p>Todo trabalho segue um pipeline determinístico com aprovação humana obrigatória. O Compositor seleciona o template, compõe o HTML e renderiza; o AssetFinder garante que as imagens certas cheguem com licença adequada. O Supervisor aprova antes da entrega.</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <h3>Recepção do Briefing</h3>
+        <p>O operador preenche o wizard em 4 etapas: tipo de material e cliente, conteúdo textual e tom, preferências visuais e referências, e upload de assets do cliente (logo, fotos, documentos). O brand kit do cliente é carregado automaticamente.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <h3>Agente Compositor — Interpretação e Seleção de Template</h3>
+        <p>O agente FBR-Design-Compositor é acionado pelo n8n. Ele interpreta o briefing, realiza busca semântica no banco de templates via PostgreSQL (tsvector), seleciona o template de maior score de compatibilidade e mapeia os campos do briefing para as variáveis do template. LLM primário: Ollama. Fallback: Claude API → GPT-4o.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <h3>Agente AssetFinder — Busca e Geração de Imagens</h3>
+        <p>O agente FBR-Design-AssetFinder é acionado via n8n pelo Compositor. Ele busca assets visuais em cascata: Unsplash → Pexels → Pixabay (score ≥ 0.8 em cada). Se nenhum banco gratuito atender, gera via MidJourney — neste caso, flag de aprovação obrigatória é ativada.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <h3>Composição HTML + Brand Kit</h3>
+        <p>O Compositor carrega o HTML do template, injeta todas as variáveis — textos, imagens, cores do brand kit, fontes, logo do cliente — e valida o HTML resultante. O brand kit do cliente é inviolável: cores, tipografia e identidade visual aplicados automaticamente em 100% das peças.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">05</div>
+      <div class="step-content">
+        <h3>Renderização — HTMLCSStoImage + Bannerbear</h3>
+        <p>O HTML composto é enviado para a HTMLCSStoImage API, que retorna PNG/JPG/PDF de alta qualidade. Se falhar, Bannerbear atua como fallback de renderização. As variantes automáticas (Feed, Story, LinkedIn, Banner, Thumbnail) são geradas a partir da mesma composição.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">06</div>
+      <div class="step-content">
+        <h3>Armazenamento e Notificação</h3>
+        <p>Os outputs são salvos no MinIO (3 buckets: outputs, uploads, templates). O job é atualizado no PostgreSQL com status <code style="font-family:'DM Mono',monospace;font-size:13px;color:#F97316">aguardando_aprovacao</code>. Um alerta é criado na tabela <code style="font-family:'DM Mono',monospace;font-size:13px;color:#F97316">alerts</code> com <code style="font-family:'DM Mono',monospace;font-size:13px;color:#F97316">fbr_click_notified = false</code>.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">07</div>
+      <div class="step-content">
+        <h3>Aprovação & Entrega via FBR-Click</h3>
+        <p>O agente posta no canal <strong>#fbr-design</strong> do FBR-Click como membro ativo — nunca como webhook anônimo. O Supervisor visualiza o preview, aprova, solicita ajuste ou rejeita com nota. Após aprovação, o operador faz o download de todas as variantes. <code style="font-family:'DM Mono',monospace;font-size:13px;color:#F97316">fbr_click_notified</code> marcado como <code style="font-family:'DM Mono',monospace;font-size:13px;color:#F97316">true</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK TÉCNICA -->
+<section>
+  <div class="section-number">03 — Stack Técnica</div>
+  <h2>Tecnologias do MVP</h2>
+  <p>Stack orientada à composição HTML e renderização de imagens, mantendo o padrão FBR de infraestrutura containerizada em VPS Hetzner e agentes OpenClaw com 7 Markdowns. Cada serviço tem fallback definido.</p>
+
+  <table class="stack-table">
+    <thead>
+      <tr>
+        <th>Camada</th>
+        <th>Tecnologia</th>
+        <th>Papel no Sistema</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Backend</td><td>FastAPI + Python 3.11+</td><td>API REST assíncrona. Isolamento por role via dependency injection.</td></tr>
+      <tr><td>Frontend</td><td>Next.js 15 + TypeScript strict</td><td>Dashboard interno. Proxy obrigatório — nunca acessa backend diretamente.</td></tr>
+      <tr><td>UI</td><td>Tailwind CSS 4 + shadcn/ui</td><td>Dark mode fixo (#101622). Fontes: Outfit (títulos) + Inter (corpo).</td></tr>
+      <tr><td>Auth</td><td>iron-session (cookie httpOnly)</td><td>SESSION_SECRET 32+ chars. sameSite=lax. Sem localStorage.</td></tr>
+      <tr><td>Banco</td><td>PostgreSQL 16</td><td>Schema com soft delete universal. Busca semântica via tsvector.</td></tr>
+      <tr><td>Cache / Filas</td><td>Redis 7</td><td>Status das camadas LLM publicado pelo n8n. Filas de jobs.</td></tr>
+      <tr><td>Storage</td><td>MinIO (S3-compatible)</td><td>3 buckets: outputs, uploads, templates. URLs assinadas temporárias.</td></tr>
+      <tr><td>Orquestração</td><td>n8n (instância dedicada)</td><td>Decide QUANDO/POR QUÊ o agente é chamado. Health check LLM a cada 60s.</td></tr>
+      <tr><td>Agentes</td><td>OpenClaw Gateway</td><td>Decide O QUÊ o agente faz. Nunca LangGraph, CrewAI ou AutoGen.</td></tr>
+      <tr><td>Renderização</td><td>HTMLCSStoImage API</td><td>Primário. Converte HTML+CSS em PNG/JPG/PDF de alta qualidade.</td></tr>
+      <tr><td>Render Fallback</td><td>Bannerbear API</td><td>Fallback de renderização. Variantes em massa.</td></tr>
+      <tr><td>Assets Gratuitos</td><td>Unsplash + Pexels + Pixabay</td><td>Cascata de busca gratuita. Prioridade por score de relevância ≥ 0.8.</td></tr>
+      <tr><td>Assets IA</td><td>MidJourney API</td><td>Fallback final de geração. Requer aprovação obrigatória do Supervisor.</td></tr>
+      <tr><td>LLM Camada 1</td><td>Ollama — Mac Mini M4 via Tailscale</td><td>Classificação, scoring semântico, seleção de template. Timeout: 15s.</td></tr>
+      <tr><td>LLM Camada 2</td><td>Claude API (claude-sonnet-4-6)</td><td>Raciocínio complexo, composição de variáveis. Timeout: 30s.</td></tr>
+      <tr><td>LLM Camada 3</td><td>GPT-4o API</td><td>Contingência total. Nunca primário. Timeout: 30s.</td></tr>
+      <tr><td>Infraestrutura</td><td>VPS Hetzner + Docker Compose</td><td>Isolada. Falha não cascadeia para outros sistemas FBR.</td></tr>
+      <tr><td>Rede Privada</td><td>Tailscale</td><td>Acesso ao Mac Mini M4 (Ollama). Comunicação interna segura.</td></tr>
+      <tr><td>Proxy Reverso</td><td>Nginx + Certbot</td><td>SSL automático. CORS restritivo — apenas domínio do frontend.</td></tr>
+      <tr><td>Monitoramento</td><td>Grafana + Prometheus</td><td>Métricas do FastAPI. Logs JSON estruturados via structlog.</td></tr>
+      <tr><td>Hub Humano</td><td>FBR-Click · canal #fbr-design</td><td>Agentes como membros ativos. Toda aprovação e alerta passa por aqui.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- OUTPUT JSON -->
+<section>
+  <div class="section-number">04 — Estrutura de Dados</div>
+  <h2>Anatomia de um job de design</h2>
+  <p>Cada solicitação de design gera um job com briefing estruturado, pipeline de execução rastreado e outputs versionados. O campo <code style="font-family:'DM Mono',monospace;font-size:14px;color:#F97316">llm_used</code> usa sempre o enum <code style="font-family:'DM Mono',monospace;font-size:14px;color:#F97316">ollama | claude | gpt4o</code> — nunca valores genéricos.</p>
+
+  <div class="code-block">
+<span class="code-comment">// Job de Design — Exemplo: Cartão de Visita Jurídico</span>
+
+{
+  <span class="code-key">job_id</span>:               <span class="code-str">"a1b2c3d4-..."</span>,
+  <span class="code-key">status</span>:              <span class="code-str">"aguardando_aprovacao"</span>,
+  <span class="code-key">llm_used</span>:            <span class="code-str">"ollama"</span>,          <span class="code-comment">// enum: ollama | claude | gpt4o</span>
+  <span class="code-key">template_selecionado</span>: <span class="code-str">"Cartão Minimalista Corporativo B"</span>,
+  <span class="code-key">template_score</span>:      <span class="code-val">0.94</span>,
+
+  <span class="code-key">briefing</span>: {
+    <span class="code-key">tipo_material</span>:     <span class="code-str">"business_card"</span>,
+    <span class="code-key">cliente</span>:           <span class="code-str">"Advocacia Martins"</span>,
+    <span class="code-key">textos</span>: {
+      <span class="code-key">nome</span>:             <span class="code-str">"Dr. Carlos Martins"</span>,
+      <span class="code-key">cargo</span>:            <span class="code-str">"Sócio-Fundador"</span>,
+      <span class="code-key">telefone</span>:         <span class="code-str">"(11) 99999-0000"</span>,
+      <span class="code-key">email</span>:            <span class="code-str">"carlos@martinsadv.com.br"</span>,
+      <span class="code-key">site</span>:             <span class="code-str">"martinsadv.com.br"</span>
+    },
+    <span class="code-key">tom_desejado</span>:      <span class="code-str">"profissional"</span>,
+    <span class="code-key">setor</span>:             <span class="code-str">"juridico"</span>
+  },
+
+  <span class="code-key">brand_kit_aplicado</span>: {
+    <span class="code-key">primary_color</span>:     <span class="code-str">"#1a2540"</span>,
+    <span class="code-key">secondary_color</span>:   <span class="code-str">"#c9a84c"</span>,
+    <span class="code-key">font_heading</span>:      <span class="code-str">"Cormorant Garamond"</span>,
+    <span class="code-key">font_body</span>:         <span class="code-str">"Raleway"</span>,
+    <span class="code-key">logo_url</span>:          <span class="code-str">"minio://uploads/martins-logo.svg"</span>
+  },
+
+  <span class="code-key">assets</span>: [
+    { <span class="code-val">origem</span>: <span class="code-str">"upload"</span>,   <span class="code-val">tipo</span>: <span class="code-str">"logo"</span>,     <span class="code-val">url</span>: <span class="code-str">"minio://..."</span>, <span class="code-val">aprovado</span>: <span class="code-val">true</span> },
+    { <span class="code-val">origem</span>: <span class="code-str">"unsplash"</span>, <span class="code-val">tipo</span>: <span class="code-str">"textura"</span>,  <span class="code-val">url</span>: <span class="code-str">"https://..."</span>, <span class="code-val">aprovado</span>: <span class="code-val">true</span> }
+  ],
+
+  <span class="code-key">outputs</span>: {
+    <span class="code-key">principal</span>:        <span class="code-str">"minio://outputs/job-a1b2/card-frente.png"</span>,
+    <span class="code-key">variantes</span>: {
+      <span class="code-key">feed_1x1</span>:       <span class="code-str">"minio://outputs/job-a1b2/feed.png"</span>,
+      <span class="code-key">story_9x16</span>:     <span class="code-str">"minio://outputs/job-a1b2/story.png"</span>,
+      <span class="code-key">linkedin</span>:       <span class="code-str">"minio://outputs/job-a1b2/linkedin.png"</span>,
+      <span class="code-key">banner</span>:         <span class="code-str">"minio://outputs/job-a1b2/banner.png"</span>,
+      <span class="code-key">thumbnail</span>:      <span class="code-str">"minio://outputs/job-a1b2/thumb.png"</span>
+    }
+  },
+
+  <span class="code-key">alert</span>: {
+    <span class="code-key">type</span>:                     <span class="code-str">"job_aguardando_aprovacao"</span>,
+    <span class="code-key">fbr_click_notified</span>:       <span class="code-val">true</span>,   <span class="code-comment">// sempre rastreado</span>
+    <span class="code-key">fbr_click_message_id</span>:     <span class="code-str">"msg_xyz123"</span>
+  },
+
+  <span class="code-key">tempo_processamento_s</span>:  <span class="code-val">38</span>,
+  <span class="code-key">aprovado_por</span>:           <span class="code-str">null</span>,        <span class="code-comment">// aguardando Supervisor</span>
+  <span class="code-key">created_at</span>:             <span class="code-str">"2026-03-12T14:22:00Z"</span>
+}
+  </div>
+</section>
+
+<!-- AGENTES OPENCLAW -->
+<section>
+  <div class="section-number">05 — Agentes OpenClaw FBR</div>
+  <h2>Como os agentes do FBR-Design funcionam</h2>
+  <p>Todo agente do FBR-Design segue o padrão OpenClaw obrigatório da Bíblia FBR: definido por exatamente 7 arquivos Markdown versionados em Git, sem exceção. Cada agente trabalha em <strong>uma única tarefa por vez</strong> — foco total, sem paralelismo interno. O sistema <strong>integra</strong> com os agentes — nunca os implementa internamente.</p>
+
+  <div class="highlight-box">
+    <strong>Princípio: n8n orquestra, OpenClaw executa</strong>
+    O n8n (instância dedicada FBR-Design) decide quando e por que um agente é chamado. O OpenClaw Gateway decide o que o agente faz quando chamado. Os dois não se substituem — são camadas complementares e obrigatórias. O backend nunca chama LLM diretamente — toda inferência passa pelo OpenClaw Gateway.
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Agentes do MVP</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="grid-card">
+      <span class="icon">🎨</span>
+      <h3>FBR-Design-Compositor</h3>
+      <p>Agente de pipeline principal. Recebe o briefing, faz busca semântica de templates, mapeia variáveis, aciona o AssetFinder via n8n, compõe o HTML com o brand kit do cliente, aciona a renderização e notifica o FBR-Click. Opera do briefing ao output renderizado em uma única execução.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🔍</span>
+      <h3>FBR-Design-AssetFinder</h3>
+      <p>Agente especializado em busca e geração de assets visuais. Cascata obrigatória: Unsplash → Pexels → Pixabay (gratuitos, sem copyright). Se nenhum banco retornar score ≥ 0.8, gera via MidJourney — com flag de aprovação obrigatória. Registra origem, licença e crédito de cada asset na tabela <code style="font-family:'DM Mono',monospace;font-size:13px">assets</code>.</p>
+    </div>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Os 7 Markdowns obrigatórios por agente</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="scope-grid">
+    <div class="scope-cell">
+      <h4>SOUL.md</h4>
+      <ul>
+        <li>Carregado primeiro</li>
+        <li>Nada sobrescreve</li>
+        <li>Valores e ética</li>
+        <li>Restrições absolutas</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>IDENTITY.md</h4>
+      <ul>
+        <li>Nome e role</li>
+        <li>Canal FBR-Click</li>
+        <li>LLMs primário e fallback</li>
+        <li>Owner designado</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>TASKS.md</h4>
+      <ul>
+        <li>Tarefas e triggers</li>
+        <li>Mais editado na evolução</li>
+        <li>Passos em ordem</li>
+        <li>Uma tarefa por vez</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>AGENTS.md</h4>
+      <ul>
+        <li>Scope de canais</li>
+        <li>Limites de autonomia</li>
+        <li>Aprovações obrigatórias</li>
+        <li>Lista nunca vazia</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>MEMORY.md</h4>
+      <ul>
+        <li>Fatos duráveis</li>
+        <li>Padrões aprendidos</li>
+        <li>Atualizado pelo agente</li>
+        <li>Templates + brand kits</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>TOOLS.md + USER.md</h4>
+      <ul>
+        <li>APIs disponíveis</li>
+        <li>Ordem de prioridade</li>
+        <li>Contexto da empresa</li>
+        <li>Preferências do time</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Cascata de LLM — padrão FBR</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="code-block">
+<span class="code-comment"># Cascata LLM — FBR-Design (enum obrigatório: ollama | claude | gpt4o)</span>
+
+<span class="code-key">Camada 1</span> — Ollama (Mac Mini M4 32GB via Tailscale)   <span class="code-comment"># primário</span>
+  → Uso: classificação de briefing, scoring de templates, seleção semântica
+  → Timeout: 15s · Fallback automático se offline > 30s
+  → Enum: <span class="code-str">"ollama"</span>
+
+<span class="code-key">Camada 2</span> — Claude API (claude-sonnet-4-6)              <span class="code-comment"># fallback 1</span>
+  → Uso: raciocínio complexo, composição de variáveis, personalização
+  → Timeout: 30s · Fallback se rate limit ou erro
+  → Enum: <span class="code-str">"claude"</span>
+
+<span class="code-key">Camada 3</span> — GPT-4o API                              <span class="code-comment"># contingência</span>
+  → Uso: reserva total · nunca usado como primário
+  → Timeout: 30s · Fallback: alerta crítico no FBR-Click
+  → Enum: <span class="code-str">"gpt4o"</span>
+
+<span class="code-comment"># n8n faz health check nas 3 camadas a cada 60s → publica no Redis</span>
+<span class="code-comment"># llm.py lê Redis antes de cada chamada — sem latência de health check</span>
+<span class="code-comment"># Backend NUNCA chama LLM diretamente — toda inferência via OpenClaw</span>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Processo de criação de agentes (6 passos obrigatórios)</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h3>Owner define propósito e limites</h3>
+        <p>Responsabilidades claras, lista de ações autônomas e lista de ações que requerem aprovação humana. A lista de aprovações nunca pode estar vazia.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h3>Criação do repositório Git com os 7 Markdowns</h3>
+        <p>SOUL.md é preenchido primeiro. Nenhum agente é ativado sem todos os 7 arquivos presentes e completos.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h3>Pull Request obrigatório</h3>
+        <p>O Arquiteto FBR revisa os 7 Markdowns antes de qualquer ativação. Nenhuma exceção, nem para protótipos.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h3>Registro no FBR-Click</h3>
+        <p>Admin registra a URL do repositório Git na tabela <code style="font-family:'DM Mono',monospace;font-size:13px;color:#F97316">agents</code> com <code style="font-family:'DM Mono',monospace;font-size:13px;color:#F97316">openclaw_agent_id</code> e <code style="font-family:'DM Mono',monospace;font-size:13px;color:#F97316">git_repo_url</code>. Não há endpoint de criação no painel.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <h3>Período de observação — 7 dias</h3>
+        <p>Monitoramento ativo com kill switch pronto. Qualquer comportamento anômalo resulta em desativação imediata.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="step-num">6</div>
+      <div class="step-content">
+        <h3>Aprovação formal de operação plena</h3>
+        <p>Owner assina a aprovação formal. Apenas após este passo o agente opera sem supervisão ativa.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECURSOS DO SISTEMA -->
+<section>
+  <div class="section-number">06 — Recursos do Sistema</div>
+  <h2>Funcionalidades do MVP</h2>
+
+  <div class="grid-2">
+    <div class="grid-card">
+      <span class="icon">📋</span>
+      <h3>Briefing Wizard em 4 Etapas</h3>
+      <p>Formulário guiado que adapta os campos ao tipo de material selecionado. Um briefing de cartão de visita pede nome, cargo e contato; um de post social pede título, chamada e CTA. Brand kit carregado automaticamente pelo cliente.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🧠</span>
+      <h3>Busca Semântica de Templates</h3>
+      <p>O agente seleciona o template mais adequado via tsvector do PostgreSQL. Parâmetros de match: categoria, subcategoria, estilo visual, setor indicado. Retorna top 3 candidatos com score de compatibilidade antes de selecionar.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🎨</span>
+      <h3>Brand Kit Engine</h3>
+      <p>Cada cliente tem cores primária/secundária, tipografia, logo e guidelines configurados. O brand kit é aplicado automaticamente em 100% das peças. Inviolável: o agente não pode substituir o brand kit sem aprovação explícita do Supervisor.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🖼️</span>
+      <h3>Assets em Cascata</h3>
+      <p>1º busca em Unsplash, Pexels e Pixabay (gratuitos, sem copyright). Score mínimo de 0.8 para aceitar. Se nenhum banco atender, gera via MidJourney com flag de aprovação obrigatória. Assets do cliente têm prioridade absoluta.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">⚡</span>
+      <h3>Renderização HTML → Imagem</h3>
+      <p>Templates em HTML/CSS puro são renderizados via HTMLCSStoImage API em PNG/JPG/PDF de alta qualidade. Bannerbear como fallback. Sem dependência de ferramentas de design proprietárias — templates versionados em Git.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">📐</span>
+      <h3>Variantes Automáticas</h3>
+      <p>A partir de uma única composição aprovada, o sistema gera automaticamente todas as variantes: Feed 1:1, Story 9:16, LinkedIn, Banner Web e Thumbnail. Cinco formatos entregues por job, sem esforço adicional do operador.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">✅</span>
+      <h3>Aprovação via FBR-Click</h3>
+      <p>O agente posta o preview no canal #fbr-design como membro ativo — nunca como webhook anônimo. O Supervisor aprova ou rejeita com nota. Toda aprovação dispara confirm-dialog no frontend. Alertas rastreados com <code style="font-family:'DM Mono',monospace;font-size:12px">fbr_click_notified</code>.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🔒</span>
+      <h3>Controle de Acesso por Role</h3>
+      <p>Três roles: Operador (submete briefings, vê seus próprios jobs), Supervisor (aprova, vê todos os jobs), Admin (gerencia templates, brand kits e clientes). Isolamento de dados via dependency injection — sem acesso cruzado.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🎛️</span>
+      <h3>Painel de Templates (Admin)</h3>
+      <p>Galeria com busca semântica em tempo real (debounce 500ms). Templates criados em HTML/CSS puro, versionados em Git. Futuro: ingest visual via Claude Vision para analisar referências do Behance/Dribbble e gerar templates equivalentes.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">📊</span>
+      <h3>Dashboard & Analytics</h3>
+      <p>Métricas de produção: jobs por período, taxa de aprovação, tempo médio de processamento, templates mais usados, distribuição de uso por camada LLM (ollama / claude / gpt4o). Gráficos via Recharts.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section>
+  <div class="section-number">07 — Roadmap</div>
+  <h2>Fases de desenvolvimento</h2>
+  <p>O MVP é dividido em três frentes alinhadas ao processo obrigatório de criação de agentes FBR: fundação de infraestrutura na VPS Hetzner, configuração dos agentes OpenClaw com seus 7 Markdowns, e interface Next.js com aprovação via FBR-Click.</p>
+
+  <div class="phases">
+    <div class="phase">
+      <div class="phase-badge">Fase 1</div>
+      <div class="phase-label">Fundação</div>
+      <h3>Infraestrutura & Backend</h3>
+      <ul>
+        <li>VPS Hetzner + Docker Compose</li>
+        <li>FastAPI + PostgreSQL 16 + Redis 7</li>
+        <li>Schema SQL completo (10 tabelas)</li>
+        <li>Tabela <code style="font-family:'DM Mono',monospace;font-size:12px">agents</code> com openclaw_agent_id</li>
+        <li>Tabela <code style="font-family:'DM Mono',monospace;font-size:12px">alerts</code> com fbr_click_notified</li>
+        <li>Soft delete em todas as tabelas</li>
+        <li>n8n instância dedicada FBR-Design</li>
+        <li>MinIO storage (3 buckets)</li>
+        <li>Tailscale → Mac Mini M4 (Ollama)</li>
+        <li>Nginx + Certbot + Grafana</li>
+        <li>Integrações: HTMLCSStoImage, Bannerbear</li>
+        <li>Integrações: Unsplash, Pexels, Pixabay</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-badge">Fase 2</div>
+      <div class="phase-label">Agentes</div>
+      <h3>OpenClaw & Pipeline</h3>
+      <ul>
+        <li>7 Markdowns do Compositor (PR obrigatório)</li>
+        <li>7 Markdowns do AssetFinder (PR obrigatório)</li>
+        <li>Registro na tabela agents + FBR-Click</li>
+        <li>Período de observação (7 dias)</li>
+        <li>Cascata LLM: Ollama → Claude → GPT-4o</li>
+        <li>n8n workflows (health check, job, alertas)</li>
+        <li>Busca semântica de templates (tsvector)</li>
+        <li>Pipeline de composição HTML</li>
+        <li>Cascata de assets (gratuitos → MidJourney)</li>
+        <li>Renderização + variantes automáticas</li>
+        <li>alert_service + fbr_click_service</li>
+        <li>Isolamento por role (dependency injection)</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-badge">Fase 3</div>
+      <div class="phase-label">Interface</div>
+      <h3>UI & FBR-Click</h3>
+      <ul>
+        <li>Next.js 15 + TypeScript strict + shadcn/ui</li>
+        <li>Dark mode fixo (#101622) + Outfit + Inter</li>
+        <li>Wizard de briefing em 4 etapas</li>
+        <li>Polling de status em tempo real (3s)</li>
+        <li>Preview de output + grid de variantes</li>
+        <li>ConfirmDialog em ações irreversíveis</li>
+        <li>Canal #fbr-design no FBR-Click</li>
+        <li>Agentes como membros ativos</li>
+        <li>Galeria de templates com busca semântica</li>
+        <li>Brand kits com color pickers + preview</li>
+        <li>Dashboard de métricas e analytics</li>
+        <li>Aprovação formal de operação plena</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">FBR<span>-</span>Design</div>
+    <div style="font-family:'DM Mono',monospace;font-size:12px;color:#6b7280;margin-top:8px;">Documento de Conceito — MVP v1.1 · Alinhado à Bíblia FBR v1.0</div>
+  </div>
+  <div class="footer-note">
+    Gerado em março de 2026<br>
+    Confidencial — uso interno
+  </div>
+</footer>
+
+</body>
+</html>

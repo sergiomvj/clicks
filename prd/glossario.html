@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glossário Oficial - FBR-CLICK</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #111827;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 40px;
+        }
+
+        .letter-group {
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #3b82f6;
+            border-bottom: 2px solid #d1d5db;
+            padding-bottom: 10px;
+        }
+
+        .term-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #3b82f6;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .term-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .term-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin: 0 0 8px 0;
+        }
+
+        .term-desc {
+            margin: 0;
+            color: #4b5563;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .term-card { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Glossário do Ecossistema FBR</h1>
+        <p class="subtitle">Termos técnicos, de negócios e jargões da operação organizados em ordem alfabética.</p>
+
+        <div class="letter-group">#</div>
+
+        <div class="term-card">
+            <h3 class="term-title">1FBR-Dev</h3>
+            <p class="term-desc">Área, equipe ou fluxo interno de desenvolvimento que gera eventos/gatilhos para criação de leads.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">1FBR-Leads</h3>
+            <p class="term-desc">Sistema de entrada e pré-captação de leads. É responsável pela coleta inicial em páginas (LPs) ou tráfego e por enviar ("handoff") os potenciais clientes ao FBR-CLICK.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">1FBR-Suporte</h3>
+            <p class="term-desc">Sistema ou canal dedicado a tickets de usuários. Em determinadas situações, um atendimento de suporte pode gerar uma nova oportunidade de venda (intake).</p>
+        </div>
+
+        <div class="letter-group">A</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Agente Inteligente (IA)</h3>
+            <p class="term-desc">Sistema treinado em inteligência artificial responsável por ações independentes guiadas por lógica predefinida, como gerenciar interações, classificar leads ou fazer follow-ups automáticos.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Ambientes (Dev, Staging, Prod)</h3>
+            <p class="term-desc">Separação da infraestrutura em que o sistema roda: <b>Dev</b> (Computador do programador), <b>Staging</b> (Espelho idêntico ao real usado para testes pesados) e <b>Prod</b> (A vida real rodando para os clientes).</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">API (Application Programming Interface)</h3>
+            <p class="term-desc">Conjunto centralizado de rotas e códigos por onde os sistemas da FBR conversam e trocam dados na nuvem.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Approval Flow (Fluxo de Aprovação)</h3>
+            <p class="term-desc">Regras que determinam quando um Agente pode atuar sozinho ou quando ele deve pausar o fluxo e pedir permissão explícita a um humano para concluir uma ação destrutiva ou muito sensível.</p>
+        </div>
+
+        <div class="letter-group">B</div>
+
+        <div class="term-card">
+            <h3 class="term-title">B2B (Business to Business)</h3>
+            <p class="term-desc">Modelo de negócio focado em vender para outras empresas (PJ).</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">B2C (Business to Consumer)</h3>
+            <p class="term-desc">Modelo de negócio focado em vender diretamente para o consumidor final (Pessoa Física).</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Bounce Rate</h3>
+            <p class="term-desc">Taxa de rejeição. Em sites, é a porcentagem dos visitantes que entraram em uma página e saíram sem interagir. Em e-mails, indica e-mails que voltaram sem serem entregues.</p>
+        </div>
+
+        <div class="letter-group">C</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Canal</h3>
+            <p class="term-desc">O meio exato pelo qual a comunicação com o prospect acontecerá ou aconteceu (WhatsApp, Email, Telefone, SMS).</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Certbot / SSL</h3>
+            <p class="term-desc">Ferramenta e certificado que garantem a criptografia entre o site da FBR e o navegador do cliente. Fornece o famoso "cadeadinho de segurança HTTPS".</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Churn Rate</h3>
+            <p class="term-desc">Taxa de cancelamento. Mede o percentual de clientes que parou de pagar pela assinatura mensal do produto em dado momento de tempo.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Comercial-bot / Report-bot</h3>
+            <p class="term-desc">Agentes específicos da FBR. O comercial pode lidar com primeira tratativa ou acompanhamento comercial, enquanto o report-bot gera métricas ou feedbacks às partes envolvidas.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Conversão</h3>
+            <p class="term-desc">Quando o visitante ou lead realiza exatamente a ação central e principal programada para ele (agendamento, compra ou preenchimento de formulário).</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">CRM (Customer Relationship Management)</h3>
+            <p class="term-desc">Software que organiza todo o processo e ciclo de vida de comunicação comercial com o cliente. O 'FBR-CLICK' é essencialmente um CRM focado e veloz.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Customer Success (CS)</h3>
+            <p class="term-desc">Profissional ou equipe que age de maneira proativa para garantir que o cliente obtenha o máximo de sucesso com o produto/serviço que comprou.</p>
+        </div>
+
+        <div class="letter-group">D</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Deal (Oportunidade)</h3>
+            <p class="term-desc">Representa uma oportunidade de venda real iniciada nos pipelines. Contém dinheiro provável em jogo, e uma negociação acontecendo.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Deal.Lost (Perdido)</h3>
+            <p class="term-desc">Status final que a oportunidade ganha quando a negociação deu errado ou o cliente esfriou e recusou prosseguir.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Deal.Won (Ganho)</h3>
+            <p class="term-desc">Status final quando o cliente comprou e pagou/deu o aceite contratual definitivo na venda.</p>
+        </div>
+
+        <div class="letter-group">E</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Endpoint</h3>
+            <p class="term-desc">O ponto/endereço final de ligação na web para qual sistemas disparam e recebem dados (ex: `api/v1/webhook`).</p>
+        </div>
+
+        <div class="letter-group">F</div>
+
+        <div class="term-card">
+            <h3 class="term-title">FBR-CLICK</h3>
+            <p class="term-desc">Nome do novo e revolucionário sistema de CRM e Gestão Inteligente desenvolvido pela FBR para centralizar os clientes que foram convertidas.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Funil de Prospecção</h3>
+            <p class="term-desc">Segmento no CRM destinado a leads 'gelados' ou muito incompletos que precisam primeiro passar por uma varredura de enriquecimento maciço ou de recuperação e só prosseguem como Deal se responderem algo em determinado tempo.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Funil de Vendas (Pipeline Comercial)</h3>
+            <p class="term-desc">Ferramenta em tela contendo todas as trilhas ou "esteiras" visuais de vendas onde um card anda no tempo. Reflete diretamente as etapas do contato.</p>
+        </div>
+
+        <div class="letter-group">G</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Go-Live</h3>
+            <p class="term-desc">O momento apoteótico onde tudo que foi construído em dev e homologação é transportado para o mundo real dos usuários sem chance de erro (lançamento prático do sistema).</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Grafana / Prometheus (Observabilidade)</h3>
+            <p class="term-desc">Ferramentas de médicos de dados. Elas rastreiam os batimentos cardíacos dos nossos servidores e emitem sirenes caso as automações quebrem na madrugada e/ou o uso da memória dispare em um dos computadores na nuvem.</p>
+        </div>
+
+        <div class="letter-group">H</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Handoff</h3>
+            <p class="term-desc">Ação de passar o bastão. É o disparo e travessia oficial de um lead gerado (1FBR-Leads) sendo mandando no ar para aterrisar (FBR-CLICK).</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">HMAC (Hash-based Message Authentication Code)</h3>
+            <p class="term-desc">Técnica em que os dois sistemas disparam códigos criptografados um para outro e ambos assinam verificando se as senhas batem exata com a "chave da gaveta" de cada servidor e assim atestam que o contato não é hacker, e sim, genuíno.</p>
+        </div>
+
+        <div class="letter-group">I</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Inbound Marketing</h3>
+            <p class="term-desc">Marketing da atração. Ao invés do vendedor correr ativamente ligando na rua, o cliente tropeça num blog/vídeo da marca sozinho ou de livre vontade e preenche um lead por conta própria.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Intake</h3>
+            <p class="term-desc">Processo ou "Pátio/Estufa" de triagem de primeira camada onde leads de origens meio suspeitas são colocados para checagem rápida em lote com a intenção de barrar amadores ou qualificar apenas negócios bons para a etapa posterior.</p>
+        </div>
+
+        <div class="letter-group">J</div>
+
+        <div class="term-card">
+            <h3 class="term-title">JWT (JSON Web Token)</h3>
+            <p class="term-desc">Carteirinha de segurança virtual. Quando você faz login, o servidor da FBR te imprime um bilhete de papel virtual criptografado em segundos afirmando que você pode ter acesso e navegar. Quando o bilhete "expira", você tem que relogar.</p>
+        </div>
+
+        <div class="letter-group">L</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Lead</h3>
+            <p class="term-desc">A partícula atômica principal. Uma pessoa de carne e osso com um e-mail verdadeiro ou contato de telefone, que possui no mínimo um traço de fomento a possivelmente se tornar consumidor.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">LTV (Lifetime Value)</h3>
+            <p class="term-desc">Métrica de todo o montante bruto monetário em Reais que um cliente retornou durante todos os meses da sua assinatura ou de repetições de sua vida com o negócio.</p>
+        </div>
+
+        <div class="letter-group">M</div>
+
+        <div class="term-card">
+            <h3 class="term-title">MVP (Minimum Viable Product)</h3>
+            <p class="term-desc">Produto Mínimo Viável. Ferramenta desprovida de perfeccionismo estético em um determinado dia mas sim contendo uma "espinha dorsal funcional" que traga lucro imediato aos donos do software antes de encher com outros mil recursos.</p>
+        </div>
+
+        <div class="letter-group">O</div>
+
+        <div class="term-card">
+            <h3 class="term-title">OpenClaw</h3>
+            <p class="term-desc">A matriz mestra de IA da corporação FBR. É o orquestrador/servidor central que cuida de e manipula para onde todos os cérebros (Agentes) deverão se focar.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Origem de Lead</h3>
+            <p class="term-desc">De onde diabos uma captação apareceu. Essencial saber se ela veio das sombras de um Anúncio TikTok, Rede social do Facebook, ou importado via CSV numa pendrive.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Outbound Marketing</h3>
+            <p class="term-desc">Marketing Ativo. É abrir as Páginas Amarelas de São Paulo e sair ligando a esmo do telefone do escritório prospectando frio pessoas que não faziam ciência que você vende A ou vende B.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Owner Humano (Dono do Agente)</h3>
+            <p class="term-desc">A alma de carne superior atrelado ao registro do robô. É o usuário humano quem sofrerá retaliação ou será convocado se a inteligência artificial daquele agente tomar alguma decisão crítica. (Ex: Sergio Castro e Marco Alevato).</p>
+        </div>
+
+        <div class="letter-group">P</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Payload</h3>
+            <p class="term-desc">O conteúdo sólido real dentro da caixa de uma remessa de dados de sistema a sistema, que transporta nomes reais, ID do chat com suas pontuações, tudo em formato programador puro.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Postgres</h3>
+            <p class="term-desc">O gigante de armazenamento robusto dos bancos de dados relacionais onde reside todos os CPFs, dinheiros gerados de cada mês e cadastros sem nunca corromper.</p>
+        </div>
+
+        <div class="letter-group">Q</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Qualificação Manual</h3>
+            <p class="term-desc">Estágio chato em que alguém orgânico precisa clicar numa tela inteira listada, ligando 1 à 1 em uma lista pré-adquirida, e verificando com olhos de radar se elas devem seguir ativas.</p>
+        </div>
+
+        <div class="letter-group">R</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Redis</h3>
+            <p class="term-desc">Banco de cérebro de pulo rápido. Ao oposto do banco de cimento robusto (Postgres), o Redis faz magia lendo informações voláteis muito rápidas em milisegundos evitando o sistema congelar se 3 mil clientes agendarem chat no mesmo momento real.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Resposta Sincrônica</h3>
+            <p class="term-desc">A resposta mais comum entre APIs e WebHooks: Enviar pacote em tempo real (linha única), confirmou o batimento do do arquivo ("Accepted/Atendido") e imediatamente recuou de onde parou as instâncias rodando; sem causar acúmulo e travas aos outros componentes da rede da FBR em paralelo.</p>
+        </div>
+
+        <div class="letter-group">S</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Score</h3>
+            <p class="term-desc">Pontuação. Métrica fria, estática atribuida pelo motor central sobre a autoridade financeira/capacidade visível ou avaliativa estática do Lead (quanto maior, mais capacidade dele extrair e transacionar alto tem).</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Secret / Token</h3>
+            <p class="term-desc">Senha cega ultra longa misturada sem letras humanas de cofre que vive na sombra blindada do `.env` criptografado ou em injetor cloud para evitar ser roubada por ex-devs ao passar em repositórios comuns.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">SLA (Service Level Agreement)</h3>
+            <p class="term-desc">Regulamento ou fita amarela policial atada na contagem final: a lei que define que por padrão que Leads classificados vindo de certos perfis não possam jamais passar x tempo, sem o atendente fazer nada na esteira do funil.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Stage (Etapa)</h3>
+            <p class="term-desc">Coluna de passagem obrigatória da linha de produção comercial ou atendimento (ex: Novo -> Mapeamentos -> Contato 1 -> Negociações Final).</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">SSL</h3>
+            <p class="term-desc">Acrônimo de Secure Socket Layer. Criptografia fundamental entre usuário em tela e servidores escondidos que empacam que bisbilhoteiros/routers capturem pacotes trocados no Wi-Fi de terceiros contendo as senhas sem tranca HTTPS.</p>
+        </div>
+
+        <div class="letter-group">T</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Tarefa</h3>
+            <p class="term-desc">Comando manual explícito, imposto com alarme sob tela que pede comissionamento a favor de um registro: seja Agendar Reunião de Pauta Terça as 09, Disparar Boleto Bancário ou Enviar Formulário e Contrato PDF de Volta.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">Temperatura</h3>
+            <p class="term-desc">Métrica de aquecimento e frenesi. Uma oscilação baseada nas sensações (Quente/Frio/Morno) com bases no fato comportamental engajado - se ele atendeu e pediu o link de hoje cedo é temperatura morno/quente (ou se preencheu, baixou etc.).</p>
+        </div>
+
+        <div class="letter-group">V</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Vendedor Responsável</h3>
+            <p class="term-desc">Registro alocado pra aturar, converter e colher frutos da venda; se é orgânico ele assina sob a placa (Fulano Silva Pós), se é automação o ID assume atrelamento como Bot Agente Gestor Mestre em nome dele. Atribuição indispensável no Deal.</p>
+        </div>
+        <div class="term-card">
+            <h3 class="term-title">VPS (Virtual Private Server)</h3>
+            <p class="term-desc">Máquina fragmentada dedicada com IP fixo de acesso root dentro do Data Center da Amazon, Google ou Digital Ocean na nuvem; local puro onde a máquina das engrenagens FBR vai ficar conectada na energia da placa operando eternamente pro mundo.</p>
+        </div>
+
+        <div class="letter-group">W</div>
+
+        <div class="term-card">
+            <h3 class="term-title">Webhook</h3>
+            <p class="term-desc">Carteiro do correio automático e autoportante - sistema onde "Não me Ligue Para Pedir Novidades da Sua Remessa; Eu Mesmo te Chamo e Toco Seu Apito Avistando Que Novas Informações (Handoffs DealWon/Lost) Acabam de Chegar no Quintal!".</p>
+        </div>
+
+    </div>
+
+</body>
+</html>

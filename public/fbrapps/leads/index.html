@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FBR-Leads — Plataforma de Inteligência Comercial — Conceito Geral v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0e0c;
+    --paper: #f5f0e8;
+    --accent: #d94f2b;
+    --accent2: #2b6fd9;
+    --muted: #8a8070;
+    --rule: #d4cdc0;
+    --code-bg: #1a1814;
+    --code-text: #e8d9b8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    padding: 80px 60px 60px;
+    border-bottom: 2px solid var(--ink);
+    overflow: hidden;
+  }
+
+  .header-bg-text {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    font-family: 'Syne', sans-serif;
+    font-size: 220px;
+    font-weight: 800;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--rule);
+    line-height: 1;
+    user-select: none;
+    z-index: 0;
+    letter-spacing: -8px;
+  }
+
+  .header-content { position: relative; z-index: 1; max-width: 780px; }
+
+  .tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 3px 10px;
+    margin-bottom: 24px;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 20px;
+    color: var(--muted);
+    max-width: 560px;
+    font-style: italic;
+  }
+
+  .header-meta {
+    margin-top: 40px;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .meta-item strong {
+    display: block;
+    color: var(--ink);
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  /* LAYOUT */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+
+  /* SECTION */
+  section {
+    padding: 72px 60px;
+    border-bottom: 1px solid var(--rule);
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 32px;
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 32px;
+  }
+
+  p { margin-bottom: 18px; color: #2a2520; }
+
+  /* VISION BLOCK */
+  .vision-block {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 48px 60px;
+    margin: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .vision-block .section-number { color: var(--accent); }
+  .vision-block h2 { color: var(--paper); }
+
+  .vision-quote {
+    font-family: 'Lora', serif;
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--paper);
+    border-left: 3px solid var(--accent);
+    padding-left: 28px;
+    margin: 32px 0;
+  }
+
+  .vision-block p { color: #c8bfb0; }
+
+  /* GRID */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2px;
+    margin-top: 40px;
+    border: 1px solid var(--rule);
+  }
+
+  .grid-card {
+    padding: 32px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    transition: background 0.2s;
+  }
+
+  .grid-card:hover { background: #ede8de; }
+
+  .grid-card .icon {
+    font-size: 28px;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .grid-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+
+  .grid-card p {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* FLOW */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 40px;
+    position: relative;
+  }
+
+  .flow-step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 24px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+
+  .flow-step:last-child { border-bottom: none; }
+
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+    background: #f5ede8;
+    border: 1px solid var(--accent);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .step-content h3 {
+    margin-top: 0;
+    font-size: 16px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+  }
+
+  .step-content p {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  /* STACK TABLE */
+  .stack-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 36px;
+    font-size: 14px;
+  }
+
+  .stack-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--ink);
+    background: transparent;
+  }
+
+  .stack-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+
+  .stack-table tr:hover td { background: #ede8de; }
+
+  .stack-table td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .stack-table td:nth-child(2) {
+    font-weight: 500;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+  }
+
+  .stack-table td:nth-child(3) {
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* SCOPE GRID */
+  .scope-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-top: 36px;
+  }
+
+  .scope-cell {
+    background: var(--paper);
+    padding: 24px;
+  }
+
+  .scope-cell h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .scope-cell ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .scope-cell ul li {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .scope-cell ul li::before {
+    content: '— ';
+    color: var(--accent2);
+  }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--code-bg);
+    color: var(--code-text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.8;
+    padding: 32px 36px;
+    margin: 32px 0;
+    overflow-x: auto;
+    border-left: 3px solid var(--accent);
+  }
+
+  .code-comment { color: #7a6f58; }
+  .code-key { color: #d94f2b; }
+  .code-val { color: #6db36d; }
+  .code-str { color: #d9b42b; }
+
+  /* PHASES */
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    margin-top: 40px;
+  }
+
+  .phase {
+    border: 1px solid var(--rule);
+    padding: 28px;
+    position: relative;
+  }
+
+  .phase-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .phase h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0 0 16px;
+  }
+
+  .phase ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .phase ul li {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--rule);
+    line-height: 1.5;
+  }
+
+  .phase ul li:last-child { border-bottom: none; }
+
+  .phase-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--accent);
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    text-transform: uppercase;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 48px 60px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 24px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .footer-brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -1px;
+  }
+
+  .footer-brand span { color: var(--accent); }
+
+  .footer-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #8a8070;
+    text-align: right;
+  }
+
+  /* DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 40px 0 32px;
+  }
+
+  .divider-line { flex: 1; height: 1px; background: var(--rule); }
+
+  .divider-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    border-left: 4px solid var(--accent2);
+    padding: 20px 24px;
+    background: #f0f4fc;
+    margin: 28px 0;
+    font-size: 14px;
+    color: #1a2a50;
+  }
+
+  .highlight-box strong {
+    font-family: 'Syne', sans-serif;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* TEAMS GRID */
+  .teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-top: 36px;
+  }
+
+  .team-card {
+    background: var(--paper);
+    padding: 28px;
+    transition: background 0.2s;
+  }
+
+  .team-card:hover { background: #ede8de; }
+
+  .team-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .team-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  .team-card .team-mission {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .team-agents {
+    list-style: none;
+    padding: 0;
+  }
+
+  .team-agents li {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 3px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .team-agents li:last-child { border-bottom: none; }
+
+  .team-agents li::before {
+    content: '↳ ';
+    color: var(--accent2);
+  }
+
+  /* METRICS STRIP */
+  .metrics-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--ink);
+    margin-top: 40px;
+  }
+
+  .metric-cell {
+    background: var(--ink);
+    padding: 28px 24px;
+    text-align: center;
+    border: 1px solid #2a2820;
+  }
+
+  .metric-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .metric-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a8070;
+  }
+
+  /* PIPELINE FUNNEL */
+  .funnel {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .funnel-stage {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 24px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    transition: background 0.2s;
+  }
+
+  .funnel-stage:hover { background: #ede8de; }
+
+  .funnel-stage-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    width: 28px;
+    flex-shrink: 0;
+  }
+
+  .funnel-stage-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    flex: 1;
+  }
+
+  .funnel-stage-desc {
+    font-size: 13px;
+    color: var(--muted);
+    flex: 2;
+  }
+
+  .funnel-stage-agent {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent2);
+    white-space: nowrap;
+  }
+
+  /* WARMING PHASES */
+  .warming-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 24px;
+    font-size: 13px;
+  }
+
+  .warming-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 10px 16px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .warming-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    color: #2a2520;
+  }
+
+  .warming-table tr:hover td { background: #ede8de; }
+
+  .warming-table td:first-child {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* PRINT */
+  @media print {
+    body { background: white; }
+    body::before { display: none; }
+    section, .vision-block { page-break-inside: avoid; }
+  }
+
+  @media (max-width: 640px) {
+    header, section, .vision-block, footer { padding-left: 24px; padding-right: 24px; }
+    .header-bg-text { font-size: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-bg-text">FBR</div>
+  <div class="header-content">
+    <div class="tag">FBR-Leads · Conceito Geral — v2.0</div>
+    <h1>Inteligência<br><em>Comercial</em></h1>
+    <p class="subtitle">Plataforma FBR de prospecção outbound autônoma — 6 times de agentes OpenClaw, orquestração n8n, LLM em cascata e entrega de SQLs diretamente no FBR-Click.</p>
+    <div class="header-meta">
+      <div class="meta-item"><strong>Sistema</strong>FBR-Leads</div>
+      <div class="meta-item"><strong>Versão</strong>2.0 — OpenClaw</div>
+      <div class="meta-item"><strong>Agentes</strong>6 times · ~20 agentes</div>
+      <div class="meta-item"><strong>Prazo MVP</strong>60 dias · 8 batches</div>
+      <div class="meta-item"><strong>Hub</strong>FBR-Click</div>
+      <div class="meta-item"><strong>Orquestração</strong>n8n dedicado</div>
+    </div>
+  </div>
+</header>
+
+<!-- VISÃO -->
+<div class="vision-block">
+  <div class="section-number">00 — Visão do Projeto</div>
+  <h2>Por que este projeto existe</h2>
+  <blockquote class="vision-quote">
+    "O time de vendas não deve garimpar clientes — deve fechar negócios. O garimpo, a validação, o aquecimento e a qualificação são trabalho de máquina. SQLs chegam prontos, com contexto completo, no FBR-Click."
+  </blockquote>
+  <p>FBR-Leads é a plataforma que automatiza o ciclo completo de prospecção outbound: captação → enriquecimento → validação → aquecimento → handoff. Seis times de agentes OpenClaw trabalham em paralelo — cada agente em uma única tarefa por vez — para entregar somente SQLs ao time comercial: leads que já demonstraram interesse, com histórico de interações e dados completos.</p>
+  <p>O sistema segue integralmente a Bíblia FBR v1.0: agentes OpenClaw com 7 Markdowns versionados em Git, orquestração via n8n dedicado, cascata Ollama → Claude → GPT-4o, mail server Postal self-hosted e toda interação humana centralizada no FBR-Click. O vendedor <strong style="color:var(--paper)">nunca</strong> precisa abrir o dashboard — SQLs chegam como deals com @menção direta.</p>
+</div>
+
+<!-- MÉTRICAS MVP -->
+<section>
+  <div class="section-number">01 — Métricas de Sucesso</div>
+  <h2>O que define um MVP bem-sucedido</h2>
+  <p>Cinco métricas objetivas definem se o FBR-Leads está funcionando. Qualquer resultado abaixo dessas metas dispara revisão imediata dos parâmetros de ICP, cadência ou configuração de domínios.</p>
+
+  <div class="metrics-strip">
+    <div class="metric-cell">
+      <div class="metric-value">500+</div>
+      <div class="metric-label">Leads novos / semana por ICP</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-value">85%</div>
+      <div class="metric-label">Leads com e-mail válido</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-value">3%</div>
+      <div class="metric-label">Taxa de resposta na cadência</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-value">&lt;2%</div>
+      <div class="metric-label">Bounce rate por domínio</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-value">100%</div>
+      <div class="metric-label">SQLs entregues via FBR-Click</div>
+    </div>
+  </div>
+</section>
+
+<!-- PIPELINE DE LEADS -->
+<section>
+  <div class="section-number">02 — Pipeline de Leads</div>
+  <h2>Como um lead percorre o sistema</h2>
+  <p>Todo lead segue um pipeline determinístico com descarte automático em qualquer etapa que falhe na validação. Apenas leads que passam por todas as etapas chegam ao time de vendas — nunca o contrário.</p>
+
+  <div class="funnel">
+    <div class="funnel-stage">
+      <div class="funnel-stage-num">01</div>
+      <div class="funnel-stage-name">Captação</div>
+      <div class="funnel-stage-desc">Scraping de sites institucionais, LinkedIn via Apify, CNPJ.biz, Google Maps e monitoramento de gatilhos de compra (vagas abertas, rodadas, expansões). Deduplicação automática por CNPJ/domínio.</div>
+      <div class="funnel-stage-agent">Time 2 — Garimpeiros</div>
+    </div>
+    <div class="funnel-stage">
+      <div class="funnel-stage-num">02</div>
+      <div class="funnel-stage-name">Validação de E-mail</div>
+      <div class="funnel-stage-desc">Verificação via ZeroBounce API antes de qualquer ação. E-mail inválido → descarte imediato. Nunca enviar para endereços não validados.</div>
+      <div class="funnel-stage-agent">Time 3 — Analistas</div>
+    </div>
+    <div class="funnel-stage">
+      <div class="funnel-stage-num">03</div>
+      <div class="funnel-stage-name">Aderência ao ICP</div>
+      <div class="funnel-stage-desc">Verificação de setor, porte, cargo e região contra o perfil de cliente ideal configurado. Fora do ICP → arquivado automaticamente, não descartado.</div>
+      <div class="funnel-stage-agent">Time 3 — Analistas</div>
+    </div>
+    <div class="funnel-stage">
+      <div class="funnel-stage-num">04</div>
+      <div class="funnel-stage-name">Score 0–100</div>
+      <div class="funnel-stage-desc">Modelo de IA calcula score com base em 12+ variáveis: porte, setor, cargo, gatilhos de compra, presença digital, localização, dados de enriquecimento. Abaixo do mínimo → descarte.</div>
+      <div class="funnel-stage-agent">Time 3 — Analistas</div>
+    </div>
+    <div class="funnel-stage">
+      <div class="funnel-stage-num">05</div>
+      <div class="funnel-stage-name">Redação Personalizada</div>
+      <div class="funnel-stage-desc">Pesquisa de contexto automática (notícias recentes, LinkedIn, site institucional). E-mail gerado via Claude API com menção específica à empresa. Revisão automática: sem links, sem spam words, tom de conversa.</div>
+      <div class="funnel-stage-agent">Time 4 — Redatores</div>
+    </div>
+    <div class="funnel-stage">
+      <div class="funnel-stage-num">06</div>
+      <div class="funnel-stage-name">Cadência de 4 Toques</div>
+      <div class="funnel-stage-desc">Dispatcher seleciona domínio saudável, respeita horário comercial do fuso do lead, aplica cadência: Dia 1 → Dia 4 → Dia 9 → Dia 16. Sem envios em fins de semana. Pausa automática se bounce detectado.</div>
+      <div class="funnel-stage-agent">Time 5 — Cadenciadores</div>
+    </div>
+    <div class="funnel-stage">
+      <div class="funnel-stage-num">07</div>
+      <div class="funnel-stage-name">Handoff SQL → FBR-Click</div>
+      <div class="funnel-stage-desc">Resposta positiva detectada → deal criado no FBR-Click com contexto completo, histórico de interações, score e dados da empresa. Vendedor notificado com @menção. Ciclo encerrado para o sistema.</div>
+      <div class="funnel-stage-agent">Time 5 — Cadenciadores</div>
+    </div>
+  </div>
+</section>
+
+<!-- OS 6 TIMES -->
+<section>
+  <div class="section-number">03 — Os 6 Times de Agentes</div>
+  <h2>Estrutura de agentes OpenClaw</h2>
+  <p>O FBR-Leads opera com seis times especializados, cada um com missão distinta e conjunto próprio de agentes. Todo agente é definido por exatamente 7 arquivos Markdown versionados em Git — padrão obrigatório da Bíblia FBR. Cada agente trabalha em <strong>uma única tarefa por vez</strong>.</p>
+
+  <div class="teams-grid">
+    <div class="team-card">
+      <div class="team-number">Time 1</div>
+      <h3>🛡️ Guardiões do Mail Server</h3>
+      <p class="team-mission">Proteger e maximizar a reputação de cada domínio. Fundação de toda a operação.</p>
+      <ul class="team-agents">
+        <li>Auditor de Domínios</li>
+        <li>Gestor de Aquecimento</li>
+        <li>Monitor de Reputação</li>
+        <li>Controlador de Rotação</li>
+      </ul>
+    </div>
+    <div class="team-card">
+      <div class="team-number">Time 2</div>
+      <h3>⛏️ Garimpeiros</h3>
+      <p class="team-mission">Captar dados brutos de múltiplas fontes e transformar em registros estruturados.</p>
+      <ul class="team-agents">
+        <li>Scraper Web (Firecrawl)</li>
+        <li>Scraper Especializado (Playwright)</li>
+        <li>Coletor CNPJ</li>
+        <li>Minerador LinkedIn (Apify)</li>
+        <li>Agente de Gatilhos</li>
+      </ul>
+    </div>
+    <div class="team-card">
+      <div class="team-number">Time 3</div>
+      <h3>🔬 Analistas</h3>
+      <p class="team-mission">Enriquecer, validar e qualificar leads. Pipeline rígido de 3 etapas obrigatórias.</p>
+      <ul class="team-agents">
+        <li>Enriquecedor</li>
+        <li>Validador de E-mail (ZeroBounce)</li>
+        <li>Analista de ICP</li>
+        <li>Scorer (Ollama → Claude)</li>
+      </ul>
+    </div>
+    <div class="team-card">
+      <div class="team-number">Time 4</div>
+      <h3>✍️ Redatores</h3>
+      <p class="team-mission">Criar mensagens altamente personalizadas. Personalização é o que separa prospecção de spam.</p>
+      <ul class="team-agents">
+        <li>Pesquisador de Contexto</li>
+        <li>Redator Principal (Claude obrigatório)</li>
+        <li>Revisor</li>
+        <li>Testador A/B</li>
+      </ul>
+    </div>
+    <div class="team-card">
+      <div class="team-number">Time 5</div>
+      <h3>📅 Cadenciadores</h3>
+      <p class="team-mission">Controlar timing e sequência de envio respeitando limites de cada domínio.</p>
+      <ul class="team-agents">
+        <li>Dispatcher</li>
+        <li>Agendador</li>
+        <li>Monitor de Respostas</li>
+        <li>Registrador</li>
+      </ul>
+    </div>
+    <div class="team-card">
+      <div class="team-number">Time 6</div>
+      <h3>🧠 Inteligência</h3>
+      <p class="team-mission">Retroalimentar os cinco times com aprendizados. Cérebro estratégico do sistema.</p>
+      <ul class="team-agents">
+        <li>Analista de Conversões</li>
+        <li>Otimizador de ICP</li>
+        <li>Refinador de Mensagens</li>
+        <li>Gerador de Relatórios</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Cadência padrão — Time 5</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <table class="warming-table">
+    <thead>
+      <tr>
+        <th>Toque</th>
+        <th>Timing</th>
+        <th>Objetivo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>#1</td><td>Dia 1</td><td>Primeiro contato — contexto específico da empresa, sem oferta direta</td></tr>
+      <tr><td>#2</td><td>Dia 4</td><td>Reforçar com valor — conteúdo relevante para o setor do lead</td></tr>
+      <tr><td>#3</td><td>Dia 9</td><td>Criar urgência leve — referência a cliente similar no mesmo segmento</td></tr>
+      <tr><td>#4</td><td>Dia 16</td><td>Breakup — tom direto, porta aberta para contato futuro</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- STACK TÉCNICA -->
+<section>
+  <div class="section-number">04 — Stack Técnica</div>
+  <h2>Tecnologias do MVP</h2>
+  <p>Stack integrada, self-hosted e de fácil manutenção. Prioridade para soluções open source e infraestrutura própria — sem dependência de SaaS externos críticos, sem ponto único de falha.</p>
+
+  <table class="stack-table">
+    <thead>
+      <tr>
+        <th>Camada</th>
+        <th>Tecnologia</th>
+        <th>Papel no Sistema</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Agentes</td><td>OpenClaw Gateway (Node.js)</td><td>Execução dos 20+ agentes autônomos — padrão FBR obrigatório</td></tr>
+      <tr><td>Orquestração</td><td>n8n (instância dedicada)</td><td>Decide quando e por que cada agente é acionado</td></tr>
+      <tr><td>Hub humano</td><td>FBR-Click — canal #leads-qualificados</td><td>Interface única para interação humana — vendedor nunca abre o dashboard</td></tr>
+      <tr><td>LLM — Camada 1</td><td>Ollama (Mac Mini M4 via Tailscale)</td><td>Primário: 15s timeout · fallback automático se offline &gt; 30s</td></tr>
+      <tr><td>LLM — Camada 2</td><td>Claude API (claude-sonnet-4-6)</td><td>Fallback + Redação obrigatória de e-mails personalizados</td></tr>
+      <tr><td>LLM — Camada 3</td><td>GPT-4o API</td><td>Contingência total — nunca primário · alerta crítico se acionado</td></tr>
+      <tr><td>Backend</td><td>FastAPI + Python 3.11+</td><td>Todas as rotas async — padrão obrigatório FBR</td></tr>
+      <tr><td>Frontend</td><td>Next.js 15 + TypeScript + Tailwind + shadcn/ui</td><td>Dashboard interno — frontend nunca fala direto com o backend</td></tr>
+      <tr><td>Banco de Dados</td><td>PostgreSQL 16</td><td>RLS habilitado em todas as tabelas sem exceção</td></tr>
+      <tr><td>Cache e Filas</td><td>Redis 7</td><td>BullMQ-style queues — picos de carga não degradam o sistema principal</td></tr>
+      <tr><td>Mail Server</td><td>Postal (open source, self-hosted)</td><td>Envio e recebimento de e-mails — webhooks de bounce/abertura/clique</td></tr>
+      <tr><td>Scraping</td><td>Firecrawl + Python/Playwright</td><td>Sites institucionais + fontes especializadas com JavaScript</td></tr>
+      <tr><td>Validação</td><td>ZeroBounce API</td><td>Validação de e-mail obrigatória antes de qualquer envio</td></tr>
+      <tr><td>LinkedIn</td><td>Apify</td><td>Rate limiting rigoroso — sistema funciona sem LinkedIn se necessário</td></tr>
+      <tr><td>Rede privada</td><td>Tailscale</td><td>VPS ↔ Mac Mini M4 · comunicação segura e criptografada</td></tr>
+      <tr><td>Infra</td><td>VPS Hetzner (8 vCores / 32GB / 200GB NVMe)</td><td>Ubuntu 24.04 · toda a stack containerizada via Docker Compose</td></tr>
+      <tr><td>Monitoramento</td><td>Grafana + Prometheus</td><td>Métricas de infra, audit log imutável, alertas automáticos</td></tr>
+    </tbody>
+  </table>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Cascata de LLM — padrão FBR</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="code-block">
+<span class="code-key">Camada 1</span> — Ollama (Mac Mini M4 32GB via Tailscale)
+  → Uso: garimpagem, deduplicação, validação de ICP, scoring inicial
+  → Timeout: 15s · Fallback automático se Mac Mini offline &gt; 30s
+  → Health check: n8n a cada 60s → publica status no Redis
+
+<span class="code-key">Camada 2</span> — Claude API (claude-sonnet-4-6)         <span class="code-comment"># fallback + redação</span>
+  → Uso: redação de e-mails (OBRIGATÓRIO), scoring complexo, análise
+  → Timeout: 30s · Fallback se rate limit ou erro de API
+  → Único LLM permitido para geração de e-mails outbound
+
+<span class="code-key">Camada 3</span> — GPT-4o API                              <span class="code-comment"># contingência</span>
+  → Uso: reserva total · nunca usado como primário
+  → Timeout: 30s · Se acionado: alerta crítico no canal FBR-Click
+  → Fallback de última instância: LLMUnavailableError para operador
+
+<span class="code-comment"># llm.py lê status do Redis a cada chamada — sem latência de health check inline</span>
+<span class="code-comment"># GET /health retorna: {"status": "ok", "llm_layer": 1, "model": "llama3.1:8b"}</span>
+  </div>
+</section>
+
+<!-- AQUECIMENTO DE DOMÍNIOS -->
+<section>
+  <div class="section-number">05 — Guardiões &amp; Mail Server</div>
+  <h2>O protocolo que protege os domínios</h2>
+  <p>A reputação dos domínios é a fundação de toda a operação. Sem domínios saudáveis, não há prospecção. O Time 1 — Guardiões — opera 24/7 para garantir que cada domínio mantenha score de reputação elevado e bounce rate abaixo de 2%.</p>
+
+  <div class="highlight-box">
+    <strong>Regra de ouro: domínio novo nunca sai do forno direto pro fogo</strong>
+    Todo novo domínio passa por 30 dias de aquecimento interno — somente trocas entre contas do próprio sistema — antes de tocar em qualquer lead externo. Queimar um domínio no primeiro dia é a falha mais cara e mais evitável do processo.
+  </div>
+
+  <table class="warming-table">
+    <thead>
+      <tr>
+        <th>Fase</th>
+        <th>Período</th>
+        <th>Volume / dia</th>
+        <th>Atividade</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Fase 1</td><td>Dias 1–30</td><td>Interno apenas</td><td>Troca de e-mails entre contas do próprio sistema FBR</td></tr>
+      <tr><td>Fase 2</td><td>Dias 31–60</td><td>10–20 e-mails</td><td>Primeiros contatos externos — somente leads com score mais alto</td></tr>
+      <tr><td>Fase 3</td><td>Dias 61–90</td><td>30–50 e-mails</td><td>Volume controlado com cadências completas de 4 toques</td></tr>
+      <tr><td>Fase 4</td><td>Dia 90+</td><td>50–100 e-mails</td><td>Operação plena com monitoramento contínuo de reputação</td></tr>
+    </tbody>
+  </table>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Regras do Dispatcher — Time 5</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="scope-grid">
+    <div class="scope-cell">
+      <h4>Sempre fazer</h4>
+      <ul>
+        <li>Selecionar domínio com sends_today &lt; daily_limit</li>
+        <li>Respeitar fuso horário do lead</li>
+        <li>Registrar todo envio no audit log</li>
+        <li>Notificar Guardião se bounce detectado</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>Nunca fazer</h4>
+      <ul>
+        <li>Enviar em fins de semana</li>
+        <li>Usar domínio em fase 1</li>
+        <li>Enviar se bounce &gt; 2%</li>
+        <li>Ignorar blacklist detectada</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>E-mail proibido</h4>
+      <ul>
+        <li>Links no primeiro toque</li>
+        <li>Anexos de qualquer tipo</li>
+        <li>GRÁTIS / PROMOÇÃO / CLIQUE AQUI</li>
+        <li>Mais de uma pergunta por e-mail</li>
+      </ul>
+    </div>
+    <div class="scope-cell">
+      <h4>E-mail obrigatório</h4>
+      <ul>
+        <li>Contexto específico da empresa</li>
+        <li>3 a 5 parágrafos, não mais</li>
+        <li>Um único CTA claro</li>
+        <li>Tom de conversa, não de vendas</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- AGENTES OPENCLAW -->
+<section>
+  <div class="section-number">06 — Agentes OpenClaw FBR</div>
+  <h2>Como os agentes do FBR-Leads funcionam</h2>
+  <p>Todo agente do FBR-Leads segue o padrão OpenClaw obrigatório da Bíblia FBR: definido por exatamente 7 arquivos Markdown versionados em Git, sem exceção. Cada agente trabalha em <strong>uma única tarefa por vez</strong> — foco total, sem paralelismo interno.</p>
+
+  <div class="highlight-box">
+    <strong>Princípio: n8n orquestra, OpenClaw executa</strong>
+    O n8n (instância dedicada FBR-Leads) decide quando e por que um agente é chamado. O OpenClaw Gateway decide o que o agente faz quando chamado. Os dois não se substituem — são camadas complementares e obrigatórias.
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Os 7 Markdowns obrigatórios — exemplo: Redator Principal</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="code-block">
+<span class="code-comment"># agents/redator-principal/ — 7 arquivos obrigatórios</span>
+
+<span class="code-key">SOUL.md</span>       <span class="code-comment"># Carregado PRIMEIRO. Nada sobrescreve.</span>
+  → Identidade: "Sou o agente de redação de prospecção da FBR."
+  → Restrições: nunca gerar conteúdo enganoso, nunca prometer
+    o que a empresa não pode entregar, sempre revelar contexto real.
+  → Ética: e-mails que se passam por humanos precisam de aprovação.
+
+<span class="code-key">IDENTITY.md</span>   <span class="code-comment"># Perfil visível no FBR-Click</span>
+  → Nome: FBR-Leads-Redator
+  → Role: Outbound Email Writer Agent
+  → LLM primário: Claude API (OBRIGATÓRIO — Ollama não é suficiente)
+  → LLM fallback: GPT-4o (somente se Claude indisponível)
+
+<span class="code-key">TASKS.md</span>      <span class="code-comment"># Uma tarefa por vez</span>
+  → receber_lead_qualificado
+  → acionar_pesquisador_contexto
+  → gerar_email_personalizado (Claude API obrigatório)
+  → revisar_com_agente_revisor
+  → gerar_variante_a_b
+  → entregar_para_dispatcher
+
+<span class="code-key">AGENTS.md</span>     <span class="code-comment"># Limites de autonomia</span>
+  → Aprovação humana OBRIGATÓRIA para:
+    - Alterar tom padrão de uma campanha inteira
+    - Usar nome de concorrente do lead no e-mail
+    - Enviar para C-Level de empresa &gt; 500 colaboradores
+  → Canal: #leads-qualificados no FBR-Click
+
+<span class="code-key">MEMORY.md</span>     <span class="code-comment"># Atualizado ao final de sessões relevantes</span>
+  → Padrões de e-mail que geraram resposta positiva por setor
+  → Palavras e frases com alta taxa de resposta por ICP
+  → Contextos de empresa que funcionaram (gatilhos)
+
+<span class="code-key">TOOLS.md</span>      <span class="code-comment"># APIs e ferramentas disponíveis</span>
+  → FastAPI interna (leads, campanhas, ICPs)
+  → Claude API (geração de e-mail — obrigatório)
+  → Pesquisador de Contexto (agente via n8n)
+  → Revisor (agente via n8n)
+
+<span class="code-key">USER.md</span>       <span class="code-comment"># Contexto da empresa</span>
+  → Facebrasil vende espaços publicitários e serviços digitais
+  → Foco: empresas brasileiras nos EUA
+  → Tom: consultivo, direto, sem jargão de marketing
+  </div>
+</section>
+
+<!-- INTEGRAÇÃO FBR-CLICK -->
+<section>
+  <div class="section-number">07 — Integração FBR-Click</div>
+  <h2>Como SQLs chegam ao time de vendas</h2>
+  <p>O Cadenciador Bot é o agente OpenClaw registrado como membro do FBR-Click. Ele opera no canal <strong>#leads-qualificados</strong> e é responsável por todo o handoff — criação do deal, postagem de contexto e notificação do vendedor. O vendedor nunca precisa abrir o dashboard do FBR-Leads.</p>
+
+  <div class="highlight-box">
+    <strong>Fluxo completo: resposta do lead → deal no FBR-Click em &lt; 5 minutos</strong>
+    Monitor de Respostas detecta resposta positiva → Cadenciador Bot aciona handoff → Deal criado com contexto completo → Canal do deal aberto → @menção ao vendedor responsável → Ciclo encerrado para o sistema.
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Payload do handoff SQL</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="code-block">
+<span class="code-comment">// Payload enviado ao FBR-Click quando lead se torna SQL</span>
+{
+  <span class="code-key">"event"</span>: <span class="code-str">"sql_handoff"</span>,
+  <span class="code-key">"lead"</span>: {
+    <span class="code-val">name</span>:                 <span class="code-str">"Rafael Souza"</span>,
+    <span class="code-val">role</span>:                 <span class="code-str">"Diretor de Marketing"</span>,
+    <span class="code-val">company</span>:              <span class="code-str">"TechCorp Brasil"</span>,
+    <span class="code-val">cnpj</span>:                 <span class="code-str">"12.345.678/0001-99"</span>,
+    <span class="code-val">email</span>:                <span class="code-str">"rafael@techcorp.com.br"</span>,
+    <span class="code-val">score</span>:                <span class="code-str">87</span>,
+    <span class="code-val">source</span>:               <span class="code-str">"linkedin"</span>,
+    <span class="code-val">icp_match</span>:            <span class="code-str">"Empresas brasileiras nos EUA · Porte médio · Marketing"</span>,
+    <span class="code-val">enrichment_notes</span>:     <span class="code-str">"Empresa abriu escritório em Miami em jan/26."</span>,
+    <span class="code-val">interaction_summary</span>:  <span class="code-str">"3 e-mails enviados. Respondeu ao Toque #2 com interesse."</span>
+  },
+  <span class="code-key">"action"</span>: {
+    <span class="code-val">create_deal</span>:          <span class="code-str">true</span>,
+    <span class="code-val">notify_user_id</span>:       <span class="code-str">"usr_julia_manager"</span>,
+    <span class="code-val">post_to_channel</span>:      <span class="code-str">"chn_leads_qualificados"</span>
+  }
+}
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-label">Feedback loop FBR-Click → FBR-Leads</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="grid-card">
+      <span class="icon">✅</span>
+      <h3>deal.won</h3>
+      <p>Marcar lead como convertido. Registrar em intelligence_reports. Reforça padrões do ICP e scoring — Time 6 aprende o que funcionou.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">💰</span>
+      <h3>deal.lost (preço)</h3>
+      <p>Marcar lost com razão. Ajusta peso de variáveis de budget no modelo de scoring. Sistema passa a priorizar empresas com maior capacidade.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🎯</span>
+      <h3>deal.lost (não era decisor)</h3>
+      <p>Refina filtragem de cargos no ICP. Ajusta o Analista de ICP para rejeitar leads sem poder de decisão no setor identificado.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🔕</span>
+      <h3>deal.lost (sem resposta)</h3>
+      <p>Otimiza padrões de mensagem para o Redator. Time 6 identifica qual toque ou abordagem não ressoou e sugere variantes de teste A/B.</p>
+    </div>
+  </div>
+</section>
+
+<!-- RECURSOS DO DASHBOARD -->
+<section>
+  <div class="section-number">08 — Dashboard Interno</div>
+  <h2>Funcionalidades do painel de controle</h2>
+  <p>O dashboard é uma ferramenta interna para o gestor — não para o vendedor. Monitora saúde de domínios, pipeline de leads, status de agentes e resultados de campanhas em tempo real via WebSocket e SSE.</p>
+
+  <div class="grid-2">
+    <div class="grid-card">
+      <span class="icon">📊</span>
+      <h3>Overview — /dashboard</h3>
+      <p>Métricas principais, saúde dos domínios, funil de leads em tempo real e últimos SQLs gerados. Atualizado a cada 60 segundos automaticamente.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">📧</span>
+      <h3>Saúde dos Domínios — /domains</h3>
+      <p>Score, fase de aquecimento (1–4), sends_today/daily_limit, bounce_rate e status de blacklist por domínio. Alertas automáticos se bounce &gt; 2%.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🔭</span>
+      <h3>Pipeline de Leads — /leads</h3>
+      <p>Funil visual por estágio, tabela com ordenação e filtros, exportação CSV e painel lateral com dados completos do lead e histórico de interações.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🎯</span>
+      <h3>Configuração de ICP — /icp</h3>
+      <p>Formulário no-code: setores, portes, cargos, regiões, palavras-chave e score mínimo. Após salvar, Garimpeiros iniciam coleta em até 30 minutos.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">🤖</span>
+      <h3>Status dos Agentes — /agents</h3>
+      <p>Feed de logs em tempo real via SSE. Kill switch por agente com confirmação. Badge online/offline/erro. Histórico de ações dos últimas 24h.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">📬</span>
+      <h3>Campanhas — /campaigns</h3>
+      <p>Wizard de criação em 3 etapas: ICP → Redator → Cadenciador. Monitoramento de taxa de abertura, clique, resposta e bounce por campanha ativa.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">📈</span>
+      <h3>Relatórios — /reports</h3>
+      <p>Relatório semanal automático gerado pelo Time 6. Padrões identificados, sugestões de ajuste de ICP e mensagens. Exportação CSV disponível.</p>
+    </div>
+    <div class="grid-card">
+      <span class="icon">⚡</span>
+      <h3>Tempo Real via WebSocket</h3>
+      <p>Páginas de domínios e agentes usam WebSocket persistente — atualizações sem refresh. Leads e campanhas usam SSE para streaming de logs.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section>
+  <div class="section-number">09 — Roadmap de Implementação</div>
+  <h2>60 dias · 8 batches · MVP entregue</h2>
+  <p>O desenvolvimento segue o processo padrão FBR: fundação de infraestrutura, banco de dados, backend, agentes OpenClaw com seus 7 Markdowns, mail server com aquecimento, frontend e integração com FBR-Click.</p>
+
+  <div class="phases">
+    <div class="phase">
+      <div class="phase-badge">Batch 1–2</div>
+      <div class="phase-label">Dias 1–12</div>
+      <h3>Fundação</h3>
+      <ul>
+        <li>VPS Hetzner + Docker Compose</li>
+        <li>FastAPI + PostgreSQL 16 + Redis 7</li>
+        <li>n8n instância dedicada FBR-Leads</li>
+        <li>Tailscale para acesso ao Ollama</li>
+        <li>Nginx + Certbot configurados</li>
+        <li>Todas as tabelas + RLS aplicado</li>
+        <li>Migrations e seed executados</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-badge">Batch 3–4</div>
+      <div class="phase-label">Dias 13–35</div>
+      <h3>Backend &amp; Agentes</h3>
+      <ul>
+        <li>Todos os endpoints FastAPI async</li>
+        <li>Cascata LLM: Ollama → Claude → GPT-4o</li>
+        <li>Audit log imutável operacional</li>
+        <li>7 Markdowns de cada agente (PR)</li>
+        <li>Registro dos agentes no FBR-Click</li>
+        <li>Período de observação (7 dias)</li>
+        <li>Pipeline de qualificação testado</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-badge">Batch 5–6</div>
+      <div class="phase-label">Dias 36–52</div>
+      <h3>Mail Server &amp; Frontend</h3>
+      <ul>
+        <li>Postal configurado e rodando</li>
+        <li>SPF / DKIM / DMARC validados</li>
+        <li>Domínios em fase 1 de aquecimento</li>
+        <li>Interface Next.js 15 completa</li>
+        <li>WebSocket e SSE ativos</li>
+        <li>Kill switches funcionais</li>
+        <li>🎯 Dia 45: Primeiros SQLs</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="phase-badge">Batch 7–8</div>
+      <div class="phase-label">Dias 45–60</div>
+      <h3>FBR-Click &amp; Produção</h3>
+      <ul>
+        <li>Cadenciador Bot registrado no FBR-Click</li>
+        <li>Handoff SQL → deal completo e testado</li>
+        <li>Feedback loop deal.won/lost ativo</li>
+        <li>Grafana + Prometheus configurados</li>
+        <li>Backup automático do PostgreSQL</li>
+        <li>Teste de carga: 1000 leads em batch</li>
+        <li>🚀 Dia 60: MVP entregue</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">FBR<span>-</span>Leads</div>
+    <div style="font-family:'DM Mono',monospace;font-size:12px;color:#8a8070;margin-top:8px;">Documento de Conceito Geral — v2.0 · Alinhado à Bíblia FBR v1.0</div>
+  </div>
+  <div class="footer-note">
+    Gerado em março de 2026<br>
+    Confidencial — uso interno Facebrasil
+  </div>
+</footer>
+
+</body>
+</html>
