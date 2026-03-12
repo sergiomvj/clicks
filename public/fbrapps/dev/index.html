@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FBR-Dev — Plataforma de Desenvolvimento FBR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand:       #10B981;
+      --brand-glow:  rgba(16,185,129,0.18);
+      --agent:       #7C3AED;
+      --agent-glow:  rgba(124,58,237,0.18);
+      --dark:        #0A1210;
+      --dark-2:      #0F1B17;
+      --dark-3:      #162620;
+      --dark-4:      #1E332A;
+      --slate:       #7BA898;
+      --slate-light: #A5C9BC;
+      --white:       #EEF7F4;
+      --green:       #22C55E;
+      --red:         #EF4444;
+      --amber:       #F59E0B;
+      --cyan:        #06B6D4;
+      --grid-line:   rgba(16,185,129,0.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--dark);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    .glow-brand {
+      position: fixed; top: -20vh; left: -10vw;
+      width: 70vw; height: 70vh;
+      background: radial-gradient(ellipse, rgba(16,185,129,0.07) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+    .glow-agent {
+      position: fixed; bottom: -20vh; right: -10vw;
+      width: 70vw; height: 70vh;
+      background: radial-gradient(ellipse, rgba(124,58,237,0.07) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .wrapper {
+      position: relative; z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1rem 2rem;
+      background: rgba(10,18,16,0.85);
+      backdrop-filter: blur(16px) saturate(180%);
+      border-bottom: 1px solid var(--grid-line);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800; font-size: 1.1rem; letter-spacing: -.03em; color: var(--white);
+    }
+    .nav-logo span { color: var(--brand); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: .75rem; color: var(--slate);
+      text-decoration: none; transition: color .2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .nav-links a:hover { color: var(--white); }
+    @media (max-width: 600px) { .nav-links { display: none; } }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 8rem 0 6rem;
+      border-bottom: 1px solid var(--grid-line);
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--brand);
+      border: 1px solid rgba(16,185,129,0.25);
+      background: rgba(16,185,129,0.07);
+      padding: .4rem 1rem; border-radius: 99px;
+      margin-bottom: 2.5rem;
+      animation: fadeUp .7s ease both;
+    }
+    .hero-eyebrow .pulse-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--brand); box-shadow: 0 0 8px var(--brand);
+      animation: pulsate 2s infinite;
+    }
+
+    @keyframes pulsate { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+    .hero-title {
+      font-family: 'Outfit', sans-serif; font-weight: 800;
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      line-height: 1.0; letter-spacing: -.03em; color: var(--white);
+      animation: fadeUp .8s .1s ease both;
+    }
+    .hero-title .accent { color: var(--brand); }
+    .hero-title .muted  { color: var(--slate); }
+    .hero-title .purple { color: #C4B5FD; }
+
+    .hero-sub {
+      margin-top: 2rem; font-size: 1.05rem; color: var(--slate-light);
+      max-width: 560px; font-weight: 300; line-height: 1.8;
+      animation: fadeUp .8s .2s ease both;
+    }
+
+    .hero-pills {
+      margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 1rem;
+      animation: fadeUp .8s .3s ease both;
+    }
+    .hpill {
+      display: flex; align-items: center; gap: .55rem;
+      font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--slate);
+      padding: .45rem 1rem; border: 1px solid var(--dark-4); border-radius: 8px;
+      background: rgba(255,255,255,0.02);
+    }
+    .hpill .dot { width: 7px; height: 7px; border-radius: 50%; }
+    .dot-g  { background: var(--green);  box-shadow: 0 0 6px var(--green); }
+    .dot-em { background: var(--brand);  box-shadow: 0 0 6px var(--brand); }
+    .dot-v  { background: var(--agent);  box-shadow: 0 0 6px var(--agent); }
+    .dot-c  { background: var(--cyan);   box-shadow: 0 0 6px var(--cyan); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 6rem 0;
+      border-bottom: 1px solid var(--grid-line);
+    }
+    .stag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .66rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--brand); margin-bottom: .9rem;
+    }
+    .stitle {
+      font-family: 'Outfit', sans-serif; font-weight: 700;
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      line-height: 1.15; letter-spacing: -.02em; color: var(--white);
+      margin-bottom: 1rem;
+    }
+    .slead {
+      font-size: .95rem; color: var(--slate-light); max-width: 580px;
+      font-weight: 300; margin-bottom: 3rem; line-height: 1.8;
+    }
+
+    .fade-in { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+    .fade-in.visible { opacity: 1; transform: none; }
+
+    /* KPIs */
+    .kpi-row {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .kpi-card {
+      padding: 1.5rem 1.6rem; text-align: center;
+      border: 1px solid var(--dark-4); border-radius: 14px;
+      background: rgba(255,255,255,0.02);
+      transition: border-color .25s;
+    }
+    .kpi-card:hover { border-color: rgba(16,185,129,0.25); }
+    .kpi-val {
+      font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 2.2rem;
+      color: var(--brand); line-height: 1; margin-bottom: .4rem;
+    }
+    .kpi-lab { font-size: .75rem; color: var(--slate); line-height: 1.4; }
+
+    /* PROBLEM */
+    .prob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    @media(max-width:620px){.prob-grid{grid-template-columns:1fr;}}
+    .pcard {
+      padding: 1.8rem; border: 1px solid var(--dark-4); border-radius: 14px;
+      background: rgba(255,255,255,0.02); transition: all .25s;
+    }
+    .pcard:hover { border-color: rgba(16,185,129,0.25); background: rgba(16,185,129,0.04); }
+    .pcard .picon { font-size: 1.5rem; display: block; margin-bottom: .9rem; }
+    .pcard h4 { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: .95rem; color: var(--white); margin-bottom: .4rem; }
+    .pcard p { font-size: .82rem; color: var(--slate); line-height: 1.6; }
+    .pcard.wide { grid-column: span 2; border-color: rgba(16,185,129,0.2); background: rgba(16,185,129,0.05); }
+    @media(max-width:620px){.pcard.wide{grid-column:span 1;}}
+
+    /* ARCH */
+    .arch-box {
+      border: 1px solid var(--dark-4); border-radius: 18px;
+      background: var(--dark-2); overflow: hidden; position: relative;
+    }
+    .arch-box::before {
+      content:''; position: absolute; top:0; left:0; right:0; height:2px;
+      background: linear-gradient(90deg, transparent, var(--brand), var(--agent), transparent);
+    }
+    .arch-inner { padding: 2rem 2.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .arch-layer-group { display: flex; align-items: stretch; gap: 1rem; }
+    .arch-lbl {
+      writing-mode: vertical-rl; text-orientation: mixed;
+      font-family: 'JetBrains Mono', monospace; font-size: .58rem;
+      letter-spacing: .12em; text-transform: uppercase; color: var(--slate); opacity: .45;
+      flex-shrink: 0; display: flex; align-items: center; padding: 0 .3rem;
+    }
+    .arch-nodes { flex: 1; display: flex; flex-wrap: wrap; gap: .7rem; }
+    .anode {
+      flex: 1; min-width: 110px; padding: .9rem 1rem; border-radius: 10px;
+      border: 1px solid transparent; transition: transform .2s;
+    }
+    .anode:hover { transform: translateY(-2px); }
+    .anode .an { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: .85rem; color: var(--white); margin-bottom: .25rem; }
+    .anode .ad { font-size: .72rem; color: var(--slate); line-height: 1.4; }
+    .n-em { background: rgba(16,185,129,0.07); border-color: rgba(16,185,129,0.2); }
+    .n-v  { background: rgba(124,58,237,0.07); border-color: rgba(124,58,237,0.18); }
+    .n-s  { background: rgba(100,130,180,0.05); border-color: rgba(100,130,180,0.12); }
+    .n-c  { background: rgba(6,182,212,0.06);   border-color: rgba(6,182,212,0.15); }
+    .arch-sep {
+      text-align: center; font-family: 'JetBrains Mono', monospace;
+      font-size: .62rem; color: var(--slate); opacity: .45;
+      padding: .2rem 0;
+    }
+
+    /* USERS */
+    .user-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    @media(max-width:620px){.user-grid{grid-template-columns:1fr;}}
+    .ucard { border: 1px solid var(--dark-4); border-radius: 16px; overflow: hidden; }
+    .ucard-head {
+      padding: 1.4rem 1.8rem 1rem; display: flex; align-items: center; gap: 1rem;
+    }
+    .ucard.human .ucard-head { background: rgba(16,185,129,0.06); }
+    .ucard.agent .ucard-head { background: rgba(124,58,237,0.08); }
+    .uavatar {
+      width: 46px; height: 46px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+    }
+    .ucard.human .uavatar { background: rgba(16,185,129,0.15); }
+    .ucard.agent .uavatar { background: rgba(124,58,237,0.2); }
+    .utitle { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--white); }
+    .ubadge {
+      display: inline-block; margin-top: .25rem;
+      font-size: .62rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase;
+      padding: .12rem .55rem; border-radius: 99px;
+    }
+    .ucard.human .ubadge { background: rgba(16,185,129,0.15); color: var(--slate-light); }
+    .ucard.agent .ubadge { background: rgba(124,58,237,0.2); color: #C4B5FD; }
+    .ucard-body { padding: 1rem 1.8rem 1.6rem; }
+    .uattr {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: .5rem 0; border-bottom: 1px solid var(--grid-line); font-size: .82rem;
+    }
+    .uattr:last-child { border-bottom: none; }
+    .uk { color: var(--slate); flex-shrink: 0; }
+    .uv { color: var(--white); font-weight: 500; text-align: right; max-width: 58%; line-height: 1.4; }
+    .uv.mono { font-family: 'JetBrains Mono', monospace; font-size: .75rem; color: var(--slate-light); }
+
+    /* AGENTS */
+    .ag-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.1rem; }
+    @media(max-width:720px){.ag-grid{grid-template-columns:1fr 1fr;}}
+    @media(max-width:460px){.ag-grid{grid-template-columns:1fr;}}
+    .agcard {
+      padding: 1.4rem; border: 1px solid rgba(124,58,237,0.15); border-radius: 14px;
+      background: rgba(124,58,237,0.04); position: relative; overflow: hidden;
+      transition: all .25s;
+    }
+    .agcard::before {
+      content:''; position: absolute; top:0; left:0; right:0; height:2px;
+      background: linear-gradient(90deg, transparent, var(--agent), transparent);
+      opacity:0; transition: opacity .3s;
+    }
+    .agcard:hover { background: rgba(124,58,237,0.08); transform: translateY(-3px); }
+    .agcard:hover::before { opacity:1; }
+    .agem   { font-size: 1.9rem; display: block; margin-bottom: .7rem; }
+    .agname { font-family:'Outfit',sans-serif; font-weight:700; font-size:.95rem; color:var(--white); margin-bottom:.25rem; }
+    .agspace { font-family:'JetBrains Mono',monospace; font-size:.62rem; color:var(--agent); text-transform:uppercase; letter-spacing:.1em; margin-bottom:.6rem; }
+    .agdesc { font-size:.78rem; color:var(--slate); line-height:1.5; }
+    .aghb {
+      margin-top:.8rem; padding-top:.8rem; border-top:1px solid rgba(124,58,237,0.1);
+      font-family:'JetBrains Mono',monospace; font-size:.65rem; color:var(--slate);
+      display:flex; align-items:center; gap:.4rem;
+    }
+    .aghb::before {
+      content:''; width:5px; height:5px; border-radius:50%;
+      background: var(--brand); box-shadow: 0 0 5px var(--brand); flex-shrink:0;
+    }
+
+    /* DATABASE */
+    .db-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: .8rem; }
+    .dbt {
+      padding: 1.1rem 1.4rem; border: 1px solid var(--dark-4); border-radius: 10px;
+      background: rgba(255,255,255,0.015); position: relative;
+      transition: all .22s;
+    }
+    .dbt:hover { border-color: rgba(16,185,129,0.25); background: rgba(16,185,129,0.04); }
+    .tn { font-family: 'JetBrains Mono', monospace; font-size: .78rem; color: var(--brand); margin-bottom: .3rem; }
+    .td { font-size: .75rem; color: var(--slate); line-height: 1.5; margin-bottom: .5rem; }
+    .tflag {
+      display: inline-block; font-size: .55rem; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; padding: .1rem .45rem; border-radius: 4px; margin-right: .3rem;
+    }
+    .tf-rls { background: rgba(16,185,129,0.15); color: var(--brand); }
+    .tf-ao  { background: rgba(239,68,68,0.15);  color: #FCA5A5; }
+    .tf-idx { background: rgba(6,182,212,0.12);  color: var(--cyan); }
+
+    /* SECURITY */
+    .sec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media(max-width:620px){.sec-grid{grid-template-columns:1fr;}}
+    .secitem {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: 1.2rem 1.4rem; border: 1px solid var(--dark-4); border-radius: 12px;
+      background: rgba(255,255,255,0.015); transition: all .22s;
+    }
+    .secitem:hover { border-color: rgba(16,185,129,0.2); background: rgba(16,185,129,0.04); }
+    .secico { font-size: 1.3rem; flex-shrink: 0; }
+    .sect .sn { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: .9rem; color: var(--white); margin-bottom: .25rem; }
+    .sect .sd { font-size: .78rem; color: var(--slate); line-height: 1.55; }
+
+    /* LLM STACK */
+    .llm-stack { display: flex; flex-direction: column; gap: .5rem; }
+    .llmlayer {
+      display: flex; align-items: center; gap: 1.2rem;
+      padding: 1.2rem 1.6rem; border: 1px solid var(--dark-4); border-radius: 12px;
+      background: rgba(255,255,255,0.015); transition: all .22s;
+    }
+    .llmlayer:hover { border-color: rgba(16,185,129,0.2); }
+    .llnum {
+      font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.3rem;
+      color: var(--brand); opacity: .4; flex-shrink: 0; width: 28px;
+    }
+    .llinfo { flex: 1; }
+    .lln { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: .9rem; color: var(--white); margin-bottom: .2rem; }
+    .lld { font-size: .76rem; color: var(--slate); line-height: 1.5; }
+    .llbadge {
+      font-size: .6rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      padding: .2rem .6rem; border-radius: 99px;
+    }
+    .ll1 .llbadge { background: rgba(16,185,129,0.15); color: var(--brand); }
+    .ll2 .llbadge { background: rgba(124,58,237,0.15); color: #C4B5FD; }
+    .ll3 .llbadge { background: rgba(100,130,180,0.12); color: var(--slate-light); }
+    .llsep {
+      text-align: center; font-family: 'JetBrains Mono', monospace;
+      font-size: .62rem; color: var(--slate); opacity: .35; padding: .1rem 0;
+    }
+
+    /* DESIGN SYSTEM */
+    .ds-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    @media(max-width:720px){ .ds-grid { grid-template-columns: 1fr; } }
+    .dsblock {
+      padding: 1.8rem; border: 1px solid var(--dark-4); border-radius: 14px;
+      background: rgba(255,255,255,0.015);
+    }
+    .dsblock h5 {
+      font-family: 'JetBrains Mono', monospace; font-size: .65rem; letter-spacing: .15em;
+      text-transform: uppercase; color: var(--brand); margin-bottom: 1.2rem;
+    }
+    .fsample { margin-bottom: 1rem; }
+    .fsn { font-size: .68rem; color: var(--slate); margin-bottom: .25rem; }
+    .ft-heading { font-family:'Outfit',sans-serif; font-weight:800; font-size:1.7rem; color:var(--white); letter-spacing:-.03em; }
+    .ft-h2      { font-family:'Outfit',sans-serif; font-weight:700; font-size:1.1rem; color:var(--white); }
+    .ft-body    { font-family:'Inter',sans-serif; font-weight:400; font-size:.9rem; color:var(--slate-light); }
+    .ft-mono    { font-family:'JetBrains Mono',monospace; font-size:.82rem; color:var(--brand); }
+    .swatch-row { display:flex; gap:.5rem; flex-wrap:wrap; }
+    .sw {
+      width:36px; height:36px; border-radius:8px; border:1px solid rgba(255,255,255,.1);
+      transition: transform .2s; cursor: default;
+    }
+    .sw:hover { transform: scale(1.12); }
+    .msg-preview { display:flex; flex-direction:column; gap:.7rem; }
+    .mbub {
+      padding: .8rem 1rem; border-radius:10px; font-size:.8rem; line-height:1.5;
+    }
+    .mbub.human { background: rgba(16,185,129,0.07); border: 1px solid rgba(16,185,129,0.15); }
+    .mbub.agent { background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.18); }
+    .mhead { display:flex; align-items:center; gap:.5rem; margin-bottom:.35rem; flex-wrap:wrap; }
+    .mauth { font-family:'Outfit',sans-serif; font-weight:600; font-size:.78rem; color:var(--white); }
+    .mbadge { font-size:.55rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+              background:rgba(124,58,237,.25); color:#C4B5FD; padding:.1rem .4rem; border-radius:4px; }
+    .mtime  { font-family:'JetBrains Mono',monospace; font-size:.65rem; color:var(--slate); }
+    .stack-tags { display:flex; flex-wrap:wrap; gap:.55rem; }
+    .stag-pill {
+      display:flex; align-items:center; gap:.4rem;
+      font-size:.72rem; padding:.3rem .75rem; border-radius:7px;
+      border:1px solid var(--dark-4); background:rgba(255,255,255,.02);
+      font-family:'JetBrains Mono',monospace; color:var(--slate-light);
+    }
+    .stag-pill .pc {
+      font-size:.55rem; font-weight:700; padding:.1rem .3rem; border-radius:4px; letter-spacing:.05em;
+    }
+    .stag-pill:nth-child(-n+3) .pc { background:rgba(16,185,129,.18); color:var(--brand); }
+    .stag-pill:nth-child(n+4):nth-child(-n+6) .pc { background:rgba(6,182,212,.15); color:var(--cyan); }
+    .stag-pill:nth-child(n+7):nth-child(-n+9) .pc { background:rgba(124,58,237,.15); color:#C4B5FD; }
+    .stag-pill:nth-child(n+10) .pc { background:rgba(245,158,11,.12); color:var(--amber); }
+
+    /* TIMELINE */
+    .tl { display: flex; flex-direction: column; gap: 0; }
+    .tlitem {
+      padding: 1.5rem 1.8rem 1.5rem 3.5rem; position: relative;
+      border-left: 2px solid rgba(16,185,129,0.15);
+      transition: border-color .25s;
+    }
+    .tlitem:hover { border-left-color: var(--brand); }
+    .tlitem::before {
+      content:''; position:absolute; left:-7px; top:1.9rem;
+      width:12px; height:12px; border-radius:50%;
+      background: var(--dark-2); border:2px solid rgba(16,185,129,0.35);
+      transition: border-color .25s, background .25s;
+    }
+    .tlitem:hover::before { background: var(--brand); border-color: var(--brand); }
+    .tlb { font-family:'JetBrains Mono',monospace; font-size:.65rem; color:var(--brand); letter-spacing:.1em; text-transform:uppercase; margin-bottom:.3rem; }
+    .tlt { font-family:'Outfit',sans-serif; font-weight:700; font-size:1.05rem; color:var(--white); margin-bottom:.35rem; }
+    .tld { font-size:.8rem; color:var(--slate); line-height:1.6; }
+    .tld2 { font-family:'JetBrains Mono',monospace; font-size:.65rem; color:var(--slate); margin-top:.4rem; opacity:.55; }
+
+    /* INTEGRATIONS */
+    .int-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap:1rem; }
+    .intcard {
+      padding:1.3rem 1.5rem; border:1px solid var(--dark-4); border-radius:12px;
+      background:rgba(255,255,255,.015); transition:all .22s;
+    }
+    .intcard:hover { border-color:rgba(16,185,129,.25); transform:translateY(-2px); }
+    .inti  { font-size:1.5rem; display:block; margin-bottom:.6rem; }
+    .intn  { font-family:'Outfit',sans-serif; font-weight:600; font-size:.88rem; color:var(--white); margin-bottom:.25rem; }
+    .intd  { font-size:.75rem; color:var(--slate); line-height:1.5; }
+    .intba { 
+      margin-top:.6rem; font-family:'JetBrains Mono',monospace; font-size:.6rem;
+      color:var(--cyan); letter-spacing:.08em;
+    }
+
+    /* FOOTER */
+    footer { padding: 3rem 0; }
+    .ft-inner {
+      display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem;
+    }
+    .ft-brand {
+      font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.2rem;
+      letter-spacing: -.03em; color: var(--white);
+    }
+    .ft-brand span { color: var(--brand); }
+    .ft-meta {
+      text-align: right; font-family: 'JetBrains Mono', monospace;
+      font-size: .65rem; color: var(--slate); line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="glow-brand"></div>
+<div class="glow-agent"></div>
+
+<nav>
+  <div class="nav-logo">FBR<span>·</span>Dev</div>
+  <ul class="nav-links">
+    <li><a href="#visao">// visão</a></li>
+    <li><a href="#arquitetura">// arquitetura</a></li>
+    <li><a href="#agentes">// agentes</a></li>
+    <li><a href="#db">// database</a></li>
+    <li><a href="#integracoes">// integrações</a></li>
+    <li><a href="#plano">// plano</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="wrapper">
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span class="pulse-dot"></span>
+      FBR · SISTEMA 03 · PLATAFORMA DE DESENVOLVIMENTO
+    </div>
+    <h1 class="hero-title">
+      FBR<span class="accent">·</span>Dev<br/>
+      <span class="muted">o irmão</span><br/>
+      <span class="purple">técnico</span>
+    </h1>
+    <p class="hero-sub">
+      GitHub × Slack × OpenClaw num único workspace. Todo código nasce de uma conversa. Todo deploy gera uma notificação. Devs humanos e agentes colaborando no mesmo ambiente.
+    </p>
+    <div class="hero-pills">
+      <div class="hpill"><span class="dot dot-em"></span>FastAPI + tRPC</div>
+      <div class="hpill"><span class="dot dot-c"></span>GitHub API</div>
+      <div class="hpill"><span class="dot dot-v"></span>OpenClaw Agents</div>
+      <div class="hpill"><span class="dot dot-g"></span>PostgreSQL 16 RLS</div>
+      <div class="hpill"><span class="dot dot-em"></span>Next.js 15</div>
+      <div class="hpill"><span class="dot dot-c"></span>BullMQ + Redis 7</div>
+    </div>
+  </section>
+</div>
+
+<!-- VISÃO -->
+<div class="wrapper">
+  <section id="visao" class="fade-in">
+    <div class="stag">// visão geral</div>
+    <h2 class="stitle">O que é o FBR-Dev?</h2>
+    <p class="slead">Plataforma de gestão do ciclo de vida de software da Facebrasil. Une gestão de issues e sprints (GitHub Projects), comunicação técnica e agentes autônomos que revisam PRs, monitoram deploys e abrem incidentes automaticamente.</p>
+
+    <div class="kpi-row">
+      <div class="kpi-card"><div class="kpi-val">5</div><div class="kpi-lab">Agentes nativos<br/>do MVP</div></div>
+      <div class="kpi-card"><div class="kpi-val">14</div><div class="kpi-lab">Tabelas com RLS<br/>completo</div></div>
+      <div class="kpi-card"><div class="kpi-val">12</div><div class="kpi-val" style="font-size:1.1rem">batches</div><div class="kpi-lab">plano de<br/>implementação</div></div>
+      <div class="kpi-card"><div class="kpi-val">7</div><div class="kpi-lab">Markdowns por<br/>agente (Git)</div></div>
+      <div class="kpi-card"><div class="kpi-val">3</div><div class="kpi-lab">Camadas LLM<br/>com fallback</div></div>
+      <div class="kpi-card"><div class="kpi-val">4vCPU</div><div class="kpi-lab">VPS Hetzner<br/>16GB RAM</div></div>
+    </div>
+
+    <div class="prob-grid">
+      <div class="pcard">
+        <span class="picon">🔀</span>
+        <h4>Fragmentação de contexto</h4>
+        <p>Issues no GitHub, discussões no Slack, deploys no Coolify — nenhuma ferramenta fala com a outra. O desenvolvedor perde tempo sincronizando contexto manualmente.</p>
+      </div>
+      <div class="pcard">
+        <span class="picon">🚨</span>
+        <h4>Alertas sem ação</h4>
+        <p>Sentry detecta o erro, mas ninguém abre o issue. O pipeline quebra às 3h da manhã e ninguém sabe até a manhã seguinte. Reatividade pura.</p>
+      </div>
+      <div class="pcard">
+        <span class="picon">📋</span>
+        <h4>Revisão de código manual</h4>
+        <p>PRs ficam dias sem review. Checklist de segurança esquecido. Padrões de código inconsistentes entre projetos FBR por falta de automação.</p>
+      </div>
+      <div class="pcard">
+        <span class="picon">🔭</span>
+        <h4>Visibilidade zero cross-sistema</h4>
+        <p>FBR-Click, FBR-Leads, FBR-Suporte evoluem em silos. Nenhum painel mostra o estado geral de todos os projetos FBR em tempo real.</p>
+      </div>
+      <div class="pcard wide">
+        <span class="picon">⚡</span>
+        <h4>Princípio central do FBR-Dev</h4>
+        <p>Todo código nasce de uma conversa no canal de desenvolvimento. Todo deploy gera uma notificação rastreável no FBR-Click. Agentes fecham o loop entre o que foi planejado, o que foi implementado e o que está em produção — sem intervenção humana para as tarefas repetitivas.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ARQUITETURA -->
+<div class="wrapper">
+  <section id="arquitetura" class="fade-in">
+    <div class="stag">// arquitetura do sistema</div>
+    <h2 class="stitle">Camadas e componentes</h2>
+    <p class="slead">Stack canônica FBR adaptada para desenvolvimento de software. tRPC substitui REST convencional no backend para type-safety end-to-end com o frontend Next.js.</p>
+
+    <div class="arch-box">
+      <div class="arch-inner">
+        <!-- Interface -->
+        <div class="arch-layer-group">
+          <div class="arch-lbl">interface</div>
+          <div class="arch-nodes">
+            <div class="anode n-em"><div class="an">FBR-Click Canal Dev</div><div class="ad">Superfície humana. Notificações, aprovações, KPIs do time.</div></div>
+            <div class="anode n-c"><div class="an">FBR-Dev Dashboard</div><div class="ad">Next.js 15. Pipeline view, sprint board, agent monitor.</div></div>
+          </div>
+        </div>
+        <div class="arch-sep">↓ WebSocket + REST</div>
+        <!-- API -->
+        <div class="arch-layer-group">
+          <div class="arch-lbl">api / backend</div>
+          <div class="arch-nodes">
+            <div class="anode n-em"><div class="an">FastAPI Core</div><div class="ad">Auth, projetos, issues, sprints, deploy hooks.</div></div>
+            <div class="anode n-c"><div class="an">BullMQ Workers</div><div class="ad">Filas assíncronas: CI/CD jobs, webhook processing, notificações.</div></div>
+            <div class="anode n-v"><div class="an">OpenClaw Gateway</div><div class="ad">Roteador de agentes. JWT rotacionado, audit log, kill switch.</div></div>
+          </div>
+        </div>
+        <div class="arch-sep">↓ SQL + Pub/Sub</div>
+        <!-- Dados -->
+        <div class="arch-layer-group">
+          <div class="arch-lbl">dados</div>
+          <div class="arch-nodes">
+            <div class="anode n-s"><div class="an">PostgreSQL 16</div><div class="ad">14 tabelas com RLS. Projetos, issues, PRs, deploys, auditoria.</div></div>
+            <div class="anode n-s"><div class="an">Redis 7</div><div class="ad">Filas BullMQ, pub/sub de eventos, JWT store dos agentes.</div></div>
+          </div>
+        </div>
+        <div class="arch-sep">↓ API / Tailscale</div>
+        <!-- Integrações -->
+        <div class="arch-layer-group">
+          <div class="arch-lbl">integrações</div>
+          <div class="arch-nodes">
+            <div class="anode n-c"><div class="an">GitHub API v4</div><div class="ad">Issues, PRs, Actions, Projects. Webhook HMAC-SHA256.</div></div>
+            <div class="anode n-em"><div class="an">Coolify / Docker</div><div class="ad">Deploy hooks, rollback API, env management.</div></div>
+            <div class="anode n-s"><div class="an">Sentry + Grafana</div><div class="ad">Error tracking, métricas DORA, dashboards de performance.</div></div>
+          </div>
+        </div>
+        <div class="arch-sep">↓ Ollama / Claude API / GPT-4o (cascata)</div>
+        <!-- LLM -->
+        <div class="arch-layer-group">
+          <div class="arch-lbl">llm</div>
+          <div class="arch-nodes">
+            <div class="anode n-em"><div class="an">Mac Mini M4 — Ollama</div><div class="ad">Camada 1 compartilhada. Análise de código, review de PRs.</div></div>
+            <div class="anode n-v"><div class="an">Claude API</div><div class="ad">Raciocínio complexo: arquitetura, segurança, refatoração.</div></div>
+            <div class="anode n-s"><div class="an">GPT-4o</div><div class="ad">Contingência total. Alerta crítico ao owner em falha.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- PARTICIPANTES -->
+<div class="wrapper">
+  <section id="participantes" class="fade-in">
+    <div class="stag">// participantes do sistema</div>
+    <h2 class="stitle">Devs humanos & Agentes OpenClaw</h2>
+    <p class="slead">O dev humano foca em decisões de arquitetura, design de produto e code review estratégico. O agente OpenClaw cuida do repetitivo: checklist de PR, alertas de Sentry, status de deploy.</p>
+
+    <div class="user-grid">
+      <div class="ucard human">
+        <div class="ucard-head">
+          <div class="uavatar">👩‍💻</div>
+          <div><div class="utitle">Desenvolvedor FBR</div><span class="ubadge">HUMANO</span></div>
+        </div>
+        <div class="ucard-body">
+          <div class="uattr"><span class="uk">Autenticação</span><span class="uv">iron-session cookie httpOnly</span></div>
+          <div class="uattr"><span class="uk">Roles</span><span class="uv">admin · dev · contractor · viewer</span></div>
+          <div class="uattr"><span class="uk">Interface</span><span class="uv">Dashboard Next.js + canal FBR-Click</span></div>
+          <div class="uattr"><span class="uk">Ações</span><span class="uv">Merge PRs, aprovar deploys, configurar agentes</span></div>
+          <div class="uattr"><span class="uk">Notificações</span><span class="uv mono">WebSocket push + FBR-Click canal</span></div>
+        </div>
+      </div>
+      <div class="ucard agent">
+        <div class="ucard-head">
+          <div class="uavatar">🤖</div>
+          <div><div class="utitle">Agente OpenClaw</div><span class="ubadge">AGENTE</span></div>
+        </div>
+        <div class="ucard-body">
+          <div class="uattr"><span class="uk">Autenticação</span><span class="uv">JWT rotacionado a cada 24h</span></div>
+          <div class="uattr"><span class="uk">Interface</span><span class="uv mono">OpenClaw Gateway REST + WS</span></div>
+          <div class="uattr"><span class="uk">Comportamento</span><span class="uv">Reativo (webhook) + proativo (heartbeat)</span></div>
+          <div class="uattr"><span class="uk">Permissões</span><span class="uv">Scope definido em AGENTS.md por repo</span></div>
+          <div class="uattr"><span class="uk">Configuração</span><span class="uv">7 Markdowns no repositório Git próprio</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- AGENTES -->
+<div class="wrapper">
+  <section id="agentes" class="fade-in">
+    <div class="stag">// agentes nativos do mvp</div>
+    <h2 class="stitle">Os 5 agentes nativos</h2>
+    <p class="slead">Cada agente tem repositório Git próprio, 7 Markdowns de configuração e opera em escopos específicos de repositórios com heartbeat e triggers de webhook definidos.</p>
+
+    <div class="ag-grid">
+      <div class="agcard">
+        <span class="agem">🔍</span>
+        <div class="agname">Review Bot</div>
+        <div class="agspace">Scope: Pull Requests</div>
+        <div class="agdesc">Checklist automatizado em todo PR aberto: convenções de commit, testes unitários, padrões de segurança e lint. Comenta inline no GitHub.</div>
+        <div class="aghb">on: pull_request opened/updated</div>
+      </div>
+      <div class="agcard">
+        <span class="agem">🚀</span>
+        <div class="agname">Deploy Bot</div>
+        <div class="agspace">Scope: CI/CD</div>
+        <div class="agdesc">Monitora pipelines do GitHub Actions e Coolify. Notifica no FBR-Click e ativa rollback automático em falhas com aprovação do owner.</div>
+        <div class="aghb">on: deploy_status change</div>
+      </div>
+      <div class="agcard">
+        <span class="agem">🚨</span>
+        <div class="agname">Incident Bot</div>
+        <div class="agspace">Scope: Sentry + Grafana</div>
+        <div class="agdesc">Captura erros críticos do Sentry e anomalias do Grafana. Abre issue no GitHub, cria canal de incidente no FBR-Click e notifica on-call.</div>
+        <div class="aghb">on: sentry alert / threshold breach</div>
+      </div>
+      <div class="agcard">
+        <span class="agem">📊</span>
+        <div class="agname">Sprint Bot</div>
+        <div class="agspace">Scope: GitHub Projects</div>
+        <div class="agdesc">Relatórios de sprint semanais com velocity, lead time e DORA metrics. Identifica issues bloqueadas e avisa o dev responsável.</div>
+        <div class="aghb">Segunda 9h · sexta 17h</div>
+      </div>
+      <div class="agcard">
+        <span class="agem">🔐</span>
+        <div class="agname">Security Bot</div>
+        <div class="agspace">Scope: Todos os repos FBR</div>
+        <div class="agdesc">Varredura semanal de dependências (Dependabot API), secrets expostos e vulnerabilidades. Cria PRs de atualização automáticos quando crítico.</div>
+        <div class="aghb">Domingo 3h · on: push main</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- DATABASE -->
+<div class="wrapper">
+  <section id="db" class="fade-in">
+    <div class="stag">// database schema</div>
+    <h2 class="stitle">14 tabelas com RLS completo</h2>
+    <p class="slead">PostgreSQL 16 com Row Level Security em todas as tabelas, triggers automáticos de updated_at, indexes de performance e audit log append-only para toda ação de agente.</p>
+
+    <div class="db-grid">
+      <div class="dbt"><div class="tn">organizations</div><div class="td">Tenant raiz. Isolamento multi-org garantido pelo RLS em todas as queries.</div><span class="tflag tf-rls">RLS</span></div>
+      <div class="dbt"><div class="tn">users</div><div class="td">Membros com roles: admin, dev, contractor, viewer.</div><span class="tflag tf-rls">RLS</span></div>
+      <div class="dbt"><div class="tn">projects</div><div class="td">Repositórios FBR vinculados ao GitHub. Slug único por org.</div><span class="tflag tf-rls">RLS</span><span class="tflag tf-idx">IDX</span></div>
+      <div class="dbt"><div class="tn">sprints</div><div class="td">Sprints de 2 semanas por projeto. Status: planning / active / closed.</div><span class="tflag tf-rls">RLS</span></div>
+      <div class="dbt"><div class="tn">issues</div><div class="td">Issues espelhadas do GitHub com prioridade P0–P3 e status local.</div><span class="tflag tf-rls">RLS</span><span class="tflag tf-idx">IDX</span></div>
+      <div class="dbt"><div class="tn">pull_requests</div><div class="td">PRs com status, reviewer, check results e link para GitHub.</div><span class="tflag tf-rls">RLS</span></div>
+      <div class="dbt"><div class="tn">deployments</div><div class="td">Histórico de deploys: ambiente, commit SHA, status, duração.</div><span class="tflag tf-rls">RLS</span><span class="tflag tf-ao">Immutable</span></div>
+      <div class="dbt"><div class="tn">incidents</div><div class="td">Incidentes ativos e encerrados com severidade e postmortem link.</div><span class="tflag tf-rls">RLS</span></div>
+      <div class="dbt"><div class="tn">agents</div><div class="td">Agentes OpenClaw registrados com git_repo_url e scope de repos.</div><span class="tflag tf-rls">RLS</span></div>
+      <div class="dbt"><div class="tn">agent_markdown_cache</div><div class="td">Cache dos 7 markdowns por agente com git_sha para invalidação.</div><span class="tflag tf-rls">RLS</span></div>
+      <div class="dbt"><div class="tn">agent_action_logs</div><div class="td">Audit log completo de toda ação de agente: payload, resultado, trigger.</div><span class="tflag tf-rls">RLS</span><span class="tflag tf-ao">Append-Only</span></div>
+      <div class="dbt"><div class="tn">agent_approval_requests</div><div class="td">Aprovações pendentes para ações de alto impacto: rollback, force push.</div><span class="tflag tf-rls">RLS</span></div>
+      <div class="dbt"><div class="tn">dora_metrics</div><div class="td">Métricas DORA calculadas diariamente: deploy frequency, lead time, MTTR.</div><span class="tflag tf-rls">RLS</span><span class="tflag tf-idx">IDX</span></div>
+      <div class="dbt"><div class="tn">webhook_events</div><div class="td">Fila persistida de eventos GitHub/Coolify/Sentry antes do processamento.</div><span class="tflag tf-rls">RLS</span><span class="tflag tf-ao">Append-Only</span></div>
+    </div>
+  </section>
+</div>
+
+<!-- INTEGRAÇÕES -->
+<div class="wrapper">
+  <section id="integracoes" class="fade-in">
+    <div class="stag">// integrações externas</div>
+    <h2 class="stitle">Ecossistema conectado</h2>
+    <p class="slead">FBR-Dev é o hub central que conecta as ferramentas do ciclo de desenvolvimento. Todos os webhooks validam assinatura HMAC-SHA256 antes de processar qualquer evento.</p>
+
+    <div class="int-grid">
+      <div class="intcard">
+        <span class="inti">🐙</span>
+        <div class="intn">GitHub API v4</div>
+        <div class="intd">Issues, PRs, Projects, Actions, Dependabot. Webhooks HMAC-SHA256 validados.</div>
+        <div class="intba">// webhook + graphql</div>
+      </div>
+      <div class="intcard">
+        <span class="inti">🚢</span>
+        <div class="intn">Coolify</div>
+        <div class="intd">Deploy hooks, rollback API, variáveis de ambiente, logs de container.</div>
+        <div class="intba">// REST API</div>
+      </div>
+      <div class="intcard">
+        <span class="inti">🔥</span>
+        <div class="intn">Sentry</div>
+        <div class="intd">Error tracking, alertas por threshold, assign automático de issue.</div>
+        <div class="intba">// webhook + API</div>
+      </div>
+      <div class="intcard">
+        <span class="inti">📈</span>
+        <div class="intn">Grafana + Prometheus</div>
+        <div class="intd">Métricas de infra, DORA metrics, alertas de anomalia.</div>
+        <div class="intba">// datasource API</div>
+      </div>
+      <div class="intcard">
+        <span class="inti">💬</span>
+        <div class="intn">FBR-Click</div>
+        <div class="intd">Canal dedicado fbr-dev. Notificações de deploy, incidentes e relatórios de sprint.</div>
+        <div class="intba">// HMAC webhook</div>
+      </div>
+      <div class="intcard">
+        <span class="inti">🔑</span>
+        <div class="intn">Tailscale</div>
+        <div class="intd">Comunicação segura com Mac Mini M4 (Ollama). Zero portas expostas.</div>
+        <div class="intba">// VPN mesh</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- SEGURANÇA -->
+<div class="wrapper">
+  <section id="seg" class="fade-in">
+    <div class="stag">// segurança em profundidade</div>
+    <h2 class="stitle">10 camadas de proteção</h2>
+    <p class="slead">Segurança integrada desde o schema até a camada de apresentação. Nenhuma camada é opcional — todas verificadas no checklist pré go-live e monitoradas continuamente.</p>
+
+    <div class="sec-grid">
+      <div class="secitem"><div class="secico">🔐</div><div class="sect"><div class="sn">Auth Humano</div><div class="sd">iron-session cookie httpOnly, secure, sameSite=lax. Sem localStorage jamais.</div></div></div>
+      <div class="secitem"><div class="secico">🤖</div><div class="sect"><div class="sn">Auth Agente</div><div class="sd">JWT rotacionado automaticamente a cada 24h via Redis TTL.</div></div></div>
+      <div class="secitem"><div class="secico">🗂️</div><div class="sect"><div class="sn">Row Level Security</div><div class="sd">RLS em todas as 14 tabelas — isolamento cross-tenant garantido no banco.</div></div></div>
+      <div class="secitem"><div class="secico">🔏</div><div class="sect"><div class="sn">HMAC-SHA256 Webhooks</div><div class="sd">GitHub, Coolify e Sentry validam assinatura antes de qualquer processamento.</div></div></div>
+      <div class="secitem"><div class="secico">✋</div><div class="sect"><div class="sn">Approval Workflow</div><div class="sd">Rollback, force push e operações destrutivas exigem aprovação humana prévia.</div></div></div>
+      <div class="secitem"><div class="secico">⏱️</div><div class="sect"><div class="sn">Rate Limiting</div><div class="sd">60 actions/min por agente · 5 webhook events/min via SlowAPI.</div></div></div>
+      <div class="secitem"><div class="secico">📜</div><div class="sect"><div class="sn">Audit Log Append-Only</div><div class="sd">Sem UPDATE nem DELETE em agent_action_logs e webhook_events.</div></div></div>
+      <div class="secitem"><div class="secico">🔦</div><div class="sect"><div class="sn">Scope Validation</div><div class="sd">Agentes validados contra AGENTS.md antes de cada ação. Violação → 403.</div></div></div>
+      <div class="secitem"><div class="secico">🔌</div><div class="sect"><div class="sn">Kill Switch</div><div class="sd">Admin desconecta qualquer agente em &lt; 5 segundos via FBR-Click.</div></div></div>
+      <div class="secitem"><div class="secico">🧹</div><div class="sect"><div class="sn">Prompt Injection</div><div class="sd">Sanitização de diff/código antes de enviar ao OpenClaw. SOUL.md carregado primeiro.</div></div></div>
+    </div>
+  </section>
+</div>
+
+<!-- LLM -->
+<div class="wrapper">
+  <section id="llm" class="fade-in">
+    <div class="stag">// inteligência em cascata</div>
+    <h2 class="stitle">LLM em 3 camadas</h2>
+    <p class="slead">n8n verifica a saúde das três camadas a cada 60s e publica status no Redis. O módulo llm.py lê o Redis antes de cada chamada — zero latência de health check no caminho crítico.</p>
+
+    <div class="llm-stack">
+      <div class="llmlayer ll1">
+        <div class="llnum">1</div>
+        <div class="llinfo">
+          <div class="lln">Ollama — Mac Mini M4 via Tailscale</div>
+          <div class="lld">Review de código · classificação de issues · análise de diff · timeout 15s · fallback se offline &gt; 30s</div>
+        </div>
+        <div class="llbadge">primária</div>
+      </div>
+      <div class="llsep">↓ fallback automático</div>
+      <div class="llmlayer ll2">
+        <div class="llnum">2</div>
+        <div class="llinfo">
+          <div class="lln">Claude API — claude-sonnet-4-6</div>
+          <div class="lld">Análise de arquitetura · sugestões de refatoração complexa · postmortem de incidente · timeout 30s</div>
+        </div>
+        <div class="llbadge">secundária</div>
+      </div>
+      <div class="llsep">↓ fallback automático</div>
+      <div class="llmlayer ll3">
+        <div class="llnum">3</div>
+        <div class="llinfo">
+          <div class="lln">GPT-4o API</div>
+          <div class="lld">Contingência total · nunca primária · alerta crítico ao owner em falha</div>
+        </div>
+        <div class="llbadge">reserva</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- DESIGN SYSTEM -->
+<div class="wrapper">
+  <section id="design" class="fade-in">
+    <div class="stag">// design system</div>
+    <h2 class="stitle">Identidade visual</h2>
+    <p class="slead">Outfit para títulos, Inter para corpo de texto. Emerald 500 como cor de marca técnica do FBR-Dev. Violet 700 exclusivo para badges de agente. Dark mode obrigatório.</p>
+
+    <div class="ds-grid">
+      <div class="dsblock">
+        <h5>// tipografia</h5>
+        <div class="fsample"><div class="fsn">Outfit ExtraBold — logo / identidade</div><div class="ft-heading">FBR·Dev</div></div>
+        <div class="fsample"><div class="fsn">Outfit Bold — títulos H1</div><div class="ft-h2">Plataforma de Desenvolvimento</div></div>
+        <div class="fsample"><div class="fsn">Inter Regular — corpo de texto</div><div class="ft-body">Devs humanos e agentes no mesmo workspace.</div></div>
+        <div class="fsample"><div class="fsn">JetBrains Mono — código / tags</div><div class="ft-mono">author_type: 'agent'</div></div>
+      </div>
+
+      <div class="dsblock">
+        <h5>// paleta de cores</h5>
+        <div style="margin-bottom:.9rem">
+          <div class="fsn" style="margin-bottom:.4rem">Brand / UI</div>
+          <div class="swatch-row">
+            <div class="sw" style="background:#10B981" title="#10B981 brand"></div>
+            <div class="sw" style="background:#0A1210" title="#0A1210 dark bg"></div>
+            <div class="sw" style="background:#162620" title="#162620 card dark"></div>
+            <div class="sw" style="background:#06B6D4;border-color:rgba(6,182,212,.3)" title="#06B6D4 cyan accent"></div>
+          </div>
+        </div>
+        <div style="margin-bottom:.9rem">
+          <div class="fsn" style="margin-bottom:.4rem">Agente OpenClaw</div>
+          <div class="swatch-row">
+            <div class="sw" style="background:#7C3AED" title="#7C3AED badge agente"></div>
+            <div class="sw" style="background:#F5F3FF;border-color:rgba(124,58,237,.3)" title="#F5F3FF fundo msg agente"></div>
+          </div>
+        </div>
+        <div>
+          <div class="fsn" style="margin-bottom:.4rem">Status</div>
+          <div class="swatch-row">
+            <div class="sw" style="background:#22C55E" title="#22C55E success / online"></div>
+            <div class="sw" style="background:#EF4444" title="#EF4444 error / offline"></div>
+            <div class="sw" style="background:#F59E0B" title="#F59E0B warning / degraded"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dsblock">
+        <h5>// evento no canal dev</h5>
+        <div class="msg-preview">
+          <div class="mbub human">
+            <div class="mhead"><span class="mauth">Carlos Dev</span><span class="mtime">09:14</span></div>
+            PR #312 aberto — feature: auth multi-tenant para FBR-Leads.
+          </div>
+          <div class="mbub agent">
+            <div class="mhead"><span class="mauth">🔍 Review Bot</span><span class="mbadge">AGENTE</span><span class="mtime">09:14</span></div>
+            PR analisado. ✅ Conventional commit · ✅ Testes unitários · ⚠️ 1 segredo potencial na linha 47 de auth.py — aguardando review humano.
+          </div>
+        </div>
+      </div>
+
+      <div class="dsblock">
+        <h5>// stack técnica</h5>
+        <div class="stack-tags">
+          <div class="stag-pill"><span class="pc">BE</span>FastAPI</div>
+          <div class="stag-pill"><span class="pc">BE</span>PostgreSQL 16</div>
+          <div class="stag-pill"><span class="pc">BE</span>Redis 7 + BullMQ</div>
+          <div class="stag-pill"><span class="pc">FE</span>Next.js 15</div>
+          <div class="stag-pill"><span class="pc">FE</span>TypeScript strict</div>
+          <div class="stag-pill"><span class="pc">FE</span>Tailwind v4</div>
+          <div class="stag-pill"><span class="pc">AI</span>OpenClaw</div>
+          <div class="stag-pill"><span class="pc">AI</span>Claude API</div>
+          <div class="stag-pill"><span class="pc">OPS</span>Docker Compose</div>
+          <div class="stag-pill"><span class="pc">OPS</span>Nginx + Certbot</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- PLANO -->
+<div class="wrapper">
+  <section id="plano" class="fade-in">
+    <div class="stag">// plano de implementação</div>
+    <h2 class="stitle">~50 dias · 12 batches</h2>
+    <p class="slead">Batches 6 e 7 rodam em paralelo nos dias 28–38. Security gates entre cada fase garantem que critérios de segurança sejam cumpridos antes de avançar.</p>
+
+    <div class="tl">
+      <div class="tlitem">
+        <div class="tlb">Batch 1</div>
+        <div class="tlt">Fundação de Infraestrutura</div>
+        <div class="tld">VPS Hetzner 4vCPU/16GB, Docker Compose, PostgreSQL 16, Redis 7, Nginx + SSL, OpenClaw Gateway.</div>
+        <div class="tld2">Dias 1–5</div>
+      </div>
+      <div class="tlitem">
+        <div class="tlb">Batch 2</div>
+        <div class="tlt">Database Schema</div>
+        <div class="tld">14 tabelas com RLS completo, triggers updated_at, indexes de performance, seed de teste e migrations.</div>
+        <div class="tld2">Dias 5–9</div>
+      </div>
+      <div class="tlitem">
+        <div class="tlb">Batch 3</div>
+        <div class="tlt">Backend Core</div>
+        <div class="tld">FastAPI: auth iron-session, projects CRUD, issues, sprints, pull_requests, deployments.</div>
+        <div class="tld2">Dias 9–16</div>
+      </div>
+      <div class="tlitem">
+        <div class="tlb">Batch 4</div>
+        <div class="tlt">Integrações Externas</div>
+        <div class="tld">GitHub webhook HMAC-SHA256, Coolify deploy hooks, Sentry alertas, Grafana datasource.</div>
+        <div class="tld2">Dias 16–21</div>
+      </div>
+      <div class="tlitem">
+        <div class="tlb">Batch 5</div>
+        <div class="tlt">Infraestrutura de Agentes</div>
+        <div class="tld">Registro OpenClaw, JWT rotacionado, WebSocket Gateway, audit log append-only, approval flow, rate limiting.</div>
+        <div class="tld2">Dias 21–28</div>
+      </div>
+      <div class="tlitem">
+        <div class="tlb">Batch 6</div>
+        <div class="tlt">Agentes Nativos (5)</div>
+        <div class="tld">Review Bot, Deploy Bot, Incident Bot, Sprint Bot, Security Bot. Cada um com 7 Markdowns e repositório Git.</div>
+        <div class="tld2">Dias 28–38 ‖ paralelo com Batch 7</div>
+      </div>
+      <div class="tlitem">
+        <div class="tlb">Batch 7</div>
+        <div class="tlt">Frontend Dashboard</div>
+        <div class="tld">Next.js 15: sprint board, pipeline view, painel de agentes e aprovações, incident timeline.</div>
+        <div class="tld2">Dias 30–40 ‖ paralelo com Batch 6</div>
+      </div>
+      <div class="tlitem">
+        <div class="tlb">Batch 8</div>
+        <div class="tlt">Real-time & Notificações</div>
+        <div class="tld">Socket.io WebSocket para eventos de deploy e PR. BullMQ workers para processamento assíncrono de webhooks.</div>
+        <div class="tld2">Dias 40–44</div>
+      </div>
+      <div class="tlitem">
+        <div class="tlb">Batch 9</div>
+        <div class="tlt">DORA Metrics</div>
+        <div class="tld">Cálculo diário de deploy frequency, lead time, MTTR e change failure rate. Dashboard Grafana dedicado.</div>
+        <div class="tld2">Dias 44–47</div>
+      </div>
+      <div class="tlitem">
+        <div class="tlb">Batch 10</div>
+        <div class="tlt">Integração com FBR-Click</div>
+        <div class="tld">Canal fbr-dev no FBR-Click com agente de handoff. Webhooks HMAC-SHA256 bidirecionais validados.</div>
+        <div class="tld2">Dias 47–50</div>
+      </div>
+      <div class="tlitem">
+        <div class="tlb">Batch 11</div>
+        <div class="tlt">Observabilidade</div>
+        <div class="tld">Grafana + Prometheus completo, Sentry integrado, dashboards de health dos agentes e alerta on-call.</div>
+        <div class="tld2">Dias 50–53</div>
+      </div>
+      <div class="tlitem">
+        <div class="tlb">Batch 12</div>
+        <div class="tlt">Go-Live & Período de Observação</div>
+        <div class="tld">Testes de carga com 5 agentes simultâneos, checklist de segurança, README completo e 7 dias de observação obrigatórios.</div>
+        <div class="tld2">Dias 53–60</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<div class="wrapper">
+  <footer>
+    <div class="ft-inner">
+      <div>
+        <div class="ft-brand">FBR<span>·</span>Dev</div>
+        <div style="font-size:.78rem;color:var(--slate);margin-top:.3rem;font-family:'Inter',sans-serif;font-weight:300;">Plataforma de Desenvolvimento · GitHub × OpenClaw</div>
+      </div>
+      <div class="ft-meta">
+        <div>Conceito Geral do Projeto v1.0</div>
+        <div>Next.js 15 · FastAPI · PostgreSQL 16 · OpenClaw</div>
+        <div>4 vCPU / 16GB RAM / Hetzner VPS</div>
+        <div style="opacity:.45;margin-top:.3rem">Facebrasil · Confidencial</div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
