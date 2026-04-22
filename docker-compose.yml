@@ -1,4 +1,4 @@
-services:
+﻿services:
   postgres:
     image: postgres:16-alpine
     container_name: fbr-click-postgres
@@ -97,7 +97,7 @@ services:
       fastapi:
         condition: service_healthy
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT:-3000}:3000"
 
   prometheus:
     image: prom/prometheus:v3.1.0
@@ -127,7 +127,7 @@ services:
       - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
       - grafana_data:/var/lib/grafana
     ports:
-      - "3001:3000"
+      - "${GRAFANA_PORT:-3001}:3000"
     depends_on:
       prometheus:
         condition: service_started
@@ -154,3 +154,5 @@ volumes:
   postgres_data:
   redis_data:
   grafana_data:
+
+
