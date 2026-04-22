@@ -5,7 +5,8 @@ from uuid import UUID
 from fastapi import Depends, HTTPException, status
 
 from app.core.database import get_database_pool
-from app.core.security import decode_agent_access_token, require_bearer_token, require_user_id, require_workspace_id
+from app.core.redis import get_redis_client
+from app.core.security import build_agent_token_cache_key, decode_agent_access_token, require_bearer_token, require_user_id, require_workspace_id
 
 
 async def get_current_user_id(x_user_id: Annotated[str, Depends(require_user_id)]) -> UUID:
@@ -37,6 +38,10 @@ async def get_agent_context(
     if token_workspace_id != str(workspace_id):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Agent token does not belong to this workspace.')
 
+    token_session = await get_redis_client().get(build_agent_token_cache_key(token))
+    if not token_session:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Agent token session expired or revoked.')
+
     try:
         agent_id = UUID(str(payload.get('sub')))
     except ValueError as exc:
@@ -48,4 +53,5 @@ async def get_agent_context(
         'slug': str(payload.get('slug')),
         'scope_actions': [str(item) for item in payload.get('scope_actions', [])],
         'approval_required_actions': [str(item) for item in payload.get('approval_required_actions', [])],
+        'token': token,
     }

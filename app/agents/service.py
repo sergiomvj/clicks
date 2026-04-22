@@ -1,4 +1,5 @@
 import json
+import subprocess
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from uuid import UUID
@@ -11,9 +12,12 @@ from app.agents.schemas import (
     AgentControlUpdateRequest,
     AgentExecutionOut,
     AgentListOut,
+    AgentMarkdownCacheListOut,
+    AgentMarkdownCacheOut,
     AgentOut,
     AgentRegistrationOut,
     AgentRegistrationRequest,
+    AgentHeartbeatOut,
     AgentTokenOut,
     AgentTokenRequest,
     AgentValidationOut,
@@ -27,7 +31,7 @@ from app.agents.schemas import (
 from app.agents.websocket import workspace_manager
 from app.core.redis import get_redis_client
 from app.core.sanitization import sanitize_text
-from app.core.security import create_agent_access_token
+from app.core.security import build_agent_token_cache_key, create_agent_access_token
 from app.crm.service import CANONICAL_STAGES, execute_stage_transition, normalize_stage
 from app.messaging.websocket import manager
 
@@ -90,12 +94,92 @@ def validate_agent_repository(repository_path: str) -> AgentValidationOut:
     )
 
 
+
+def _resolve_repository_path(repository_path: str) -> Path:
+    candidate = Path(repository_path)
+    if not candidate.is_absolute():
+        candidate = Path.cwd() / candidate
+    return candidate
+
+
+
+def _read_repository_git_sha(repository_path: Path) -> str:
+    try:
+        completed = subprocess.run(
+            ['git', '-C', str(repository_path), 'rev-parse', 'HEAD'],
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        sha = completed.stdout.strip()
+        return sha or 'unversioned'
+    except (subprocess.SubprocessError, FileNotFoundError):
+        return 'unversioned'
+
+
+async def sync_agent_markdown_cache(pool: Pool, workspace_id: UUID, agent_id: UUID, repository_path: str) -> AgentMarkdownCacheListOut:
+    candidate = _resolve_repository_path(repository_path)
+    git_sha = _read_repository_git_sha(candidate)
+    records: list[AgentMarkdownCacheOut] = []
+
+    for file_name in REQUIRED_AGENT_FILES:
+        file_path = candidate / file_name
+        content = file_path.read_text(encoding='utf-8')
+        row = await pool.fetchrow(
+            """
+            INSERT INTO agent_markdown_cache (workspace_id, agent_id, file_name, git_sha, content, repository_path, refreshed_at)
+            VALUES ($1, $2, $3, $4, $5, $6, NOW())
+            ON CONFLICT (agent_id, file_name)
+            DO UPDATE SET
+                git_sha = EXCLUDED.git_sha,
+                content = EXCLUDED.content,
+                repository_path = EXCLUDED.repository_path,
+                refreshed_at = NOW()
+            RETURNING id, workspace_id, agent_id, file_name, git_sha, content, repository_path, refreshed_at, updated_at
+            """,
+            workspace_id,
+            agent_id,
+            file_name,
+            git_sha,
+            content,
+            str(candidate),
+        )
+        records.append(AgentMarkdownCacheOut(**dict(row)))
+
+    return AgentMarkdownCacheListOut(files=records)
+
+
+async def list_agent_markdown_cache(pool: Pool, workspace_id: UUID) -> AgentMarkdownCacheListOut:
+    rows = await pool.fetch(
+        """
+        SELECT id, workspace_id, agent_id, file_name, git_sha, content, repository_path, refreshed_at, updated_at
+        FROM agent_markdown_cache
+        WHERE workspace_id = $1
+        ORDER BY repository_path, file_name
+        """,
+        workspace_id,
+    )
+    return AgentMarkdownCacheListOut(files=[AgentMarkdownCacheOut(**dict(row)) for row in rows])
+
+
 def _kill_switch_key(workspace_id: UUID) -> str:
     return f'{KILL_SWITCH_PREFIX}:{workspace_id}'
 
 
 def _policy_for_slug(slug: str) -> dict[str, object]:
     return AGENT_POLICIES.get(slug, {})
+
+
+def _derive_heartbeat_status(last_heartbeat_at: datetime | None) -> str:
+    if last_heartbeat_at is None:
+        return 'offline'
+    delta = datetime.now(timezone.utc) - last_heartbeat_at
+    if delta.total_seconds() <= 90:
+        return 'online'
+    if delta.total_seconds() <= 300:
+        return 'stale'
+    return 'offline'
 
 
 def _agent_out_from_row(row: object, control: AgentControlOut) -> AgentOut:
@@ -107,12 +191,14 @@ def _agent_out_from_row(row: object, control: AgentControlOut) -> AgentOut:
         approval_required_actions=policy.get('approval_required_actions', []),
         owners=policy.get('owners', []),
         kill_switch_active=control.kill_switch_active,
+        last_heartbeat_at=data.get('last_heartbeat_at'),
+        heartbeat_status=_derive_heartbeat_status(data.get('last_heartbeat_at')),
     )
 
 
 async def _get_agent_row(pool: Pool, workspace_id: UUID, agent_id: UUID) -> object | None:
     return await pool.fetchrow(
-        'SELECT id, slug, display_name, status, repository_url FROM agents WHERE id = $1 AND workspace_id = $2',
+        'SELECT id, slug, display_name, status, repository_url, last_heartbeat_at FROM agents WHERE id = $1 AND workspace_id = $2',
         agent_id,
         workspace_id,
     )
@@ -434,7 +520,7 @@ def _parse_audit_log(row: object) -> AuditLogOut:
 async def list_agents(pool: Pool, workspace_id: UUID) -> AgentListOut:
     control = await get_agent_control(workspace_id)
     rows = await pool.fetch(
-        'SELECT id, slug, display_name, status, repository_url FROM agents WHERE workspace_id = $1 ORDER BY display_name',
+        'SELECT id, slug, display_name, status, repository_url, last_heartbeat_at FROM agents WHERE workspace_id = $1 ORDER BY display_name',
         workspace_id,
     )
     return AgentListOut(agents=[_agent_out_from_row(row, control) for row in rows])
@@ -451,7 +537,7 @@ async def register_agent(pool: Pool, workspace_id: UUID, payload: AgentRegistrat
         VALUES ($1, $2, $3, 'online', $4)
         ON CONFLICT (workspace_id, slug)
         DO UPDATE SET display_name = EXCLUDED.display_name, repository_url = EXCLUDED.repository_url, status = 'online'
-        RETURNING id, slug, display_name, status, repository_url
+        RETURNING id, slug, display_name, status, repository_url, last_heartbeat_at
         """,
         workspace_id,
         payload.slug,
@@ -460,6 +546,7 @@ async def register_agent(pool: Pool, workspace_id: UUID, payload: AgentRegistrat
     )
     control = await get_agent_control(workspace_id)
     agent = _agent_out_from_row(row, control)
+    await sync_agent_markdown_cache(pool, workspace_id, agent.id, validation.repository_path)
     await _broadcast_workspace_event(
         workspace_id,
         'agent_registered',
@@ -474,6 +561,8 @@ async def issue_agent_token(pool: Pool, workspace_id: UUID, requested_by_user_id
         raise ValueError('Agent not found.')
     control = await get_agent_control(workspace_id)
     agent = _agent_out_from_row(row, control)
+    if agent.repository_url:
+        await sync_agent_markdown_cache(pool, workspace_id, agent.id, agent.repository_url)
     access_token, expires_at = create_agent_access_token(
         agent_id=agent.id,
         workspace_id=workspace_id,
@@ -481,6 +570,11 @@ async def issue_agent_token(pool: Pool, workspace_id: UUID, requested_by_user_id
         scope_actions=agent.scope_actions,
         approval_required_actions=agent.approval_required_actions,
         ttl_minutes=payload.ttl_minutes,
+    )
+    await get_redis_client().set(
+        build_agent_token_cache_key(access_token),
+        str(agent.id),
+        ex=24 * 60 * 60,
     )
     await log_platform_action(
         pool=pool,
@@ -495,6 +589,35 @@ async def issue_agent_token(pool: Pool, workspace_id: UUID, requested_by_user_id
         result={'status': 'issued', 'expires_at': expires_at.isoformat()},
     )
     return AgentTokenOut(access_token=access_token, expires_at=expires_at, agent=agent)
+
+
+async def record_agent_heartbeat(pool: Pool, workspace_id: UUID, agent_id: UUID, status: str) -> AgentHeartbeatOut:
+    row = await pool.fetchrow(
+        """
+        UPDATE agents
+        SET status = $1, last_heartbeat_at = NOW()
+        WHERE id = $2 AND workspace_id = $3
+        RETURNING id, workspace_id, status, last_heartbeat_at
+        """,
+        status,
+        agent_id,
+        workspace_id,
+    )
+    if row is None:
+        raise ValueError('Agent not found.')
+
+    payload = {
+        'agent_id': str(row['id']),
+        'status': row['status'],
+        'last_heartbeat_at': row['last_heartbeat_at'].isoformat(),
+    }
+    await _broadcast_workspace_event(workspace_id, 'agent_heartbeat', payload)
+    return AgentHeartbeatOut(
+        agent_id=row['id'],
+        workspace_id=row['workspace_id'],
+        status=row['status'],
+        last_heartbeat_at=row['last_heartbeat_at'],
+    )
 
 
 async def list_approvals(pool: Pool, workspace_id: UUID) -> ApprovalListOut:
@@ -622,6 +745,8 @@ async def execute_agent_action(
     workspace_id: UUID,
     agent_id: UUID,
     agent_slug: str,
+    token_scope_actions: list[str],
+    token_approval_required_actions: list[str],
     action_type: str,
     payload: dict[str, object],
 ) -> AgentExecutionOut:
@@ -635,8 +760,11 @@ async def execute_agent_action(
 
     policy = _policy_for_slug(agent_slug)
     allowed_actions = set(policy.get('scope_actions', [])) | set(policy.get('approval_required_actions', []))
+    token_allowed_actions = set(token_scope_actions) | set(token_approval_required_actions)
     if action_type not in allowed_actions:
         raise ValueError(f'Action {action_type} is outside the scope of {agent_slug}.')
+    if action_type not in token_allowed_actions:
+        raise ValueError(f'Action {action_type} is not authorized by the current agent token.')
 
     if action_type in set(policy.get('approval_required_actions', [])):
         approval_id_raw = payload.get('approval_id')
@@ -768,3 +896,9 @@ async def list_audit_logs(pool: Pool, workspace_id: UUID) -> AuditLogListOut:
         workspace_id,
     )
     return AuditLogListOut(logs=[_parse_audit_log(row) for row in rows])
+
+
+
+
+
+

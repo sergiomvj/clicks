@@ -7,10 +7,20 @@ function getTaskTone(task: TaskRecord) {
   return "task-card";
 }
 
+function getPriorityLabel(priority: string) {
+  const labels: Record<string, string> = {
+    p0: "P0",
+    p1: "P1",
+    p2: "P2",
+    p3: "P3",
+  };
+  return labels[priority] ?? priority.toUpperCase();
+}
+
 export function TaskBoard({ tasks }: { tasks: TaskRecord[] }) {
   const agentTasks = tasks.filter((task) => task.source === "agent").length;
   const pendingTasks = tasks.filter((task) => task.status !== "done").length;
-  const highPriority = tasks.filter((task) => task.priority === "high").length;
+  const highPriority = tasks.filter((task) => ["p0", "p1", "high", "urgent", "critical"].includes(task.priority)).length;
 
   return (
     <section className="surface-card stack">
@@ -28,7 +38,7 @@ export function TaskBoard({ tasks }: { tasks: TaskRecord[] }) {
         </article>
         <article className="mini-metric-card">
           <strong>{highPriority}</strong>
-          <span>Alta prioridade</span>
+          <span>Prioridade alta</span>
         </article>
         <article className="mini-metric-card">
           <strong>{agentTasks}</strong>
@@ -44,7 +54,7 @@ export function TaskBoard({ tasks }: { tasks: TaskRecord[] }) {
             </div>
             <div className="row-inline">
               <span className="status-pill">{task.status}</span>
-              <span className="status-pill">Prioridade {task.priority}</span>
+              <span className="status-pill">Prioridade {getPriorityLabel(task.priority)}</span>
             </div>
             {task.due_at && <p className="muted">Vencimento: {new Date(task.due_at).toLocaleString("pt-BR")}</p>}
           </article>

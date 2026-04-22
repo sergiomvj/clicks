@@ -1,5 +1,5 @@
 import { getSession } from "@/lib/session";
-import type { AgentControlRecord, AgentRecord, ApprovalRecord, ChannelRecord, DealRecord, GitWatcherRecord, MessageRecord, SpaceRecord, TaskRecord } from "@/lib/types";
+import type { AgentControlRecord, AgentRecord, ApprovalRecord, ChannelRecord, DealRecord, GitWatcherRecord, KpiRecord, MessageRecord, SpaceRecord, TaskRecord } from "@/lib/types";
 
 interface SpaceBundleResponse {
   spaces: SpaceRecord[];
@@ -28,6 +28,10 @@ interface ApprovalResponse {
 
 interface GitWatcherResponse {
   watchers: GitWatcherRecord[];
+}
+
+interface KpiResponse {
+  kpis: KpiRecord[];
 }
 
 async function fetchBackend(path: string): Promise<Response> {
@@ -65,6 +69,11 @@ export async function getSpaceBundle(): Promise<SpaceBundleResponse> {
 export async function getChannelMessages(channelId: string): Promise<MessageRecord[]> {
   const payload = await parseJson<MessageResponse>(await fetchBackend(`messages/${channelId}`));
   return payload.messages;
+}
+
+export async function getKpis(): Promise<KpiRecord[]> {
+  const payload = await parseJson<KpiResponse>(await fetchBackend("kpis"));
+  return payload.kpis;
 }
 
 export async function getTasks(): Promise<TaskRecord[]> {

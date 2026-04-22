@@ -1,5 +1,6 @@
 export interface SpaceRecord { id: string; workspace_id: string; slug: string; name: string; }
 export interface ChannelRecord { id: string; workspace_id: string; space_id: string; slug: string; name: string; channel_type: string; }
+export interface KpiRecord { id: string; workspace_id: string; space_id?: string | null; slug: string; name: string; unit: string; target_value: number; current_value: number; status: string; source: string; updated_at: string; }
 export interface DealRecord { id: string; company_name: string; contact_name?: string | null; contact_email?: string | null; stage: string; origin_badge: string; score?: number | null; }
 export interface TaskRecord { id: string; title: string; status: string; priority: string; source: string; due_at?: string | null; }
 export interface MessageRecord {
@@ -21,6 +22,8 @@ export interface AgentRecord {
   approval_required_actions: string[];
   owners: string[];
   kill_switch_active: boolean;
+  last_heartbeat_at?: string | null;
+  heartbeat_status: string;
 }
 export interface GitWatcherRecord {
   id: string;

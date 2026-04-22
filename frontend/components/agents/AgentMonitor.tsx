@@ -4,23 +4,31 @@ function getWatcherForAgent(agent: AgentRecord, watchers: GitWatcherRecord[]) {
   return watchers.find((watcher) => watcher.agent_id === agent.id || watcher.repository_path === agent.repository_url);
 }
 
+function getHeartbeatLabel(agent: AgentRecord) {
+  if (agent.kill_switch_active) {
+    return "paused";
+  }
+  return agent.heartbeat_status || agent.status;
+}
+
 export function AgentMonitor({ agents, watchers = [] }: { agents: AgentRecord[]; watchers?: GitWatcherRecord[] }) {
   return (
     <section className="surface-card stack">
       <div className="section-header">
         <div className="stack-tight">
           <h2 className="section-title">Monitor de agentes</h2>
-          <p className="muted">Visao unificada de status operacional, escopo e repositores observados pelo git watcher.</p>
+          <p className="muted">Visao unificada de status operacional, heartbeat, escopo e repositorios observados.</p>
         </div>
         <span className="agent-badge">{watchers.length} watchers ativos</span>
       </div>
       {agents.map((agent) => {
         const watcher = getWatcherForAgent(agent, watchers);
+        const heartbeatLabel = getHeartbeatLabel(agent);
         return (
           <article key={agent.id} className="stack agent-monitor-card">
             <div className="row-inline">
-              <div className="status-pill">
-                {agent.display_name} {agent.status} {agent.kill_switch_active ? "paused" : "live"}
+              <div className={`status-pill heartbeat-${heartbeatLabel}`}>
+                {agent.display_name} {heartbeatLabel}
               </div>
               {watcher ? <span className="origin-badge">git {watcher.status}</span> : <span className="origin-badge">sem watcher</span>}
             </div>
@@ -28,6 +36,7 @@ export function AgentMonitor({ agents, watchers = [] }: { agents: AgentRecord[];
             <p className="muted">Owners: {agent.owners.join(", ") || "Nao definido"}</p>
             <p className="muted">Scope: {agent.scope_actions.join(", ") || "Sem escopo mapeado"}</p>
             <p className="muted">Approval obrigatorio: {agent.approval_required_actions.join(", ") || "Nenhum"}</p>
+            <p className="muted">Ultimo heartbeat: {agent.last_heartbeat_at ? new Date(agent.last_heartbeat_at).toLocaleString("pt-BR") : "nunca recebido"}</p>
             {watcher && (
               <div className="stack-tight">
                 <p className="muted">Repo: {watcher.repository_path}</p>

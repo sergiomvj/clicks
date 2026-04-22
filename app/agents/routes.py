@@ -7,7 +7,10 @@ from starlette.websockets import WebSocketDisconnect
 from app.agents.schemas import (
     AgentControlOut,
     AgentControlUpdateRequest,
+    AgentHeartbeatOut,
+    AgentHeartbeatRequest,
     AgentListOut,
+    AgentMarkdownCacheListOut,
     AgentRegistrationOut,
     AgentRegistrationRequest,
     AgentTokenOut,
@@ -25,11 +28,14 @@ from app.agents.service import (
     decide_approval,
     get_agent_control,
     issue_agent_token,
+    list_agent_markdown_cache,
     list_agents,
     list_approvals,
     list_audit_logs,
+    record_agent_heartbeat,
     register_agent,
     set_kill_switch,
+    sync_agent_markdown_cache,
     validate_agent_repository,
 )
 from app.agents.websocket import workspace_manager
@@ -43,6 +49,11 @@ router = APIRouter(prefix='/agents', tags=['agents'])
 @router.get('', response_model=AgentListOut)
 async def get_agents(workspace_id: Annotated[UUID, Depends(get_workspace_uuid)]) -> AgentListOut:
     return await list_agents(get_database_pool(), workspace_id)
+
+
+@router.get('/markdown-cache', response_model=AgentMarkdownCacheListOut)
+async def get_agents_markdown_cache(workspace_id: Annotated[UUID, Depends(get_workspace_uuid)]) -> AgentMarkdownCacheListOut:
+    return await list_agent_markdown_cache(get_database_pool(), workspace_id)
 
 
 @router.get('/control', response_model=AgentControlOut)
@@ -70,6 +81,38 @@ async def validate_agent(payload: AgentValidationRequest) -> AgentValidationOut:
 async def post_agent(payload: AgentRegistrationRequest, workspace_id: Annotated[UUID, Depends(get_workspace_uuid)]) -> AgentRegistrationOut:
     try:
         return await register_agent(get_database_pool(), workspace_id, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)) from exc
+
+
+@router.post('/{agent_id}/markdown-cache/sync', response_model=AgentMarkdownCacheListOut)
+async def post_agent_markdown_cache_sync(
+    agent_id: str,
+    workspace_id: Annotated[UUID, Depends(get_workspace_uuid)],
+) -> AgentMarkdownCacheListOut:
+    row = await get_database_pool().fetchrow(
+        'SELECT id, repository_url FROM agents WHERE id = $1 AND workspace_id = $2',
+        UUID(agent_id),
+        workspace_id,
+    )
+    if row is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Agent not found.')
+    if not row['repository_url']:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail='Agent repository path is not configured.')
+    try:
+        return await sync_agent_markdown_cache(get_database_pool(), workspace_id, row['id'], row['repository_url'])
+    except OSError as exc:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)) from exc
+
+
+@router.post('/{agent_id}/heartbeat', response_model=AgentHeartbeatOut)
+async def post_agent_heartbeat(
+    agent_id: str,
+    payload: AgentHeartbeatRequest,
+    workspace_id: Annotated[UUID, Depends(get_workspace_uuid)],
+) -> AgentHeartbeatOut:
+    try:
+        return await record_agent_heartbeat(get_database_pool(), workspace_id, UUID(agent_id), payload.status)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)) from exc
 

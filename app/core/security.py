@@ -9,6 +9,7 @@ from jose import JWTError, jwt
 from app.core.config import get_settings
 
 AGENT_JWT_ALGORITHM = 'HS256'
+AGENT_TOKEN_TTL_MINUTES = 24 * 60
 
 
 async def require_user_id(x_user_id: str | None = Header(default=None)) -> str:
@@ -66,6 +67,11 @@ def get_webhook_secret(source: str) -> str:
     raise RuntimeError(f'Unknown webhook source: {source}')
 
 
+def build_agent_token_cache_key(token: str) -> str:
+    token_hash = hashlib.sha256(token.encode('utf-8')).hexdigest()
+    return f'agent:token:{token_hash}'
+
+
 def create_agent_access_token(
     *,
     agent_id: UUID,
@@ -73,10 +79,10 @@ def create_agent_access_token(
     slug: str,
     scope_actions: list[str],
     approval_required_actions: list[str],
-    ttl_minutes: int = 480,
+    ttl_minutes: int = AGENT_TOKEN_TTL_MINUTES,
 ) -> tuple[str, datetime]:
     settings = get_settings()
-    expires_at = datetime.now(timezone.utc) + timedelta(minutes=ttl_minutes)
+    expires_at = datetime.now(timezone.utc) + timedelta(minutes=AGENT_TOKEN_TTL_MINUTES)
     payload = {
         'sub': str(agent_id),
         'workspace_id': str(workspace_id),

@@ -14,6 +14,35 @@ class AgentOut(BaseModel):
     approval_required_actions: list[str] = Field(default_factory=list)
     owners: list[str] = Field(default_factory=list)
     kill_switch_active: bool = False
+    last_heartbeat_at: datetime | None = None
+    heartbeat_status: str = 'unknown'
+
+
+class AgentHeartbeatRequest(BaseModel):
+    status: str = Field(default='online', min_length=1)
+
+
+class AgentHeartbeatOut(BaseModel):
+    agent_id: UUID
+    workspace_id: UUID
+    status: str
+    last_heartbeat_at: datetime
+
+
+class AgentMarkdownCacheOut(BaseModel):
+    id: UUID
+    workspace_id: UUID
+    agent_id: UUID
+    file_name: str
+    git_sha: str
+    content: str
+    repository_path: str
+    refreshed_at: datetime
+    updated_at: datetime
+
+
+class AgentMarkdownCacheListOut(BaseModel):
+    files: list[AgentMarkdownCacheOut] = Field(default_factory=list)
 
 
 class AgentListOut(BaseModel):
@@ -43,7 +72,7 @@ class AgentRegistrationOut(BaseModel):
 
 class AgentTokenRequest(BaseModel):
     agent_id: UUID
-    ttl_minutes: int = Field(default=480, ge=15, le=1440)
+    ttl_minutes: int = Field(default=1440, ge=1440, le=1440)
 
 
 class AgentTokenOut(BaseModel):

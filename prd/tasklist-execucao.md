@@ -157,7 +157,7 @@ Fluxo principal esperado:
 - [ ] validar deploy integrado em VPS real
 - [ ] Executar teste de carga
 - [ ] Executar checklist de seguranca
-- [ ] Finalizar handoff operacional
+- [x] Finalizar handoff operacional local para homologacao controlada
 
 ## Proximo bloco autonomo mais valioso
 
@@ -212,8 +212,9 @@ Fluxo principal esperado:
 - [x] CTA real de aprovar e rejeitar approvals validada pelo frontend via proxy
 - [x] websocket de workspace agora emite `approval_created`, `approval_decided`, `kill_switch_updated`, `task_created`, `message_created` e `deal_stage_changed`
 - [x] frontend de `tasks`, `pipeline` e `agents` agora atualiza sozinho quando recebe evento realtime de workspace
-- [x] `onboarding-bot`, `approval-bot`, `content-bot` e `ads-bot` criados, validados e registrados\r\n- [x] migration `002_audit_and_git_watchers.sql` aplicada com sucesso no Postgres local\r\n- [x] `agent_action_logs` bloqueia `UPDATE` e `DELETE` por trigger append-only\r\n- [x] `git_watcher` ganhou tabela, API e script `scripts/register-git-watchers.ps1`\r\n- [x] frontend de agentes agora mostra estado do `git_watcher` por repositorio\r\n- [x] pacote de pre-validacao da VPS criado com `scripts/validate-production-env.ps1` e `docs-validacao-vps.md`\r\n- [x] callbacks de saida para `1FBR-Dev` e `1FBR-Suporte` preparados no backend com HMAC e payload normalizado
+- [x] `onboarding-bot`, `approval-bot`, `content-bot` e `ads-bot` criados, validados e registrados\r\n- [x] migration `002_audit_and_git_watchers.sql` aplicada com sucesso no Postgres local\r\n- [x] `agent_action_logs` bloqueia `UPDATE` e `DELETE` por trigger append-only\r\n- [x] `git_watcher` ganhou tabela, API e script `scripts/register-git-watchers.ps1`\r\n- [x] frontend de agentes agora mostra estado do `git_watcher` por repositorio\r\n- [x] pacote de pre-validacao da VPS criado com `scripts/validate-production-env.ps1` e `docs-validacao-vps.md`\r\n- [x] callbacks de saida para `1FBR-Dev` e `1FBR-Suporte` preparados no backend com HMAC e payload normalizado\r\n- [x] `scripts/homologacao-controlada.ps1` criado e validado com `ok = true`\r\n- [x] `docs-homologacao-controlada.md` criado para conduzir o uso controlado amanha
 - [x] sidebar, board de tarefas e pipeline receberam refinamento visual operacional
+
 
 
 
